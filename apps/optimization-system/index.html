@@ -307,6 +307,10 @@
     .bar-row{grid-template-columns:20px 1fr 54px 70px}
     .scene svg{height:88px}.scene.tall svg{height:130px}
   }
+  @media (max-width:640px){
+    .topbar .crumb,.phasepill,.ratebar{display:none}
+    .lrow .sub,.lrow .detail{margin-left:0}
+  }
   @media (prefers-reduced-motion:reduce){
     *,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}
   }
