@@ -1,0 +1,804 @@
+<title>Optimization System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap">
+<style>
+  :root{
+    --bg:#0A111F; --bg2:#0C1526; --card:#101A2E; --card2:#12203A; --inset:#0C1526;
+    --border:#1D2A45; --border2:#27375C;
+    --text:#E9EFFB; --muted:#7D8CB4; --faint:#55648F;
+    --blue:#4E7FFF; --blue-soft:rgba(78,127,255,.14);
+    --green:#37D67F; --green-soft:rgba(55,214,127,.13);
+    --amber:#FFC94A; --amber-soft:rgba(255,201,74,.13);
+    --orange:#FF9F43; --orange-soft:rgba(255,159,67,.14);
+    --red:#FF5C5C;   --red-soft:rgba(255,92,92,.14);
+    --purple:#A78BFA; --purple-soft:rgba(167,139,250,.14);
+    --pink:#F284B8;  --pink-soft:rgba(242,132,184,.15);
+    --teal:#3ECFCB;  --teal-soft:rgba(62,207,203,.14);
+    --r-lg:20px; --r-md:14px; --r-sm:9px;
+    --font-ui:'Manrope',system-ui,-apple-system,'Segoe UI',sans-serif;
+    --font-num:'Outfit','Manrope',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scrollbar-color:#26355A var(--bg)}
+  body{
+    background:var(--bg); color:var(--text);
+    font-family:var(--font-ui); font-size:14px; line-height:1.5;
+    min-height:100vh; -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:rgba(78,127,255,.35)}
+
+  .app{display:grid;grid-template-columns:236px 1fr;min-height:100vh}
+
+  /* ── Sidebar ─────────────────────────────── */
+  .side{
+    background:var(--bg2); border-right:1px solid var(--border);
+    padding:18px 12px; position:sticky; top:0; height:100vh;
+    display:flex; flex-direction:column; gap:2px; overflow-y:auto;
+  }
+  .brand{display:flex;align-items:center;gap:10px;padding:6px 10px 16px;font-family:var(--font-num)}
+  .brand .gear{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;
+    background:linear-gradient(135deg,#4E7FFF,#7B5CFF);font-size:15px;box-shadow:0 4px 14px rgba(78,127,255,.35)}
+  .brand b{font-size:15px;font-weight:700;letter-spacing:.2px}
+  .search{
+    display:flex;align-items:center;gap:8px;background:var(--inset);
+    border:1px solid var(--border); border-radius:10px; padding:7px 10px; margin:0 2px 14px;
+    color:var(--muted); cursor:text;
+  }
+  .search input{background:none;border:none;outline:none;color:var(--text);font:inherit;width:100%}
+  .search input::placeholder{color:var(--faint)}
+  .navlab{font-size:10.5px;font-weight:800;letter-spacing:.12em;color:var(--faint);
+    text-transform:uppercase;padding:14px 12px 6px}
+  .nav-item{
+    display:flex;align-items:center;gap:11px;padding:8px 12px;border-radius:10px;
+    color:var(--muted);font-weight:600;cursor:pointer;border:none;background:none;
+    font:inherit;width:100%;text-align:left;
+    transition:background .18s,color .18s,transform .12s;
+  }
+  .nav-item:hover{background:rgba(78,127,255,.08);color:var(--text)}
+  .nav-item.active{background:var(--blue-soft);color:#BFD2FF}
+  .nav-item .ico{width:18px;text-align:center;font-size:14px;opacity:.95}
+  .nav-item .cnt{margin-left:auto;font-size:11px;color:var(--faint);font-variant-numeric:tabular-nums}
+  .nav-item.active .cnt{color:#8FA9F5}
+  .side .foot{margin-top:auto;padding-top:14px;border-top:1px solid var(--border)}
+  .readline{font-size:11px;color:var(--faint);padding:10px 12px 2px;line-height:1.45}
+  .readline b{color:var(--muted)}
+
+  /* ── Main ────────────────────────────────── */
+  .main{padding:0 26px 60px;max-width:1240px;width:100%;margin:0 auto;min-width:0}
+  .grid>*{min-width:0}
+  .topbar{
+    display:flex;align-items:center;gap:14px;padding:18px 2px 16px;
+    position:sticky;top:0;z-index:20;background:linear-gradient(var(--bg) 82%,transparent);
+  }
+  .topbar h1{font-family:var(--font-num);font-size:17px;font-weight:700;letter-spacing:.2px}
+  .topbar .crumb{color:var(--faint);font-size:12.5px;font-weight:600}
+  .phasepill{
+    margin-left:auto;display:flex;align-items:center;gap:8px;background:var(--card);
+    border:1px solid var(--border);border-radius:999px;padding:6px 14px;font-size:12px;
+    font-weight:700;color:var(--muted)
+  }
+  .phasepill .dot{width:7px;height:7px;border-radius:50%;background:var(--amber);box-shadow:0 0 8px var(--amber)}
+
+  .view{display:none;animation:vin .35s cubic-bezier(.22,.8,.3,1)}
+  .view.on{display:block}
+  @keyframes vin{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+  /* ── Cards ───────────────────────────────── */
+  .grid{display:grid;gap:16px}
+  .g-dash{grid-template-columns:1.55fr 1fr}
+  .card{
+    background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);
+    padding:18px 20px;transition:transform .2s,border-color .2s;
+  }
+  .card.hoverable:hover{transform:translateY(-2px);border-color:var(--border2)}
+  .card-h{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:12px}
+  .card-h .t{font-size:12px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+  .card-h a,.linky{font-size:11.5px;font-weight:800;letter-spacing:.06em;color:var(--blue);
+    text-transform:uppercase;text-decoration:none;cursor:pointer;background:none;border:none;font-family:inherit}
+  .linky:hover{color:#82A5FF}
+  .big{font-family:var(--font-num);font-variant-numeric:tabular-nums;font-weight:700}
+
+  /* pills */
+  .pill{
+    display:inline-flex;align-items:center;gap:5px;border-radius:999px;
+    padding:2.5px 9px;font-size:10.5px;font-weight:800;letter-spacing:.05em;
+    text-transform:uppercase;white-space:nowrap;
+  }
+  .pill .em{font-size:11px;letter-spacing:0}
+  .p-green{background:var(--green-soft);color:var(--green)}
+  .p-amber{background:var(--amber-soft);color:var(--amber)}
+  .p-orange{background:var(--orange-soft);color:var(--orange)}
+  .p-red{background:var(--red-soft);color:var(--red)}
+  .p-blue{background:var(--blue-soft);color:#82A5FF}
+  .p-purple{background:var(--purple-soft);color:var(--purple)}
+  .p-pink{background:var(--pink-soft);color:var(--pink)}
+  .p-teal{background:var(--teal-soft);color:var(--teal)}
+  .p-gray{background:rgba(125,140,180,.14);color:var(--muted)}
+
+  /* hero chart card */
+  .hero-num{font-size:34px;letter-spacing:-.5px}
+  .hero-sub{color:var(--muted);font-weight:600;font-size:13px;margin-top:2px}
+  .hero-sub b{color:var(--green)}
+  .chartwrap{position:relative;margin-top:10px}
+  .chartwrap svg{display:block;width:100%;height:auto}
+  .badge{
+    position:absolute;transform:translate(-50%,-130%);
+    background:var(--green);color:#062814;font-family:var(--font-num);
+    font-weight:700;font-size:12.5px;padding:4px 10px;border-radius:9px;white-space:nowrap;
+    box-shadow:0 6px 18px rgba(55,214,127,.35);
+  }
+  .badge:after{content:"";position:absolute;left:50%;bottom:-4px;transform:translateX(-50%) rotate(45deg);
+    width:8px;height:8px;background:inherit;border-radius:2px}
+  .ranges{display:flex;gap:6px;margin-top:14px}
+  .ranges button{
+    background:none;border:none;color:var(--faint);font:inherit;font-size:11px;font-weight:800;
+    letter-spacing:.08em;padding:5px 11px;border-radius:8px;cursor:pointer;transition:all .15s
+  }
+  .ranges button.on{background:var(--blue-soft);color:#AFC6FF}
+  .ranges button:hover{color:var(--muted)}
+
+  /* status card */
+  .duo{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:6px}
+  .duo .lab{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
+    display:flex;align-items:center;gap:6px;margin-bottom:4px}
+  .duo .lab i{width:7px;height:7px;border-radius:50%;font-style:normal}
+  .duo .val{font-size:27px}
+  .duo .delta{font-size:12px;font-weight:700;margin-top:1px}
+  .meterline{height:10px;border-radius:999px;background:var(--inset);overflow:hidden;display:flex;margin:14px 0 6px}
+  .meterline span{height:100%;border-radius:999px}
+  .axis{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);
+    font-weight:700;font-variant-numeric:tabular-nums}
+  .limiter{
+    margin-top:14px;background:var(--red-soft);border:1px solid rgba(255,92,92,.25);
+    border-radius:var(--r-md);padding:10px 13px;font-size:12.5px;color:#FFB4B4;font-weight:600;line-height:1.45
+  }
+  .limiter b{color:var(--red);letter-spacing:.04em}
+
+  /* review list */
+  .rev{display:flex;flex-direction:column}
+  .rev .day{font-size:11px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;
+    color:var(--faint);padding:10px 2px 6px}
+  .rowitem{
+    display:flex;align-items:center;gap:11px;padding:9px 8px;border-radius:12px;
+    cursor:pointer;transition:background .15s;
+  }
+  .rowitem:hover{background:rgba(78,127,255,.07)}
+  .cbox{
+    width:17px;height:17px;border-radius:6px;border:1.5px solid var(--border2);flex:none;
+    display:grid;place-items:center;color:transparent;font-size:11px;transition:all .18s;background:var(--inset)
+  }
+  .rowitem.done .cbox{background:var(--green);border-color:var(--green);color:#06281a}
+  .rowitem .nm{font-weight:700;font-size:13.5px;flex:1;min-width:0;overflow:hidden;
+    text-overflow:ellipsis;white-space:nowrap}
+  .rowitem.done .nm{color:var(--faint);text-decoration:line-through}
+  .rowitem .amt{font-family:var(--font-num);font-variant-numeric:tabular-nums;font-weight:600;
+    color:var(--muted);font-size:12.5px;white-space:nowrap}
+  .markall{
+    margin-top:10px;width:100%;background:none;border:none;color:var(--blue);font:inherit;
+    font-weight:800;font-size:12.5px;letter-spacing:.03em;padding:11px;border-radius:12px;cursor:pointer;
+    transition:background .15s;display:flex;align-items:center;justify-content:center;gap:8px
+  }
+  .markall:hover{background:var(--blue-soft)}
+
+  /* ranked bars (top categories style) */
+  .bars{display:flex;flex-direction:column;gap:4px}
+  .bar-row{display:grid;grid-template-columns:20px 1fr 64px 120px;gap:10px;align-items:center;
+    padding:6px 6px;border-radius:10px;cursor:pointer;transition:background .15s}
+  .bar-row:hover{background:rgba(78,127,255,.07)}
+  .bar-row .rk{font-size:10.5px;color:var(--faint);font-weight:800;font-variant-numeric:tabular-nums}
+  .bar-row .nm{display:flex;align-items:center;gap:8px;font-weight:700;font-size:13px;min-width:0}
+  .bar-row .nm span.txt{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .bar-row .nm .em{font-size:13px}
+  .bar-row .v{font-family:var(--font-num);font-weight:600;text-align:right;font-variant-numeric:tabular-nums;font-size:13px}
+  .track{height:9px;border-radius:999px;background:var(--inset);overflow:hidden}
+  .track i{display:block;height:100%;border-radius:999px;width:0;transition:width 1s cubic-bezier(.22,.8,.3,1)}
+
+  /* rings */
+  .rings{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;padding:6px 0 2px}
+  .ring{display:flex;flex-direction:column;align-items:center;gap:9px;cursor:pointer;
+    padding:10px 4px;border-radius:14px;transition:background .15s}
+  .ring:hover{background:rgba(78,127,255,.06)}
+  .ringviz{position:relative;width:76px;height:76px}
+  .ringviz svg{transform:rotate(-90deg)}
+  .ringviz .em{position:absolute;inset:0;display:grid;place-items:center;font-size:26px}
+  .ring .rv{font-family:var(--font-num);font-weight:700;font-size:14px;font-variant-numeric:tabular-nums}
+  .ring .rl{font-size:11px;color:var(--muted);font-weight:700;margin-top:-7px}
+
+  /* upcoming */
+  .uplist{display:flex;flex-direction:column}
+  .uprow{display:flex;align-items:center;gap:10px;padding:8.5px 6px;border-radius:10px;transition:background .15s}
+  .uprow:hover{background:rgba(78,127,255,.06)}
+  .uprow .dt{font-size:11px;font-weight:800;color:var(--orange);width:52px;flex:none;
+    font-variant-numeric:tabular-nums;letter-spacing:.03em}
+  .uprow .em{font-size:14px;width:20px;text-align:center}
+  .uprow .nm{font-weight:700;font-size:13px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .uprow .tag{font-size:11px;color:var(--faint);font-weight:700}
+  .uprow .amt{font-family:var(--font-num);font-weight:600;color:var(--muted);font-size:12.5px;font-variant-numeric:tabular-nums}
+
+  /* macros card */
+  .macros .big{font-size:26px}
+  .macros .sub{color:var(--muted);font-size:12.5px;font-weight:700}
+  .macros .sub b{color:var(--green)}
+  .stack{margin-top:14px}
+  .stack .lbl{display:flex;gap:16px;font-size:11.5px;color:var(--muted);font-weight:700;margin-top:9px}
+  .stack .lbl i{font-style:normal;display:flex;align-items:center;gap:6px}
+  .stack .lbl b{color:var(--text);font-variant-numeric:tabular-nums}
+  .swatch{width:8px;height:8px;border-radius:3px;display:inline-block}
+
+  /* ── Generic list views ─────────────────── */
+  .tools{display:flex;gap:8px;flex-wrap:wrap;margin:2px 0 16px}
+  .chip{
+    background:var(--card);border:1px solid var(--border);border-radius:999px;color:var(--muted);
+    font:inherit;font-size:12px;font-weight:700;padding:6px 13px;cursor:pointer;transition:all .15s
+  }
+  .chip:hover{border-color:var(--border2);color:var(--text)}
+  .chip.on{background:var(--blue-soft);border-color:rgba(78,127,255,.4);color:#AFC6FF}
+  .sect{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--faint);padding:18px 4px 8px}
+  .lrow{
+    background:var(--card);border:1px solid var(--border);border-radius:var(--r-md);
+    padding:13px 16px;margin-bottom:8px;cursor:pointer;transition:border-color .18s,transform .18s;
+  }
+  .lrow:hover{border-color:var(--border2);transform:translateY(-1px)}
+  .lrow .top{display:flex;align-items:center;gap:10px}
+  .lrow .em{font-size:16px;width:22px;text-align:center;flex:none}
+  .lrow .nm{font-weight:800;font-size:14px;flex:1;min-width:0}
+  .lrow .meta{display:flex;align-items:center;gap:7px;flex:none;flex-wrap:wrap;justify-content:flex-end}
+  .lrow .sub{color:var(--muted);font-size:12.5px;margin:6px 0 0 32px;font-weight:600;line-height:1.5}
+  .lrow .detail{
+    display:none;margin:10px 0 2px 32px;padding:11px 14px;background:var(--inset);
+    border-radius:11px;font-size:12.5px;color:#B9C5E4;line-height:1.6;border:1px solid var(--border)
+  }
+  .lrow.open .detail{display:block;animation:vin .25s ease}
+  .detail b{color:var(--text);font-weight:800}
+  .detail .dl{margin-top:8px;padding-top:8px;border-top:1px solid var(--border)}
+  .kv{color:var(--faint);font-weight:800;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;
+    display:block;margin-bottom:2px}
+  .num{font-family:var(--font-num);font-variant-numeric:tabular-nums;font-weight:700}
+  .ratebar{width:88px;flex:none}
+  .empty{color:var(--faint);text-align:center;padding:40px 0;font-weight:600}
+
+  /* goals timeline */
+  .seq{display:flex;align-items:center;justify-content:center;width:26px;height:26px;flex:none;
+    border-radius:9px;background:var(--inset);border:1px solid var(--border);
+    font-family:var(--font-num);font-weight:800;font-size:11.5px;color:var(--muted)}
+  .seq.done{background:var(--green-soft);border-color:rgba(55,214,127,.35);color:var(--green)}
+
+  footer.credits{margin-top:34px;color:var(--faint);font-size:11.5px;font-weight:600;text-align:center}
+  footer.credits b{color:var(--muted)}
+
+  /* responsive */
+  @media (max-width:980px){
+    .app{grid-template-columns:1fr}
+    .side{position:static;height:auto;flex-direction:row;align-items:center;overflow-x:auto;
+      padding:10px 12px;gap:4px;border-right:none;border-bottom:1px solid var(--border)}
+    .brand{padding:0 8px 0 0}.brand b{display:none}
+    .search,.navlab,.side .foot,.readline,.nav-item .cnt{display:none}
+    .nav-item{white-space:nowrap;padding:7px 12px;border-radius:999px}
+    .g-dash{grid-template-columns:1fr}
+    .rings{grid-template-columns:repeat(3,1fr)}
+    .main{padding:0 14px 50px}
+    .bar-row{grid-template-columns:20px 1fr 54px 70px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+  }
+</style>
+
+<div class="app">
+  <aside class="side">
+    <div class="brand"><span class="gear">⚙️</span><b>Optimization</b></div>
+    <label class="search">🔍<input id="q" type="search" placeholder="Search the system" autocomplete="off"></label>
+    <button class="nav-item active" data-view="dashboard"><span class="ico">🏠</span>Dashboard</button>
+    <button class="nav-item" data-view="protocols"><span class="ico">📋</span>Protocols<span class="cnt" id="c-protocols"></span></button>
+    <button class="nav-item" data-view="supplements"><span class="ico">💊</span>Supplements<span class="cnt" id="c-supplements"></span></button>
+    <button class="nav-item" data-view="labs"><span class="ico">🩸</span>Labs<span class="cnt" id="c-labs"></span></button>
+    <button class="nav-item" data-view="goals"><span class="ico">🎯</span>Goals<span class="cnt" id="c-goals"></span></button>
+    <button class="nav-item" data-view="questions"><span class="ico">❓</span>Questions<span class="cnt" id="c-questions"></span></button>
+    <button class="nav-item" data-view="decisions"><span class="ico">🗳️</span>Decisions<span class="cnt" id="c-decisions"></span></button>
+    <div class="foot">
+      <div class="readline"><b>READ</b> — the build is done.<br>The reveal is not.</div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <h1 id="viewtitle">Dashboard</h1>
+      <span class="crumb" id="viewcrumb">Phase 2 of 3 · cut in progress</span>
+      <span class="phasepill"><span class="dot"></span>Limiter: sleep apnea device — not started</span>
+    </div>
+
+    <!-- ══ DASHBOARD ══ -->
+    <section class="view on" id="view-dashboard">
+      <div class="grid g-dash">
+        <div class="card hoverable">
+          <div class="card-h"><span class="t">Cut progress</span><button class="linky" data-go="goals">Trajectory ›</button></div>
+          <div class="big hero-num" id="heroWeight">204.8 lb</div>
+          <div class="hero-sub">of a <b>180 lb</b> Phase-2 target · mid-late Oct</div>
+          <div class="chartwrap" id="chart"></div>
+          <div class="ranges" id="ranges">
+            <button data-r="p1">P1</button><button class="on" data-r="p2">P2</button><button data-r="all">ALL</button>
+          </div>
+        </div>
+
+        <div class="card hoverable">
+          <div class="card-h"><span class="t">Composition</span><button class="linky" data-go="labs">Labs ›</button></div>
+          <div class="duo">
+            <div>
+              <div class="lab" style="color:var(--green)"><i style="background:var(--green)"></i>FFMI (norm.)</div>
+              <div class="big val">23.8</div>
+              <div class="delta" style="color:var(--green)">↗ 95th pct natural</div>
+            </div>
+            <div>
+              <div class="lab" style="color:var(--amber)"><i style="background:var(--amber)"></i>Body fat</div>
+              <div class="big val">20.0<span style="font-size:16px;color:var(--muted)">%</span></div>
+              <div class="delta" style="color:var(--amber)">BIA ±3–6 pts</div>
+            </div>
+          </div>
+          <div class="meterline" title="FFMI 23.8 of ~25 natural ceiling">
+            <span id="ffmibar" style="background:linear-gradient(90deg,#37D67F,#B9E44A);width:0"></span>
+          </div>
+          <div class="axis"><span>18</span><span>FFMI · ceiling ≈ 25</span><span>25</span></div>
+          <div class="limiter"><b>RED · GATING</b> — Sleep apnea device not started. It gates GH/IGF-1, testosterone, insulin sensitivity and recovery. Nothing on this board ranks above it.</div>
+        </div>
+
+        <div class="card hoverable">
+          <div class="card-h"><span class="t">To review</span><button class="linky" data-go="questions">View all ›</button></div>
+          <div class="rev" id="revlist"></div>
+          <button class="markall" id="markall">✓ Mark 4 as reviewed</button>
+        </div>
+
+        <div class="card hoverable">
+          <div class="card-h"><span class="t">Top supplements</span><button class="linky" data-go="supplements">View all ›</button></div>
+          <div class="bars" id="topsupp"></div>
+        </div>
+
+        <div class="card hoverable" style="grid-column:1/-1">
+          <div class="card-h"><span class="t">Leverage — the three things that matter (+2 gates)</span><button class="linky" data-go="protocols">Protocols ›</button></div>
+          <div class="rings" id="rings"></div>
+        </div>
+
+        <div class="card hoverable macros">
+          <div class="card-h"><span class="t">Fuel today</span><button class="linky" data-go="protocols">Nutrition ›</button></div>
+          <div class="big" style="font-size:26px;color:var(--green)">184 g protein</div>
+          <div class="sub">↗ floor <b>160–176 g</b> · calories are a ceiling</div>
+          <div class="stack">
+            <div class="meterline" style="margin:12px 0 4px">
+              <span style="background:var(--blue);width:56%" title="Smoothie 915 kcal"></span>
+              <span style="background:var(--teal);width:44%;margin-left:2px" title="Dinner ~900 kcal"></span>
+            </div>
+            <div class="lbl">
+              <i><span class="swatch" style="background:var(--blue)"></span>AM smoothie <b>915 kcal · 107P</b></i>
+              <i><span class="swatch" style="background:var(--teal)"></span>Dinner <b>~900 kcal · 77P</b></i>
+            </div>
+            <div class="lbl" style="color:var(--faint)"><i>Ceiling <b style="color:var(--muted)">1,815–1,920 kcal</b> · two meals, three components, no exceptions</i></div>
+          </div>
+        </div>
+
+        <div class="card hoverable">
+          <div class="card-h"><span class="t">Coming up</span><button class="linky" data-go="goals">View all ›</button></div>
+          <div class="uplist" id="uplist"></div>
+        </div>
+      </div>
+      <footer class="credits">Synced from the <b>⚙️ Optimization System</b> hub in Notion · 6 live boards · built 2026-08-22</footer>
+    </section>
+
+    <!-- ══ LIST VIEWS ══ -->
+    <section class="view" id="view-protocols"><div class="tools" id="f-protocols"></div><div id="l-protocols"></div></section>
+    <section class="view" id="view-supplements"><div class="tools" id="f-supplements"></div><div id="l-supplements"></div></section>
+    <section class="view" id="view-labs"><div class="tools" id="f-labs"></div><div id="l-labs"></div></section>
+    <section class="view" id="view-goals"><div class="tools" id="f-goals"></div><div id="l-goals"></div></section>
+    <section class="view" id="view-questions"><div class="tools" id="f-questions"></div><div id="l-questions"></div></section>
+    <section class="view" id="view-decisions"><div class="tools" id="f-decisions"></div><div id="l-decisions"></div></section>
+  </div>
+</div>
+
+<script>
+/* ═══ DATA — synced from the Notion Optimization System ═══ */
+const DOMAIN_EMOJI={"Training":"🏋️","Nutrition":"🥩","Skincare":"🧴","Lip":"👄","Sleep/Environment":"😴","Cognition":"🧠","Recovery":"🔋","Tracking":"📊"};
+const CAT_EMOJI={"Foundational":"🧱","Hormonal":"⚗️","Cognition":"🧠","Skin":"✨","Sleep":"😴","Vascular":"🫀","Joint/Recovery":"🦴","Peptide":"💉","Gut":"🦠"};
+const PANEL_EMOJI={"Hormonal":"⚗️","Metabolic":"🔥","Lipids":"🫀","Vitamins":"☀️","Inflammation":"🌡️","Body Composition":"📐"};
+const TRACK_EMOJI={"Financial":"💰","Physique":"💪","Aesthetic":"✨","Health":"🩺","Life Transition":"🏡"};
+const QDOM_EMOJI={"Health":"🩺","Physique":"💪","Aesthetic":"✨","Equipment":"🧰","Financial":"💰","Partner Health":"💞","Life Planning":"🏡"};
+const DDOM_EMOJI={"Supplements":"💊","Pharmacology":"⚕️","Nutrition":"🥩","Training":"🏋️","Skincare":"🧴","Tracking":"📊","Equipment":"🧰","Life Planning":"🏡"};
+
+const STATUS_PILL={
+  "Active":"p-green","Planned":"p-blue","Gated":"p-amber","Paused":"p-orange","Retired":"p-gray",
+  "Ruled Out":"p-red","Reduce/Cut if stacking":"p-orange",
+  "Optimal":"p-green","Suboptimal":"p-amber","Deficient/Flag":"p-red","Watch":"p-orange","Not yet tested":"p-gray",
+  "Complete":"p-green","In Progress":"p-blue","Queued":"p-gray","Blocked":"p-red",
+  "Adopted":"p-green","Deferred":"p-amber","Reversed":"p-orange",
+  "Critical":"p-red","High":"p-orange","Medium":"p-amber","Low":"p-gray","Standard":"p-gray"
+};
+const TIER_PILL={"A":"p-green","B":"p-blue","C":"p-amber","N/A":"p-gray"};
+
+const PROTOCOLS=[
+ {n:"Sleep Apnea Device",d:"Sleep/Environment",s:"Planned",c:"Both",f:"Nightly",spec:"Device ordered, not yet started. Target AHI <5 on therapy.",rule:"THE HIGHEST-ROI ACTION IN THE ENTIRE SYSTEM. Gates Tesamorelin. Restores GH/IGF-1, testosterone, insulin sensitivity, recovery. Also fixes nighttime mouth-breathing that dries the lips. Nothing ranks above starting this."},
+ {n:"Two-Meal Nutrition Structure",d:"Nutrition",s:"Active",c:"Both",f:"Daily",spec:"Meal 1 (AM smoothie): 3 scoops whey (90g) + 1 cup Fage 0% + 100g blueberries + 2 boiled eggs + ½ avocado ≈ 915 kcal / 107P. Meal 2 (dinner): 10 oz chicken thigh + 250g rice (training) or 150g (rest) + 150g vegetable ≈ 900 kcal / 77P. Daily ≈ 1,815–1,920 kcal, 184g protein.",rule:"Protein is a FLOOR, calories are a CEILING. 160–176g protein daily, no exceptions. Two meals is adequate (Trommelen 2023: no ceiling on single-bolus protein utilization)."},
+ {n:"Graded-Frequency Training",d:"Training",s:"Active",c:"Road",f:"Daily, rotating intensity",spec:"Chest/biceps/back trained daily, but only ONE session per muscle per ~48h approaches failure (1–3 RIR). All others are primer volume at 4–6 RIR. Mon chest heavy · Tue biceps · Wed back · Thu chest · Fri biceps · Sat back · Sun light BFR or rest.",rule:"Never two consecutive failure days on the same muscle. If sore >48h OR heavy-day reps drop >2 from last week, primer only."},
+ {n:"Home Rotation Gym Block",d:"Training",s:"Active",c:"Home",f:"4–5 sessions per rotation",spec:"Upper A heavy: bench 4×5-6 RPE8, weighted pull-up 4×6-8, seated DB press, chest-supported row. Lower A: squat 4×5-6, RDL, lunge. Upper B volume: incline DB press, one-arm row, lateral raise. Lower B: deadlift 3×5, leg press, leg curl.",rule:"Home weeks anchor muscle retention — log main lifts; these numbers feed the 'within 5% of baseline' checkpoint. Road maintains; home defends strength."},
+ {n:"Chest — 3 Exercises (No Bench)",d:"Training",s:"Active",c:"Road",f:"Daily per rotation",spec:"1) DB floor press 4×12-15, 3-0-1 tempo with 1-sec pause. 2) Deficit push-up on DBs 4×AMRAP-1, 3-1-1 — the stretch-position movement. 3) DB floor fly / squeeze press 3×15-20.",rule:"Progress SOMETHING every session — reps, tempo, pause, or unilateral. Log reps and tempo."},
+ {n:"Back — 3 Exercises",d:"Training",s:"Active",c:"Road",f:"Daily per rotation",spec:"1) Pull-up/chin-up 3×AMRAP-12 (needs the bar). 2) One-arm DB row braced on truck step 3-4×8-12/side with big stretch. 3) Band pulldown or TRX row 3×12-20.",rule:"Back is the most load-limited by the 35 lb ceiling. The pull-up bar is the single highest-leverage equipment buy for this muscle."},
+ {n:"Biceps — 3 Exercises",d:"Training",s:"Active",c:"Road",f:"Daily per rotation",spec:"1) DB curl supinated 3×8-12. 2) Incline/lengthened curl on Roman chair, arms hanging behind torso 3×10-12, 3-0-1. 3) Band or BFR curl 2-3×15-30 near failure.",rule:"The lengthened curl is the highest-value of the three — stretch-position loading drives disproportionate growth (Pedrosa 2022)."},
+ {n:"Abs — Two Alternating Workouts",d:"Training",s:"Active",c:"Both",f:"4–5×/week",spec:"A (weighted flexion): Roman-chair decline sit-up + DB, leg raise with ankle weight, weighted crunch. B (anti-extension): ab-wheel rollout, weighted plank, Pallof press.",rule:"Visible abs = low body fat (primary) + rectus thickness (secondary). Weighted 8-15 rep work builds thickness; endless crunches do not."},
+ {n:"Load & Equipment Check Circuit",d:"Training",s:"Active",c:"Road",f:"3× per 10-hour drive day",spec:"Stop 1: goblet squat 35lb 2×20, band pull-apart, calf raises. Stop 2: walking lunge, single-arm row, band good morning. Stop 3: Bulgarian split squat, band OHP, dead hang + deep squat holds.",rule:"Every stop, no exceptions. Two minutes of movement per 20 min of sitting measurably cuts glucose and insulin response (Dunstan 2012). Target ~6 min movement per seated hour."},
+ {n:"Equipment Purchase Queue",d:"Training",s:"Planned",c:"Road",f:"One-time",spec:"Ranked: 1) Adjustable dumbbells to 50-90 lb. 2) BFR cuffs with gauge. 3) Doorway/hitch pull-up bar. 4) Ab wheel. 5) Suspension trainer. 6) Weighted vest 20-40 lb.",rule:"Adjustable dumbbells are the #1 buy. The 35 lb ceiling is the biggest limiter on chest and back progression."},
+ {n:"Five Dinner Options",d:"Nutrition",s:"Active",c:"Both",f:"Rotate freely",spec:"1) Chicken thighs + jasmine rice + broccoli (825 kcal/82P). 2) Salmon + sweet potato + asparagus. 3) 93/7 beef + potato + green beans. 4) Shrimp + rice + peppers. 5) Pork tenderloin + potato + Brussels sprouts. All air-fryer.",rule:"Three components only: protein, carb, vegetable. No chicken breast. No steak. Free condiments: hot sauce, mustard, vinegar, SF BBQ, pickle juice, salt, MSG."},
+ {n:"Hydration & Electrolytes",d:"Recovery",s:"Active",c:"Both",f:"Daily",spec:"~1 gallon daily, front-loaded before 6pm, never >1L/hour. Sodium 3-5g/day via LMNT and deliberate salting.",rule:"Sodium matters as much as water. Low-calorie intake + sweating + long seated hours creates orthostatic lightheadedness risk behind the wheel — a real safety issue with the low-BP tendency."},
+ {n:"Cab CO₂ Management",d:"Sleep/Environment",s:"Active",c:"Road",f:"Nightly",spec:"Aranet4 monitor. Hold sleeper CO₂ below 1,000 ppm (ideally <800) during sleep — crack a vent or run ventilation.",rule:"A closed sleeper reaches 2,000-3,000 ppm by morning; ≥1,000 ppm measurably cuts sleep efficiency and deep sleep, and raises morning cortisol."},
+ {n:"Seat & Lumbar Setup",d:"Recovery",s:"Active",c:"Road",f:"Continuous",spec:"Purple grid cushion + OPTP McKenzie lumbar roll. Stop every 3 hours to stretch and walk.",rule:"Small (~20mm) lumbar support minimizes erector activation under vibration. The one real upgrade is an air-ride seat — cushions only trim ~12% of whole-body vibration."},
+ {n:"Face Skincare Routine",d:"Skincare",s:"Active",c:"Both",f:"Daily AM/PM",spec:"AM: cleanse + SPF 50. PM: rotate ONE active — tretinoin 0.025% buffered (4-5 nights/week, building to 0.05%), glycolic, or azelaic 10%. Ceramide moisturizer always.",rule:"NEVER two actives the same night. Fitzpatrick V — over-exfoliation causes PIH, the exact opposite of the goal."},
+ {n:"Lip Restoration Protocol",d:"Lip",s:"Active",c:"Both",f:"Daily AM/PM + weekly",spec:"AM: balm + SPF 30 lip balm every 2h driving. PM: PHA 5% 2-3 nights/week; alpha-arbutin serum on 2-3 different nights; seal with squalane balm.",rule:"SPF is the permanent keeper — UVA through the driver's window re-drives pigment while you treat it. Never PHA and arbutin the same night. Pigment is largely reversible over 6-36 months post-cessation."},
+ {n:"Lip Day-0 Reset (when cracked)",d:"Lip",s:"Planned",c:"Both",f:"As needed",spec:"STOP all actives. Cracked corners = angular cheilitis: antifungal cream 2×/day + petrolatum barrier. Days 0-7 barrier only; days 8-14 confirm healed; week 3 reintroduce PHA; week 5 add brightening serum.",rule:"Exfoliating damaged lips turns dryness into post-inflammatory darkening. Going too fast is the failure mode. Fix low zinc, iron and B vitamins in parallel."},
+ {n:"Beard/Mustache Growth",d:"Skincare",s:"Planned",c:"Both",f:"Daily minoxidil, weekly stamping",spec:"Minoxidil foam 5% + derma-stamping (0.5mm general, 0.25mm mustache zone). 9-12 months minimum before evaluating FUE for bare zones.",rule:"Copper peptides never the same night as vitamin C or tretinoin. FUE only after the full 9-12 month trial."},
+ {n:"Driver-Side UV Protection",d:"Skincare",s:"Planned",c:"Road",f:"Structural",spec:"Fleet-approved UV window film or UPF sleeves. Side windows block only ~71% UVA on average; windshields ~96%.",rule:"Topicals alone are insufficient — asymmetric left-side exposure is structural and needs a structural fix."},
+ {n:"Attention Rebuild",d:"Cognition",s:"Active",c:"Both",f:"Daily",spec:"Aerobic exercise, sleep quality, dopamine stimulus reduction, long-form audio during drives, sim racing as deliberate practice. Freedom app + DNS filtering.",rule:"Reduction alone doesn't fix it — the replacement activities are what rebuild the capacity."},
+ {n:"App Tracking Stack",d:"Tracking",s:"Active",c:"Both",f:"Daily",spec:"Cronometer in FIXED TARGETS mode (187P/150C/61F) with saved recipes; WHOOP as go/no-go gate (green = as programmed, yellow = cap RPE 7, red = walk only); TrainingPeaks as cardio ledger.",rule:"Fixed Targets, not Macro Ratios — ratio mode shrinks protein as weight drops, exactly backwards for a cut."},
+ {n:"Progress Photography",d:"Tracking",s:"Planned",c:"Home",f:"Weekly lips/beard, monthly physique",spec:"Same spot, same indirect daylight (not the cab), same angle and distance, no flash.",rule:"Fixed conditions or the photos are worthless — aesthetic change moves too slowly to perceive day-to-day."},
+ {n:"Apple Health Sync",d:"Tracking",s:"Planned",c:"Both",f:"One-time setup",spec:"WHOOP → Settings → Integrations → Apple Health; same in Cronometer. Enables direct read of HRV, resting HR, sleep, weight, nutrition.",rule:"Free, five minutes, and the largest single upgrade to how well this system can be coached."}
+];
+
+const SUPPS=[
+ {n:"Creatine monohydrate",s:"Active",dose:"5 g daily",cat:["Foundational","Cognition"],tier:"A",timing:"Anytime",r:34,why:"Best-evidenced muscle-retention aid in a deficit. Brain saturates over 4-6 weeks.",cau:"Adds ~2 lb water weight — don't let it confuse the scale trend."},
+ {n:"Whey isolate",s:"Active",dose:"3 scoops (90g) AM",cat:["Foundational"],tier:"A",timing:"With smoothie",r:33,why:"Core protein bolus; no upper limit on single-dose utilization (Trommelen 2023).",cau:"Keep cool — cab heat degrades. ~2 tubs/month."},
+ {n:"Vitamin D3/K2",s:"Active",dose:"4000 IU",cat:["Foundational","Hormonal"],tier:"A",timing:"With smoothie",r:30,why:"Correcting documented deficiency (23 ng/mL). Target 40-60. May improve estradiol/SHBG/insulin picture.",cau:"Retest at 8-12 weeks; escalate to 5-6000 IU if under 40."},
+ {n:"Omega-3 EPA/DHA",s:"Active",dose:"~2-3g EPA/DHA",cat:["Foundational","Joint/Recovery"],tier:"A",timing:"With dinner",r:28,why:"Targets mildly elevated hs-CRP.",cau:"Bleeding-risk ceiling — no ginkgo/nattokinase on top. Keep out of cab heat."},
+ {n:"Collagen peptides + Vit C",s:"Planned",dose:"5 g + C cofactor",cat:["Skin"],tier:"A",timing:"With smoothie",r:26,why:"Best-evidenced skin supplement (Pu 2023, 26 RCTs): hydration + elasticity at 8-12 weeks.",cau:"None. Add to smoothie."},
+ {n:"Magnesium glycinate",s:"Active",dose:"200-400 mg",cat:["Sleep","Foundational"],tier:"B",timing:"Pre-bed",r:26,why:"Sleep quality; glycine doubles as collagen substrate.",cau:"None significant."},
+ {n:"Astaxanthin",s:"Planned",dose:"4-6 mg",cat:["Skin"],tier:"B",timing:"With dinner",r:24,why:"Elasticity + UV/MMP collagen protection — relevant to driver-side UV and Fitzpatrick V goals.",cau:"Take with fat. BP-neutral at this dose."},
+ {n:"Methyl-Guard Plus",s:"Active",dose:"Per label",cat:["Foundational","Cognition"],tier:"B",timing:"With smoothie",r:24,why:"Targets elevated homocysteine with low-normal B12; relevant to angular cheilitis.",cau:"Recheck homocysteine + B12 in 8-12 weeks."},
+ {n:"Glycine",s:"Planned",dose:"3 g",cat:["Sleep","Skin"],tier:"B",timing:"Pre-bed",r:24,why:"Shortens sleep-onset latency and time to slow-wave sleep. Collagen substrate.",cau:"Adjunct only — NOT a substitute for the apnea device."},
+ {n:"Lutein / Zeaxanthin",s:"Planned",dose:"10 / 2 mg",cat:["Cognition"],tier:"B",timing:"With dinner",r:23,why:"Macular pigment, photostress recovery, contrast — night driving, screens, sim racing.",cau:"Subjective eye-fatigue benefit weaker than marketed."},
+ {n:"L-theanine",s:"Planned",dose:"200 mg (± caffeine)",cat:["Cognition"],tier:"B",timing:"Pre-training",r:23,why:"Attention + reaction time, most robust paired with caffeine. DOT-compliant.",cau:"Ex-smokers clear caffeine slower. Never caffeine after 2pm."},
+ {n:"Psyllium husk",s:"Active",dose:"5 g daily",cat:["Gut"],tier:"B",timing:"Anytime",r:22,why:"Fiber — critical since two meals drops dietary fiber substantially.",cau:"Take with adequate water."},
+ {n:"L-citrulline",s:"Reduce/Cut if stacking",dose:"6 g",cat:["Vascular"],tier:"B",timing:"Morning fasted",r:22,why:"NO / pump / vascular support.",cau:"Lowers systolic ~4-7.5 mmHg. If tadalafil ever added: reduce to ≤3g or cut (fourth in cut order)."},
+ {n:"Tesamorelin",s:"Gated",dose:"500-1000 mcg SC",cat:["Peptide"],tier:"B",timing:"Pre-bed",r:22,why:"GHRH analog; 15.2% visceral fat reduction in Phase III (HIV lipodystrophy).",cau:"HARD GATE: not until the apnea device is in consistent use. Little visceral fat at 20% BF — marginal expected benefit. Monitor glucose/HbA1c."},
+ {n:"Zinc",s:"Active",dose:"Daily (not 3-4×/wk)",cat:["Foundational","Skin"],tier:"B",timing:"Anytime",r:20,why:"Hormonal support + directly relevant to angular cheilitis / lip healing.",cau:"ACTION: currently 3-4×/week — make it daily."},
+ {n:"Beetroot juice",s:"Reduce/Cut if stacking",dose:"250-500 ml",cat:["Vascular"],tier:"B",timing:"Pre-training",r:20,why:"Nitrate→NO: pump, exercise economy.",cau:"Ceiling 500ml/day (oxalate). 90-110 kcal must be logged. Lowers BP — FIRST to cut if tadalafil is ever added."},
+ {n:"Tongkat Ali",s:"Active",dose:"2 caps",cat:["Hormonal"],tier:"B",timing:"Morning fasted",r:20,why:"May aid T:E2 ratio.",cau:"Hold if enclomiphene were ever added — redundant. Fifth in cut order."},
+ {n:"Boron",s:"Active",dose:"6 mg",cat:["Hormonal"],tier:"C",timing:"Morning fasted",r:18,why:"May raise free T, lower estradiol. Small effect.",cau:"Marginal — could drop without loss."},
+ {n:"Armra colostrum",s:"Active",dose:"Per label",cat:["Gut"],tier:"C",timing:"Morning fasted",r:16,why:"Gut/immune; weak human evidence.",cau:"Keep refrigerated — cab heat degrades."},
+ {n:"L-arginine + Maca",s:"Reduce/Cut if stacking",dose:"2 tabs + 4 caps",cat:["Vascular"],tier:"C",timing:"Morning fasted",r:16,why:"NO support — redundant with citrulline (the superior precursor).",cau:"Citrulline+arginine drops systolic ~10 mmHg. Arginine second, maca third in the cut order."},
+ {n:"CJC-1295",s:"Ruled Out",dose:"—",cat:["Peptide"],tier:"C",timing:"N/A",r:14,why:"GHRH analog.",cau:"Same receptor class as Tesamorelin — stacking is redundant, not synergistic."},
+ {n:"Ipamorelin",s:"Ruled Out",dose:"—",cat:["Peptide"],tier:"C",timing:"N/A",r:14,why:"GHRP — different pathway, theoretically synergistic.",cau:"No human RCT of the combo; adds GH load — worse for untreated OSA and glucose."},
+ {n:"Tadalafil",s:"Ruled Out",dose:"—",cat:["Vascular"],tier:"A",timing:"N/A",r:12,why:"Tier A for vascular/erectile endpoints in the general population.",cau:"Additive hypotension on a four-agent NO stack in a low-BP commercial driver — syncope behind the wheel is catastrophic. Never with any nitrate."},
+ {n:"Enclomiphene",s:"Ruled Out",dose:"—",cat:["Hormonal"],tier:"B",timing:"N/A",r:10,why:"SERM — raises LH/FSH/T in genuinely hypogonadal men.",cau:"You are not hypogonadal (535 ng/dL at noon). Raising T raises already-elevated E2. Root cause is insulin-driven low SHBG — fix insulin via fat loss."},
+ {n:"Taurine",s:"Ruled Out",dose:"—",cat:["Vascular"],tier:"A",timing:"N/A",r:10,why:"Commonly recommended for longevity/CV health.",cau:"Lowers BP and heart rate — wrong direction here. Longevity claim contested (Science 2023 vs 2024)."},
+ {n:"Repatha / RYR / Bergamot",s:"Ruled Out",dose:"—",cat:["Vascular"],tier:"A",timing:"N/A",r:8,why:"Lipid-lowering agents.",cau:"Contraindicated — lipids already floor-level (TC 77, LDL 30, ApoB 35), possibly familial."},
+ {n:"Yohimbine / Triple X",s:"Ruled Out",dose:"—",cat:["Vascular"],tier:"C",timing:"N/A",r:7,why:"Marketed enhancer: nine actives in a honey base.",cau:"Yohimbe raises BP/HR with documented hospitalizations; unstandardized, no COA, dose unknowable. Opposes the entire vasodilator stack."}
+];
+
+const LABS=[
+ {n:"Sleep apnea (AHI)",p:"Metabolic",s:"Deficient/Flag",pr:"Critical",v:"Mild OSA confirmed",t:"AHI <5 on therapy",src:"Sleep Study",note:"GATES EVERYTHING. Untreated OSA suppresses GH/IGF-1, testosterone and insulin sensitivity. Device ordered, NOT started — the single highest-ROI action in the system."},
+ {n:"Body fat % (DEXA)",p:"Body Composition",s:"Not yet tested",pr:"Critical",v:"Not yet measured",t:"Ground truth vs InBody's 20%",src:"DEXA",note:"BIGGEST INFORMATION GAP. One ~$100-150 scan settles true BF/FFMI and whether 180 lb lands at 10% or 15%. Book during a home rotation."},
+ {n:"SHBG",p:"Hormonal",s:"Deficient/Flag",pr:"Critical",v:"Very low",t:"Rising toward mid-normal",src:"Marek/Quest",retest:"Sep 15",note:"THE key marker — low SHBG is a fingerprint of high insulin. Rising SHBG = fat loss working at the hormonal level."},
+ {n:"Estradiol (sensitive)",p:"Hormonal",s:"Deficient/Flag",pr:"Critical",v:"Elevated",t:"Mid-normal male",src:"Marek/Quest",retest:"Sep 15",note:"Elevated E2 + low SHBG is why enclomiphene is contraindicated. Should fall as body fat drops."},
+ {n:"Fasting insulin",p:"Metabolic",s:"Suboptimal",pr:"Critical",v:"Mildly elevated",t:"<5 uIU/mL",src:"Marek/Quest",retest:"Sep 15",note:"Root cause of low SHBG and elevated estradiol. Fat loss is the intervention."},
+ {n:"Vitamin D (25-OH)",p:"Vitamins",s:"Deficient/Flag",pr:"Critical",v:"23 ng/mL",t:"40-60 ng/mL",src:"Marek/Quest",retest:"Sep 15",note:"Deficiency may drive the estradiol/SHBG/insulin picture. If 4000 IU hasn't corrected by retest, escalate."},
+ {n:"Homocysteine",p:"Inflammation",s:"Deficient/Flag",pr:"High",v:"Elevated",t:"<9 umol/L",src:"Marek/Quest",retest:"Sep 15",note:"Paired with low-normal B12; Methyl-Guard targets it. If unchanged, investigate MTHFR and B12 absorption."},
+ {n:"Vitamin B12",p:"Vitamins",s:"Suboptimal",pr:"High",v:"Low-normal",t:"Upper half of range",src:"Marek/Quest",retest:"Sep 15",note:"Drives the homocysteine elevation; classic angular-cheilitis driver. Consider methylmalonic acid."},
+ {n:"Total testosterone",p:"Hormonal",s:"Optimal",pr:"High",v:"535 ng/dL (noon)",t:"600+ morning draw",src:"Marek/Quest",retest:"Sep 15",note:"535 at noon is solidly normal — T peaks in the morning. NOT hypogonadal."},
+ {n:"Free testosterone",p:"Hormonal",s:"Optimal",pr:"Standard",v:"109.1 pg/mL (noon)",t:"Normal-high",src:"Marek/Quest",retest:"Sep 15",note:"Elevated relative to total because SHBG is low. Will normalize as SHBG rises."},
+ {n:"HbA1c",p:"Metabolic",s:"Not yet tested",pr:"High",v:"Not tracked",t:"<5.4%",src:"Marek/Quest",retest:"Sep 15",note:"Add to the next panel. Mandatory monitoring if Tesamorelin ever starts."},
+ {n:"hs-CRP",p:"Inflammation",s:"Watch",pr:"Standard",v:"Mildly elevated",t:"<1.0 mg/L",src:"Marek/Quest",retest:"Sep 15",note:"Omega-3 targets this; should also fall with fat loss and OSA treatment."},
+ {n:"HDL",p:"Lipids",s:"Suboptimal",pr:"Standard",v:"Low",t:">50 mg/dL",src:"Marek/Quest",retest:"Sep 15",note:"Should improve with fat loss, training, omega-3. Not treated pharmacologically."},
+ {n:"Total cholesterol",p:"Lipids",s:"Watch",pr:"High",v:"77 mg/dL",t:"Leave alone",src:"Marek/Quest",note:"Unusually LOW, possibly familial. All lipid-lowering contraindicated — flag to any new provider."},
+ {n:"LDL",p:"Lipids",s:"Watch",pr:"High",v:"30 mg/dL",t:"Leave alone",src:"Marek/Quest",note:"Floor-level. Repatha, red yeast rice, bergamot all ruled out on this basis."},
+ {n:"ApoB",p:"Lipids",s:"Watch",pr:"Standard",v:"35 mg/dL",t:"Leave alone",src:"Marek/Quest",note:"Confirms genuinely low atherogenic particle count, not an artifact."},
+ {n:"IGF-1",p:"Hormonal",s:"Not yet tested",pr:"Standard",v:"Not yet tested",t:"Age-appropriate",src:"Marek/Quest",note:"Baseline needed before any Tesamorelin start."}
+];
+
+const GOALS=[
+ {n:"Start sleep apnea device",tr:"Health",s:"In Progress",seq:null,tgt:null,det:"Device ordered, not started.",gate:"NONE — nothing blocks this. The gate for Tesamorelin and the single highest-ROI action available."},
+ {n:"Reach 180 lb",tr:"Physique",s:"In Progress",seq:null,tgt:"Oct 31 '26",det:"From ~205 lb at ~18-20% BF. Calories drop to ~1,900/1,650 around 195 lb. Rate 0.5-1% bodyweight/week.",gate:"Deficit adherence + 160-176g protein daily."},
+ {n:"DEXA scan",tr:"Health",s:"Queued",seq:null,tgt:null,det:"~$100-150. Settles true body fat and FFMI; decides whether 180 lb lands at 10% or 15%.",gate:"Book during a home rotation. Biggest information gap in the system."},
+ {n:"Dermatology visit — lip spots",tr:"Health",s:"Queued",seq:null,tgt:null,det:"Evaluate the discrete pigmented macules; differential includes benign macules through Peutz-Jeghers and melanoma.",gate:"SAFETY GATE — must precede any cosmetic lip treatment."},
+ {n:"Reach 170-175 lb, sub-10% BF",tr:"Physique",s:"Queued",seq:null,tgt:"2027",det:"End-state physique; normalized FFMI ~22.8-23.3, near the natural ceiling of ~25.",gate:"Phase 2 completion; DEXA needed to know if this is realistic."},
+ {n:"Debt clearance",tr:"Financial",s:"Complete",seq:1,tgt:"Apr 14 '26",det:"Marked complete April 14.",gate:"Foundation for everything else."},
+ {n:"Truck upgrade",tr:"Financial",s:"Queued",seq:2,tgt:null,det:"Next in the sequential 13-goal timeline.",gate:"Savings threshold."},
+ {n:"Sim rig",tr:"Financial",s:"Queued",seq:3,tgt:null,det:"Deliberate-practice skill and part of the attention-rebuild protocol.",gate:"Savings threshold + stable setup space."},
+ {n:"E92 M3",tr:"Financial",s:"Queued",seq:4,tgt:null,det:"",gate:"Savings threshold."},
+ {n:"Russian Blue kitten",tr:"Financial",s:"Blocked",seq:5,tgt:null,det:"Originally targeted 2027.",gate:"BLOCKED on OTR schedule — a cat needs a daily primary caregiver. Feasible earlier only if partner commits full-time in a settled home."},
+ {n:"Tattoos",tr:"Financial",s:"Queued",seq:6,tgt:null,det:"",gate:"Savings threshold."},
+ {n:"Invisalign",tr:"Aesthetic",s:"Queued",seq:7,tgt:null,det:"First in the dental sequence: Invisalign → whitening → bonding. Order matters.",gate:"Consult during a home rotation."},
+ {n:"Professional microneedling",tr:"Aesthetic",s:"Queued",seq:8,tgt:null,det:"Professional sessions only — at-home is ruled out (PIH + sterility risk in Fitzpatrick V).",gate:"Provider must have documented Fitzpatrick V-VI experience."},
+ {n:"Tesla Model Y",tr:"Financial",s:"Queued",seq:9,tgt:null,det:"",gate:"Savings threshold."},
+ {n:"Firearms collection",tr:"Financial",s:"Queued",seq:10,tgt:null,det:"",gate:"Savings threshold."},
+ {n:"Cycling setup",tr:"Financial",s:"Queued",seq:11,tgt:null,det:"Also a Zone 2 conditioning asset given the smoking history.",gate:"Savings threshold."},
+ {n:"Japan trip with Tristan",tr:"Financial",s:"Queued",seq:12,tgt:null,det:"With brother.",gate:"Savings threshold + time off."},
+ {n:"Solo Thailand trip",tr:"Financial",s:"Queued",seq:13,tgt:"Feb '30",det:"Final milestone. Current savings rate (~$6,400/month) is running AHEAD of the Feb 2030 projection.",gate:"Completion of all prior milestones."},
+ {n:"Exit trucking",tr:"Life Transition",s:"Queued",seq:null,tgt:"2030",det:"Transition from OTR toward sim racing and other pursuits.",gate:"Financial milestone completion — gates homestead, animals, the full lifestyle build."},
+ {n:"Home ownership / homestead",tr:"Life Transition",s:"Queued",seq:null,tgt:"2030",det:"Abundant land; precedes the multi-animal household.",gate:"Trucking exit + financial milestones."},
+ {n:"Multi-animal household",tr:"Life Transition",s:"Queued",seq:null,tgt:"2036",det:"Lab (F) → Aussie (M) → GSD (M) → Russian Blue → Sphynx, staggered 18-24 months.",gate:"First dog no sooner than ~6 months AFTER permanently home-based. Gate on presence, not the calendar."}
+];
+
+const QUESTIONS=[
+ {n:"When does the sleep apnea device actually start?",d:"Health",pr:"Critical",why:"Gates Tesamorelin; restores GH/IGF-1, testosterone, insulin sensitivity; fixes mouth-breathing lip dryness. The only item where the bottleneck is purely execution.",act:"Start it. Tonight if it has arrived.",blk:"Nothing. Device is ordered."},
+ {n:"What is the true body fat percentage?",d:"Physique",pr:"Critical",why:"InBody said 20% but BIA carries ±3-6 pts. True value probably 22-25%. Decides whether 180 lb lands at 10% or 15% BF.",act:"Book a DEXA (~$100-150) during the next home window.",blk:"Needs a home rotation."},
+ {n:"What are the discrete black spots on the lips?",d:"Aesthetic",pr:"Critical",why:"SAFETY GATE — differential spans benign macules to Peutz-Jeghers and melanoma. No cosmetic treatment until a derm has looked.",act:"Book dermatology; ask for dermoscopy of the macules.",blk:"Derm appointment during a home rotation."},
+ {n:"Is SHBG rising as body fat drops?",d:"Health",pr:"High",why:"The confirmation test for the entire hormonal thesis — if SHBG rises and E2 falls with fat loss, the insulin-root-cause model is validated.",act:"Retest SHBG, fasting insulin and estradiol together at the next draw.",blk:"Retest due ~Sept 2026."},
+ {n:"Has vitamin D corrected on 4000 IU?",d:"Health",pr:"High",why:"Started at 23 ng/mL. Correction may improve estradiol, SHBG and insulin on its own.",act:"Include 25-OH D in the next panel; escalate to 5-6000 IU if <40.",blk:"Retest due ~Sept 2026."},
+ {n:"What is morning testosterone, drawn at 8am?",d:"Health",pr:"High",why:"The 535 ng/dL reading was at NOON; T peaks in the morning. A proper value is needed before any hormonal conversation.",act:"Schedule the next draw for ~8am.",blk:"Early-morning draw during a home rotation."},
+ {n:"Can the truck inverter run an air fryer?",d:"Equipment",pr:"High",why:"All five dinners assume a working air fryer; if not, the dinner protocol needs rebuilding around microwave-only.",act:"Check the inverter's continuous wattage (air fryers draw 1400-1700W).",blk:"Need to check the truck."},
+ {n:"Which adjustable dumbbells, and when?",d:"Equipment",pr:"High",why:"The 35 lb ceiling is the biggest limiter on chest/back progression — everything else is a workaround.",act:"Pick Bowflex vs PowerBlock vs Nuobell; buy what fits the cab.",blk:"Savings allocation decision."},
+ {n:"Which labs and specialists for partner's endometriosis?",d:"Partner Health",pr:"High",why:"Excision beats ablation decisively; pelvic floor PT is near-first-line. Both evidence-supported, both commonly missed.",act:"Bring the lab list to her care team; priority referrals: excision specialist + pelvic floor PT.",blk:"Needs her physicians."},
+ {n:"When exactly does the trucking exit happen?",d:"Life Planning",pr:"High",why:"Gates the homestead, every animal, sim racing and the full lifestyle build. Nothing downstream should be calendar-scheduled.",act:"Track savings vs the 13-goal timeline (~$6,400/month, ahead of pace).",blk:"Financial milestone progress."},
+ {n:"Is UV window film fleet-approved?",d:"Aesthetic",pr:"Medium",why:"Driver-side UVA is structural; side windows block only ~71% UVA. Root cause of asymmetric photoaging and lip pigment.",act:"Ask fleet management; if denied, UPF sleeves as fallback.",blk:"Need to ask the company."},
+ {n:"Does HealthEx pull the Marek/Quest results?",d:"Health",pr:"Medium",why:"If it works, lab values become directly readable instead of screenshots from memory.",act:"Connect HealthEx and verify it retrieves the June 2026 panel.",blk:"Connector not yet tested."},
+ {n:"Has Apple Health sync been enabled?",d:"Health",pr:"Medium",why:"Free and fast — the largest upgrade to how well this system can be coached.",act:"WHOOP → Integrations → Apple Health; same in Cronometer.",blk:"Nothing. Five-minute setup."},
+ {n:"Does the partner become primary caregiver for an earlier cat?",d:"Life Planning",pr:"Medium",why:"The only thing that would make the Russian Blue feasible before the trucking exit.",act:"Decide honestly whether she would be the genuine primary caregiver.",blk:"A conversation, not a constraint."},
+ {n:"Should Tesamorelin be run at all?",d:"Health",pr:"Medium",why:"All efficacy data is from lipodystrophy patients with substantial visceral fat; at 20% BF expected benefit is marginal.",act:"Revisit only after OSA is treated and post-treatment labs are in.",blk:"Apnea device must be in consistent use."},
+ {n:"Should the supplement stack be trimmed?",d:"Financial",pr:"Low",why:"Quarterly bulk runs $293-450; three low-evidence items carry cost without weight.",act:"Drop candidates at next reorder: boron, maca, colostrum (~$40-60/quarter saved).",blk:"Nothing."}
+];
+
+const DECISIONS=[
+ {n:"Two meals per day (vs 3-4)",d:"Nutrition",v:"Adopted",when:"Aug 22",rea:"Fully adequate for maximum lean mass — the anabolic response to a large protein bolus shows no detectable upper limit (Trommelen 2023), and distribution meta-analyses find no effect when total protein is equated.",rev:"Only if mid-drive focus dips at hours 6-8: move eggs + avocado to a midday mini-meal."},
+ {n:"No animal acquisition while OTR",d:"Life Planning",v:"Adopted",when:"Aug 22",rea:"Canine socialization window ~3-14 weeks, feline ~2-7 — both need near-daily presence; a 2-3 week absence pattern forfeits it. Earliest defensible first-dog date: ~6 months after permanently home-based.",rev:"A cat (not a dog) earlier IF the partner is genuinely the committed full-time caregiver."},
+ {n:"Male GSD over Malinois for dog #3",d:"Life Planning",v:"Adopted",when:"Aug 22",rea:"Malinois has little off-switch and bonds to one person — wrong for a zero-aggression multi-species home. Male because dog #1 is a female Lab: same-sex pairs drive most intra-household aggression (Feltes 2020).",rev:"Temperament instability in available GSD lines — wait for a better litter."},
+ {n:"Enclomiphene",d:"Pharmacology",v:"Ruled Out",when:"Aug 22",rea:"Not hypogonadal (535 at noon). Raising T raises already-elevated E2 via aromatization. Real problem is insulin-driven low SHBG — fat loss fixes it; a SERM doesn't. Not FDA-approved.",rev:"A proper 8am draw <300 ng/dL WITH symptoms, after leaning out and correcting D + sleep."},
+ {n:"Tadalafil (daily low-dose)",d:"Pharmacology",v:"Ruled Out",when:"Aug 22",rea:"Additive hypotension in a low-BP commercial driver already stacking four NO agents — plausible 10-20 mmHg cumulative systolic drop. Syncope in an 80,000 lb vehicle is catastrophic; FMCSA disclosure required.",rev:"If pursued anyway: cut beetroot → arginine → maca → citrulline ≤3g first; start 2.5mg; home BP cuff with orthostatic checks; never with nitrates."},
+ {n:"CJC-1295 and Ipamorelin",d:"Pharmacology",v:"Ruled Out",when:"Aug 22",rea:"CJC-1295 is the same receptor class as Tesamorelin — redundant. Ipamorelin is a different pathway but has no human RCT with Tesamorelin and adds GH load — worse for untreated OSA and glucose.",rev:"Published human RCT on the combo + treated apnea + stable glucose."},
+ {n:"Lipid-lowering (Repatha, RYR, Bergamot)",d:"Pharmacology",v:"Ruled Out",when:"Jun 1",rea:"Marek-recommended but contraindicated: lipids already floor-level (TC 77, LDL 30, ApoB 35), possibly familial. Cholesterol is hormone substrate.",rev:"Nothing foreseeable. Flag proactively to any new provider."},
+ {n:"Cronometer Macro Ratios mode",d:"Tracking",v:"Ruled Out",when:"Aug 22",rea:"Ratio mode yielded 103g protein — 84g short — and shrinks protein as weight drops, exactly backwards on a cut. Switched to Fixed Targets.",rev:"Nothing. Fixed Targets is correct permanently."},
+ {n:"Function Health subscription",d:"Tracking",v:"Ruled Out",when:"Aug 22",rea:"Redundant with Marek and a step backward — a standardized consumer panel with no ordering physician who knows the history. Zero clinical gain.",rev:"Losing access to Marek; the data-access gap is better solved by HealthEx."},
+ {n:"Rythm capillary hormone testing",d:"Tracking",v:"Ruled Out",when:"Aug 22",rea:"Fingerstick collection is unreliable for testosterone, SHBG and estradiol — the exact markers driving every hormonal decision. Venous draws required.",rev:"Validated capillary assays for sex hormones — not currently available."},
+ {n:"SlimFast",d:"Nutrition",v:"Ruled Out",when:"Aug 22",rea:"Meal-replacement RCT support is about enforced portion control for untracked populations — redundant with Cronometer-tracked fixed meals. ~19 kcal/g protein vs ~6 for the smoothie. Rated 13/40.",rev:"Nothing. If ever used: carb source in a snack slot, never a protein meal."},
+ {n:"Chicken breast and steak in the plan",d:"Nutrition",v:"Ruled Out",when:"Aug 22",rea:"User preference, held firmly. Chicken thighs only; all dinner proteins must be air-fryer-friendly. Hard constraints, not suggestions.",rev:"User preference change only."},
+ {n:"Yohimbe / Triple X herbal honey",d:"Supplements",v:"Ruled Out",when:"Aug 22",rea:"Raises BP and HR against the entire vasodilator stack, with documented hospitalizations; unstandardized bark in honey, dose unknowable, no COA. Rated 7/40.",rev:"Nothing. If ashwagandha is wanted: standardized KSM-66 600mg from a tested brand."},
+ {n:"Taurine",d:"Supplements",v:"Ruled Out",when:"Aug 22",rea:"Lowers BP and heart rate — the wrong direction given the low-BP tendency and NO stack. Longevity evidence contested.",rev:"Resolution of the low-BP issue + stronger longevity evidence."},
+ {n:"At-home facial microneedling",d:"Skincare",v:"Ruled Out",when:"Aug 22",rea:"PIH and sterility risk — Fitzpatrick V responds to uncontrolled trauma with the exact pigmentation being treated. Professional sessions only.",rev:"Nothing for the face. Beard derma-stamping at controlled depths is separate and accepted."},
+ {n:"Tretinoin on lips",d:"Skincare",v:"Ruled Out",when:"Aug 22",rea:"Retinoid dermatitis hits ~50%, and irritation itself causes PIH in Fitzpatrick V-VI; on the vermilion it causes marked chapping. Net negative here.",rev:"Nothing for lips. Tretinoin remains the priority facial active."},
+ {n:"Hydroquinone on lips",d:"Skincare",v:"Ruled Out",when:"Aug 22",rea:"Irritation + ingestion risk on the vermilion; exogenous ochronosis risk higher in dark skin; OTC banned in the US since 2020.",rev:"Nothing. Alpha-arbutin + niacinamide achieve the goal more safely."},
+ {n:"Niacinamide 10% + Zinc for lips",d:"Skincare",v:"Ruled Out",when:"Aug 22",rea:"The obvious pick and the wrong one — 10% sits at a known irritation threshold on thin lip skin. Lower-percentage buffered formula is the safer route.",rev:"Nothing. Fewer products layered on lips is safer than more."},
+ {n:"Honey + sugar lip scrub",d:"Skincare",v:"Deferred",when:"Aug 22",rea:"Sugar granules risk micro-trauma and PIH; PHA achieves the same more safely. If used at all: max 1×/week, press don't grind, never on inflamed lips.",rev:"Realistically should just be skipped — PHA already covers exfoliation."},
+ {n:"Cold exposure post-lifting",d:"Training",v:"Ruled Out",when:"Aug 22",rea:"Cold immersion immediately after resistance training demonstrably blunts hypertrophy signaling. Sauna post-lift is safe — the two are not equivalent.",rev:"Nothing. Separate cold from lifting by several hours if used."},
+ {n:"Protection sport / IGP for the GSD",d:"Life Planning",v:"Ruled Out",when:"Aug 22",rea:"Raises arousal and defensive drive in a dog sharing a home with cats and dogs — unnecessary risk vs a zero-aggression goal. Nosework, tracking, obedience instead.",rev:"Nothing, given the multi-species household goal."}
+];
+
+/* ═══ helpers ═══ */
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const pill=(txt,cls,em)=>`<span class="pill ${cls}">${em?`<span class="em">${em}</span>`:""}${esc(txt)}</span>`;
+const sPill=(s,em)=>pill(s,STATUS_PILL[s]||"p-gray",em);
+let store={};try{store=JSON.parse(localStorage.getItem("opt-sys")||"{}")}catch(e){store={}}
+const save=()=>{try{localStorage.setItem("opt-sys",JSON.stringify(store))}catch(e){}};
+
+/* ═══ navigation ═══ */
+const TITLES={dashboard:["Dashboard","Phase 2 of 3 · cut in progress"],protocols:["Protocols","22 live · road + home"],
+ supplements:["Supplements","Ranked 1–40 · evidence-tiered"],labs:["Labs & Biomarkers","June 2026 panel · retests Sept 15"],
+ goals:["Goals & Milestones","13-goal financial timeline + phases"],questions:["Open Questions","Priority-ordered"],
+ decisions:["Decisions Log","Every verdict, with its reversal condition"]};
+function go(view){
+  $$(".nav-item").forEach(b=>b.classList.toggle("active",b.dataset.view===view));
+  $$(".view").forEach(v=>v.classList.remove("on"));
+  const el=$("#view-"+view); el.classList.remove("on"); void el.offsetWidth; el.classList.add("on");
+  $("#viewtitle").textContent=TITLES[view][0]; $("#viewcrumb").textContent=TITLES[view][1];
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+$$(".nav-item").forEach(b=>b.addEventListener("click",()=>go(b.dataset.view)));
+document.addEventListener("click",e=>{const g=e.target.closest("[data-go]");if(g)go(g.dataset.go)});
+
+/* ═══ hero chart ═══ */
+const CHART_SETS={
+  p1:{pts:[[0,213],[.2,210],[.45,207],[.7,203],[.85,199],[1,197]],cur:1,lab:"197 lb",yr:[190,215],cap:["May","Jun","Jul","Aug 22"],goal:196,done:true},
+  p2:{pts:[[0,204.8],[.08,204.1],[.16,203.4],[.24,202.2],[.30,202.8],[.38,201.3]],proj:[[.38,201.3],[1,180]],cur:.38,lab:"204.8 → 201 lb",yr:[176,208],cap:["Aug 22","Sep","Oct","Oct 31"],goal:180},
+  all:{pts:[[0,213],[.18,205],[.30,197],[.36,204.8],[.44,201.3]],proj:[[.44,201.3],[.66,180],[1,172]],cur:.44,lab:"201 lb",yr:[168,216],cap:["P1","P2","End state","2027"],goal:172}
+};
+function drawChart(key){
+  const c=CHART_SETS[key],W=560,H=190,P=8;
+  const X=t=>P+t*(W-2*P), Y=v=>P+ (1-(v-c.yr[0])/(c.yr[1]-c.yr[0]))*(H-2*P-24);
+  const path=pts=>pts.map((p,i)=>(i?"L":"M")+X(p[0]).toFixed(1)+" "+Y(p[1]).toFixed(1)).join(" ");
+  const last=c.pts[c.pts.length-1];
+  let svg=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Weight trajectory chart">
+    <defs>
+      <linearGradient id="lg${key}" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="#37D67F"/><stop offset=".6" stop-color="#CBE04C"/><stop offset="1" stop-color="#FFC94A"/>
+      </linearGradient>
+      <linearGradient id="fg${key}" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="rgba(122,214,110,.16)"/><stop offset="1" stop-color="rgba(122,214,110,0)"/>
+      </linearGradient>
+    </defs>
+    <line x1="${P}" y1="${Y(c.goal)}" x2="${W-P}" y2="${Y(c.goal)}" stroke="#26355A" stroke-dasharray="3 5" stroke-width="1.5"/>
+    <text x="${W-P}" y="${Y(c.goal)-6}" text-anchor="end" fill="#55648F" font-size="10" font-weight="700" font-family="Outfit,sans-serif">${c.goal} lb ${c.done?"· done":"target"}</text>`;
+  if(c.proj) svg+=`<path d="${path(c.proj)}" fill="none" stroke="#3D4E7C" stroke-width="2.5" stroke-dasharray="1 7" stroke-linecap="round"/>`;
+  svg+=`<path d="${path(c.pts)} L ${X(last[0])} ${H-P} L ${X(c.pts[0][0])} ${H-P} Z" fill="url(#fg${key})" stroke="none"/>
+    <path class="mainline" d="${path(c.pts)}" fill="none" stroke="url(#lg${key})" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="${X(last[0])}" cy="${Y(last[1])}" r="5" fill="#FFC94A" stroke="#0A111F" stroke-width="2.5"/>
+    <g font-family="Outfit,sans-serif" font-size="10" font-weight="700" fill="#55648F">
+      ${c.cap.map((t,i)=>`<text x="${X(i/(c.cap.length-1))}" y="${H-2}" text-anchor="${i==0?"start":i==c.cap.length-1?"end":"middle"}">${t}</text>`).join("")}
+    </g></svg>
+    <div class="badge" style="left:${(X(last[0])/W*100).toFixed(1)}%;top:${(Y(last[1])/H*100).toFixed(1)}%">${c.lab}</div>`;
+  $("#chart").innerHTML=svg;
+  const line=$("#chart .mainline");
+  if(line&&!matchMedia("(prefers-reduced-motion: reduce)").matches){
+    const len=line.getTotalLength();
+    line.style.strokeDasharray=len; line.style.strokeDashoffset=len;
+    line.animate([{strokeDashoffset:len},{strokeDashoffset:0}],{duration:1100,easing:"cubic-bezier(.3,.7,.3,1)",fill:"forwards"});
+  }
+}
+$("#ranges").addEventListener("click",e=>{
+  const b=e.target.closest("button"); if(!b)return;
+  $$("#ranges button").forEach(x=>x.classList.toggle("on",x===b)); drawChart(b.dataset.r);
+});
+drawChart("p2");
+requestAnimationFrame(()=>setTimeout(()=>{$("#ffmibar").style.transition="width 1.1s cubic-bezier(.22,.8,.3,1)";$("#ffmibar").style.width=((23.8-18)/(25-18)*100)+"%"},80));
+
+/* ═══ dashboard: to review ═══ */
+const REVIEW=[
+  {id:"apnea",day:"Blocking",n:"Start the sleep apnea device",tag:"🩺 HEALTH · CRITICAL",amt:"gates all"},
+  {id:"dexa",day:"Blocking",n:"Book the DEXA scan",tag:"💪 PHYSIQUE · CRITICAL",amt:"~$100–150"},
+  {id:"derm",day:"Blocking",n:"Dermatology — lip spots (safety gate)",tag:"✨ AESTHETIC · CRITICAL",amt:"home rotation"},
+  {id:"zinc",day:"Quick wins",n:"Zinc → daily, not 3-4×/week",tag:"💊 SUPPLEMENTS",amt:"today"},
+  {id:"sync",day:"Quick wins",n:"Enable Apple Health sync (WHOOP + Cronometer)",tag:"📊 TRACKING",amt:"5 min"}
+];
+function renderReview(){
+  let html="",lastDay="";
+  REVIEW.forEach(r=>{
+    if(r.day!==lastDay){html+=`<div class="day">${r.day}</div>`;lastDay=r.day}
+    const done=!!store["rev-"+r.id];
+    html+=`<div class="rowitem ${done?"done":""}" data-rev="${r.id}">
+      <span class="cbox">✓</span><span class="nm">${esc(r.n)}</span><span class="amt">${esc(r.amt)}</span></div>`;
+  });
+  $("#revlist").innerHTML=html;
+  const left=REVIEW.filter(r=>!store["rev-"+r.id]).length;
+  $("#markall").innerHTML=left?`✓ Mark ${left} as reviewed`:"All reviewed — nice.";
+}
+$("#revlist").addEventListener("click",e=>{
+  const row=e.target.closest("[data-rev]");if(!row)return;
+  store["rev-"+row.dataset.rev]=!store["rev-"+row.dataset.rev];save();renderReview();
+});
+$("#markall").addEventListener("click",()=>{REVIEW.forEach(r=>store["rev-"+r.id]=true);save();renderReview()});
+renderReview();
+
+/* ═══ dashboard: top supplements ═══ */
+const BARCOLORS=["#A78BFA","#4E7FFF","#37D67F","#FFC94A","#FF9F43","#F284B8","#3ECFCB"];
+(function(){
+  const top=SUPPS.filter(s=>s.s==="Active"||s.s==="Planned").slice(0,7);
+  $("#topsupp").innerHTML=top.map((s,i)=>`
+    <div class="bar-row" data-go="supplements">
+      <span class="rk">${i+1}</span>
+      <span class="nm"><span class="em">${CAT_EMOJI[s.cat[0]]||"💊"}</span><span class="txt">${esc(s.n)}</span></span>
+      <span class="v">${s.r}<span style="color:var(--faint);font-size:11px">/40</span></span>
+      <span class="track"><i data-w="${(s.r/40*100).toFixed(0)}" style="background:${BARCOLORS[i%BARCOLORS.length]}"></i></span>
+    </div>`).join("");
+  requestAnimationFrame(()=>setTimeout(()=>$$("#topsupp .track i").forEach(el=>el.style.width=el.dataset.w+"%"),120));
+})();
+
+/* ═══ dashboard: rings ═══ */
+const RINGS=[
+  {em:"😴",v:0.06,col:"var(--red)",rv:"Not started",rl:"Sleep apnea device"},
+  {em:"🥩",v:0.96,col:"var(--green)",rv:"184 g",rl:"Protein · on plan"},
+  {em:"⚖️",v:0.15,col:"var(--amber)",rv:"3.5 / 24.8 lb",rl:"Phase-2 cut"},
+  {em:"🔬",v:0.0,col:"var(--orange)",rv:"Unbooked",rl:"DEXA ground truth"},
+  {em:"🧠",v:0.62,col:"var(--amber)",rv:"Amber",rl:"Execution > research"}
+];
+(function(){
+  const R=32,C=2*Math.PI*R;
+  $("#rings").innerHTML=RINGS.map((r,i)=>`
+    <div class="ring" data-go="protocols">
+      <div class="ringviz">
+        <svg width="76" height="76" viewBox="0 0 76 76">
+          <circle cx="38" cy="38" r="${R}" fill="none" stroke="#1A2742" stroke-width="6"/>
+          <circle class="arc" cx="38" cy="38" r="${R}" fill="none" stroke="${r.col}" stroke-width="6"
+            stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C}" data-off="${(C*(1-Math.max(r.v,.02))).toFixed(1)}"/>
+        </svg>
+        <span class="em">${r.em}</span>
+      </div>
+      <span class="rv num" style="color:${r.col}">${r.rv}</span>
+      <span class="rl">${r.rl}</span>
+    </div>`).join("");
+  requestAnimationFrame(()=>setTimeout(()=>$$("#rings .arc").forEach(a=>{
+    a.style.transition="stroke-dashoffset 1.2s cubic-bezier(.22,.8,.3,1)";a.style.strokeDashoffset=a.dataset.off;
+  }),150));
+})();
+
+/* ═══ dashboard: upcoming ═══ */
+$("#uplist").innerHTML=[
+  {dt:"Sep 15",em:"🩸",n:"Marek retest — SHBG · insulin · E2 · D · homocysteine",tag:"Labs",amt:"8am draw"},
+  {dt:"Oct 31",em:"⚖️",n:"Phase 2 target — 180 lb",tag:"Physique",amt:"−21 lb"},
+  {dt:"Home",em:"🔬",n:"DEXA scan during next rotation",tag:"Health",amt:"$100–150"},
+  {dt:"Home",em:"🩺",n:"Dermatology — lip macules (safety gate)",tag:"Health",amt:"dermoscopy"},
+  {dt:"2027",em:"🏁",n:"End state — 170-175 lb · sub-10% BF",tag:"Physique",amt:"FFMI ~23"}
+].map(u=>`<div class="uprow"><span class="dt">${u.dt}</span><span class="em">${u.em}</span>
+  <span class="nm">${esc(u.n)}</span><span class="tag">${u.tag}</span><span class="amt">${esc(u.amt)}</span></div>`).join("");
+
+/* ═══ list view builder ═══ */
+function buildView(id,items,opts){
+  const wrapF=$("#f-"+id), wrapL=$("#l-"+id);
+  let filter="All";
+  const cats=["All",...new Set(items.map(opts.group))];
+  wrapF.innerHTML=cats.map(c=>`<button class="chip ${c==="All"?"on":""}" data-f="${esc(c)}">${c==="All"?"All":(opts.emoji(c)||"")+" "+esc(c)}</button>`).join("");
+  wrapF.addEventListener("click",e=>{
+    const b=e.target.closest(".chip");if(!b)return;filter=b.dataset.f;
+    $$("#f-"+id+" .chip").forEach(x=>x.classList.toggle("on",x===b));render();
+  });
+  wrapL.addEventListener("click",e=>{
+    const row=e.target.closest(".lrow");if(row)row.classList.toggle("open");
+  });
+  function render(q){
+    q=(q||"").toLowerCase();
+    let list=items.filter(it=>(filter==="All"||opts.group(it)===filter)&&(!q||opts.hay(it).toLowerCase().includes(q)));
+    let html="",lastSec="";
+    list.forEach(it=>{
+      const sec=opts.section?opts.section(it):null;
+      if(sec&&sec!==lastSec){html+=`<div class="sect">${esc(sec)}</div>`;lastSec=sec}
+      html+=opts.row(it);
+    });
+    wrapL.innerHTML=html||`<div class="empty">Nothing matches.</div>`;
+    $("#c-"+id).textContent=items.length;
+  }
+  render(); opts._render=render;
+  return opts;
+}
+const ORDER_S={"Active":0,"In Progress":0,"Planned":1,"Queued":1,"Gated":2,"Blocked":2,"Deferred":2,"Reduce/Cut if stacking":3,"Complete":4,"Adopted":0,"Ruled Out":5,"Reversed":4,"Retired":6};
+
+const vProtocols=buildView("protocols",
+  [...PROTOCOLS].sort((a,b)=>(ORDER_S[a.s]??9)-(ORDER_S[b.s]??9)),
+  {group:p=>p.d,emoji:c=>DOMAIN_EMOJI[c],hay:p=>p.n+" "+p.d+" "+p.spec+" "+p.rule,
+   section:p=>({0:"Active",1:"Planned",2:"Gated"}[ORDER_S[p.s]]||"Other"),
+   row:p=>`<div class="lrow"><div class="top">
+      <span class="em">${DOMAIN_EMOJI[p.d]||"📋"}</span><span class="nm">${esc(p.n)}</span>
+      <span class="meta">${pill(p.d,"p-blue")}${pill(p.c,"p-gray")}${sPill(p.s)}</span></div>
+    <div class="sub">${esc(p.f)}</div>
+    <div class="detail"><span class="kv">Key spec</span>${esc(p.spec)}
+      <div class="dl"><span class="kv">Non-negotiable</span><b>${esc(p.rule)}</b></div></div></div>`});
+
+const vSupps=buildView("supplements",SUPPS,
+  {group:s=>s.cat[0],emoji:c=>CAT_EMOJI[c],hay:s=>s.n+" "+s.cat.join(" ")+" "+s.why+" "+s.cau,
+   section:s=>s.s==="Ruled Out"?"Ruled out":(s.s==="Gated"?"Gated":(s.s==="Reduce/Cut if stacking"?"Reduce / cut if stacking":"Stack")),
+   row:s=>`<div class="lrow"><div class="top">
+      <span class="em">${CAT_EMOJI[s.cat[0]]||"💊"}</span><span class="nm">${esc(s.n)}</span>
+      <span class="ratebar"><span class="track"><i style="width:${(s.r/40*100)}%;background:${s.r>=26?"var(--green)":s.r>=18?"var(--amber)":"var(--red)"}"></i></span></span>
+      <span class="num" style="font-size:12.5px;color:var(--muted)">${s.r}/40</span>
+      <span class="meta">${pill("Tier "+s.tier,TIER_PILL[s.tier])}${sPill(s.s)}</span></div>
+    <div class="sub">${esc(s.dose)} · ${esc(s.timing)} · ${s.cat.map(c=>esc(c)).join(", ")}</div>
+    <div class="detail">${esc(s.why)}<div class="dl"><span class="kv">Cautions</span><b>${esc(s.cau)}</b></div></div></div>`});
+
+const vLabs=buildView("labs",
+  [...LABS].sort((a,b)=>({"Critical":0,"High":1,"Standard":2}[a.pr]-{"Critical":0,"High":1,"Standard":2}[b.pr])),
+  {group:l=>l.p,emoji:c=>PANEL_EMOJI[c],hay:l=>l.n+" "+l.p+" "+l.v+" "+l.note,
+   section:l=>l.pr==="Critical"?"Critical":l.pr==="High"?"High priority":"Standard",
+   row:l=>`<div class="lrow"><div class="top">
+      <span class="em">${PANEL_EMOJI[l.p]||"🩸"}</span><span class="nm">${esc(l.n)}</span>
+      <span class="meta">${l.retest?pill("retest "+l.retest,"p-orange","📅"):""}${pill(l.p,"p-purple")}${sPill(l.s)}</span></div>
+    <div class="sub"><b class="num" style="color:var(--text)">${esc(l.v)}</b> · target ${esc(l.t)} · ${esc(l.src)}</div>
+    <div class="detail">${esc(l.note)}</div></div>`});
+
+const vGoals=buildView("goals",GOALS,
+  {group:g=>g.tr,emoji:c=>TRACK_EMOJI[c],hay:g=>g.n+" "+g.tr+" "+(g.det||"")+" "+g.gate,
+   section:g=>g.seq?"The 13-goal financial timeline":(g.tr==="Physique"||g.tr==="Health"?"Body & health":"Life build"),
+   row:g=>`<div class="lrow"><div class="top">
+      ${g.seq?`<span class="seq ${g.s==="Complete"?"done":""}">${g.s==="Complete"?"✓":String(g.seq).padStart(2,"0")}</span>`:`<span class="em">${TRACK_EMOJI[g.tr]||"🎯"}</span>`}
+      <span class="nm">${esc(g.n)}</span>
+      <span class="meta">${g.tgt?pill(g.tgt,"p-gray","📅"):""}${pill(g.tr,"p-teal")}${sPill(g.s)}</span></div>
+    ${g.det?`<div class="sub">${esc(g.det)}</div>`:""}
+    <div class="detail"><span class="kv">Gate / dependency</span><b>${esc(g.gate)}</b></div></div>`});
+
+const vQuestions=buildView("questions",
+  [...QUESTIONS].sort((a,b)=>({"Critical":0,"High":1,"Medium":2,"Low":3}[a.pr]-{"Critical":0,"High":1,"Medium":2,"Low":3}[b.pr])),
+  {group:q=>q.d,emoji:c=>QDOM_EMOJI[c],hay:q=>q.n+" "+q.d+" "+q.why+" "+q.act,
+   section:q=>q.pr,
+   row:q=>`<div class="lrow"><div class="top">
+      <span class="em">${QDOM_EMOJI[q.d]||"❓"}</span><span class="nm">${esc(q.n)}</span>
+      <span class="meta">${pill(q.d,"p-blue")}${sPill(q.pr)}</span></div>
+    <div class="sub">${esc(q.why)}</div>
+    <div class="detail"><span class="kv">Next action</span><b>${esc(q.act)}</b>
+      <div class="dl"><span class="kv">Blocked by</span>${esc(q.blk)}</div></div></div>`});
+
+const vDecisions=buildView("decisions",DECISIONS,
+  {group:d=>d.d,emoji:c=>DDOM_EMOJI[c],hay:d=>d.n+" "+d.d+" "+d.rea+" "+d.rev,
+   section:d=>d.v==="Adopted"?"Adopted":d.v==="Deferred"?"Deferred":"Ruled out",
+   row:d=>`<div class="lrow"><div class="top">
+      <span class="em">${DDOM_EMOJI[d.d]||"🗳️"}</span><span class="nm">${esc(d.n)}</span>
+      <span class="meta">${pill(d.when,"p-gray","📅")}${pill(d.d,"p-purple")}${sPill(d.v)}</span></div>
+    <div class="sub">${esc(d.rea)}</div>
+    <div class="detail"><span class="kv">What would reverse it</span><b>${esc(d.rev)}</b></div></div>`});
+
+/* ═══ global search ═══ */
+$("#q").addEventListener("input",e=>{
+  const q=e.target.value.trim();
+  [["protocols",vProtocols],["supplements",vSupps],["labs",vLabs],["goals",vGoals],["questions",vQuestions],["decisions",vDecisions]]
+    .forEach(([id,v])=>v._render(q));
+  if(q && $("#view-dashboard").classList.contains("on")) go("protocols");
+});
+</script>
