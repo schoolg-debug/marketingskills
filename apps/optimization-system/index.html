@@ -3,41 +3,50 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap">
 <style>
   :root{
-    --bg:#0A111F; --bg2:#0C1526; --card:#101A2E; --card2:#12203A; --inset:#0C1526;
-    --border:#1D2A45; --border2:#27375C;
-    --text:#E9EFFB; --muted:#7D8CB4; --faint:#55648F;
-    --blue:#4E7FFF; --blue-soft:rgba(78,127,255,.14);
-    --green:#37D67F; --green-soft:rgba(55,214,127,.13);
-    --amber:#FFC94A; --amber-soft:rgba(255,201,74,.13);
-    --orange:#FF9F43; --orange-soft:rgba(255,159,67,.14);
-    --red:#FF5C5C;   --red-soft:rgba(255,92,92,.14);
-    --purple:#A78BFA; --purple-soft:rgba(167,139,250,.14);
-    --pink:#F284B8;  --pink-soft:rgba(242,132,184,.15);
-    --teal:#3ECFCB;  --teal-soft:rgba(62,207,203,.14);
+    /* crimson-western palette: ink black, burnt amber, deep crimson, dusk blue, parchment */
+    --bg:#120B0D; --bg2:#150C0F; --card:#1D1114; --card2:#241417; --inset:#170D10;
+    --border:#341A1E; --border2:#4C2429;
+    --text:#F5E9DC; --muted:#AE8F83; --faint:#7C5F58;
+    --crimson:#E24A3B; --crimson-soft:rgba(226,74,59,.15);
+    --gold:#F0A840;   --gold-soft:rgba(240,168,64,.14);
+    --ember:#E8763C;  --ember-soft:rgba(232,118,60,.15);
+    --dusk:#6D87D8;   --dusk-soft:rgba(109,135,216,.15);
+    --green:#5BC77E;  --green-soft:rgba(91,199,126,.13);
+    --red:#FF5C4D;    --red-soft:rgba(255,92,77,.15);
+    --violet:#A98BD8; --violet-soft:rgba(169,139,216,.15);
+    --rose:#E87C93;   --rose-soft:rgba(232,124,147,.16);
     --r-lg:20px; --r-md:14px; --r-sm:9px;
     --font-ui:'Manrope',system-ui,-apple-system,'Segoe UI',sans-serif;
     --font-num:'Outfit','Manrope',system-ui,sans-serif;
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  html{scrollbar-color:#26355A var(--bg)}
+  html{scrollbar-color:#4C2429 var(--bg)}
   body{
-    background:var(--bg); color:var(--text);
+    background:
+      radial-gradient(1100px 500px at 85% -140px, rgba(226,74,59,.10), transparent 60%),
+      radial-gradient(900px 420px at -160px 25%, rgba(109,135,216,.06), transparent 60%),
+      var(--bg);
+    color:var(--text);
     font-family:var(--font-ui); font-size:14px; line-height:1.5;
     min-height:100vh; -webkit-font-smoothing:antialiased;
   }
-  ::selection{background:rgba(78,127,255,.35)}
+  ::selection{background:rgba(226,74,59,.4)}
+  /* film grain over everything, very quiet */
+  .grain{position:fixed;inset:0;pointer-events:none;z-index:90;opacity:.08;
+    background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="140" height="140"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch"/></filter><rect width="140" height="140" filter="url(%23n)" opacity="0.6"/></svg>')}
 
   .app{display:grid;grid-template-columns:236px 1fr;min-height:100vh}
 
   /* ── Sidebar ─────────────────────────────── */
   .side{
-    background:var(--bg2); border-right:1px solid var(--border);
+    background:linear-gradient(180deg,#181013,#130B0E 40%);
+    border-right:1px solid var(--border);
     padding:18px 12px; position:sticky; top:0; height:100vh;
     display:flex; flex-direction:column; gap:2px; overflow-y:auto;
   }
   .brand{display:flex;align-items:center;gap:10px;padding:6px 10px 16px;font-family:var(--font-num)}
   .brand .gear{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;
-    background:linear-gradient(135deg,#4E7FFF,#7B5CFF);font-size:15px;box-shadow:0 4px 14px rgba(78,127,255,.35)}
+    background:linear-gradient(135deg,#E24A3B,#F0A840);font-size:15px;box-shadow:0 4px 16px rgba(226,74,59,.4)}
   .brand b{font-size:15px;font-weight:700;letter-spacing:.2px}
   .search{
     display:flex;align-items:center;gap:8px;background:var(--inset);
@@ -46,29 +55,27 @@
   }
   .search input{background:none;border:none;outline:none;color:var(--text);font:inherit;width:100%}
   .search input::placeholder{color:var(--faint)}
-  .navlab{font-size:10.5px;font-weight:800;letter-spacing:.12em;color:var(--faint);
-    text-transform:uppercase;padding:14px 12px 6px}
   .nav-item{
     display:flex;align-items:center;gap:11px;padding:8px 12px;border-radius:10px;
     color:var(--muted);font-weight:600;cursor:pointer;border:none;background:none;
     font:inherit;width:100%;text-align:left;
-    transition:background .18s,color .18s,transform .12s;
+    transition:background .18s,color .18s;
   }
-  .nav-item:hover{background:rgba(78,127,255,.08);color:var(--text)}
-  .nav-item.active{background:var(--blue-soft);color:#BFD2FF}
+  .nav-item:hover{background:rgba(226,74,59,.08);color:var(--text)}
+  .nav-item.active{background:var(--crimson-soft);color:#FFB8A6;box-shadow:inset 2px 0 0 var(--crimson)}
   .nav-item .ico{width:18px;text-align:center;font-size:14px;opacity:.95}
   .nav-item .cnt{margin-left:auto;font-size:11px;color:var(--faint);font-variant-numeric:tabular-nums}
-  .nav-item.active .cnt{color:#8FA9F5}
+  .nav-item.active .cnt{color:#E8907F}
   .side .foot{margin-top:auto;padding-top:14px;border-top:1px solid var(--border)}
   .readline{font-size:11px;color:var(--faint);padding:10px 12px 2px;line-height:1.45}
-  .readline b{color:var(--muted)}
+  .readline b{color:var(--gold)}
 
   /* ── Main ────────────────────────────────── */
   .main{padding:0 26px 60px;max-width:1240px;width:100%;margin:0 auto;min-width:0}
   .grid>*{min-width:0}
   .topbar{
     display:flex;align-items:center;gap:14px;padding:18px 2px 16px;
-    position:sticky;top:0;z-index:20;background:linear-gradient(var(--bg) 82%,transparent);
+    position:sticky;top:0;z-index:20;background:linear-gradient(#120B0D 82%,transparent);
   }
   .topbar h1{font-family:var(--font-num);font-size:17px;font-weight:700;letter-spacing:.2px}
   .topbar .crumb{color:var(--faint);font-size:12.5px;font-weight:600}
@@ -77,25 +84,42 @@
     border:1px solid var(--border);border-radius:999px;padding:6px 14px;font-size:12px;
     font-weight:700;color:var(--muted)
   }
-  .phasepill .dot{width:7px;height:7px;border-radius:50%;background:var(--amber);box-shadow:0 0 8px var(--amber)}
+  .phasepill .dot{width:7px;height:7px;border-radius:50%;background:var(--crimson);box-shadow:0 0 9px var(--crimson)}
 
   .view{display:none;animation:vin .35s cubic-bezier(.22,.8,.3,1)}
   .view.on{display:block}
   @keyframes vin{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 
+  /* ── Scene banners (original painted-sky art) ── */
+  .scene{position:relative;border-radius:var(--r-lg);overflow:hidden;margin-bottom:16px;
+    border:1px solid var(--border);isolation:isolate}
+  .scene svg{display:block;width:100%;height:110px}
+  .scene.tall svg{height:170px}
+  .scene .cap{
+    position:absolute;left:20px;bottom:14px;z-index:2;
+    font-size:10.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+    color:rgba(245,233,220,.85);text-shadow:0 1px 8px rgba(0,0,0,.6)
+  }
+  .scene .cap b{display:block;font-family:var(--font-num);font-size:15px;font-weight:700;
+    letter-spacing:.02em;text-transform:none;margin-top:2px;color:#F5E9DC}
+  .scene:after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+    background:linear-gradient(180deg,transparent 55%,rgba(10,5,6,.55))}
+  .scene.paper:after{background:none}
+
   /* ── Cards ───────────────────────────────── */
   .grid{display:grid;gap:16px}
   .g-dash{grid-template-columns:1.55fr 1fr}
   .card{
-    background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);
+    background:linear-gradient(180deg,#201216,#1B1013);
+    border:1px solid var(--border);border-radius:var(--r-lg);
     padding:18px 20px;transition:transform .2s,border-color .2s;
   }
   .card.hoverable:hover{transform:translateY(-2px);border-color:var(--border2)}
   .card-h{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:12px}
   .card-h .t{font-size:12px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
-  .card-h a,.linky{font-size:11.5px;font-weight:800;letter-spacing:.06em;color:var(--blue);
+  .card-h a,.linky{font-size:11.5px;font-weight:800;letter-spacing:.06em;color:var(--gold);
     text-transform:uppercase;text-decoration:none;cursor:pointer;background:none;border:none;font-family:inherit}
-  .linky:hover{color:#82A5FF}
+  .linky:hover{color:#FFC670}
   .big{font-family:var(--font-num);font-variant-numeric:tabular-nums;font-weight:700}
 
   /* pills */
@@ -106,26 +130,26 @@
   }
   .pill .em{font-size:11px;letter-spacing:0}
   .p-green{background:var(--green-soft);color:var(--green)}
-  .p-amber{background:var(--amber-soft);color:var(--amber)}
-  .p-orange{background:var(--orange-soft);color:var(--orange)}
+  .p-amber{background:var(--gold-soft);color:var(--gold)}
+  .p-orange{background:var(--ember-soft);color:var(--ember)}
   .p-red{background:var(--red-soft);color:var(--red)}
-  .p-blue{background:var(--blue-soft);color:#82A5FF}
-  .p-purple{background:var(--purple-soft);color:var(--purple)}
-  .p-pink{background:var(--pink-soft);color:var(--pink)}
-  .p-teal{background:var(--teal-soft);color:var(--teal)}
-  .p-gray{background:rgba(125,140,180,.14);color:var(--muted)}
+  .p-blue{background:var(--dusk-soft);color:var(--dusk)}
+  .p-purple{background:var(--violet-soft);color:var(--violet)}
+  .p-pink{background:var(--rose-soft);color:var(--rose)}
+  .p-teal{background:var(--ember-soft);color:var(--ember)}
+  .p-gray{background:rgba(174,143,131,.14);color:var(--muted)}
 
   /* hero chart card */
   .hero-num{font-size:34px;letter-spacing:-.5px}
   .hero-sub{color:var(--muted);font-weight:600;font-size:13px;margin-top:2px}
-  .hero-sub b{color:var(--green)}
+  .hero-sub b{color:var(--gold)}
   .chartwrap{position:relative;margin-top:10px}
   .chartwrap svg{display:block;width:100%;height:auto}
   .badge{
     position:absolute;transform:translate(-50%,-130%);
-    background:var(--green);color:#062814;font-family:var(--font-num);
+    background:var(--crimson);color:#FFF3E8;font-family:var(--font-num);
     font-weight:700;font-size:12.5px;padding:4px 10px;border-radius:9px;white-space:nowrap;
-    box-shadow:0 6px 18px rgba(55,214,127,.35);
+    box-shadow:0 6px 20px rgba(226,74,59,.45);
   }
   .badge:after{content:"";position:absolute;left:50%;bottom:-4px;transform:translateX(-50%) rotate(45deg);
     width:8px;height:8px;background:inherit;border-radius:2px}
@@ -134,7 +158,7 @@
     background:none;border:none;color:var(--faint);font:inherit;font-size:11px;font-weight:800;
     letter-spacing:.08em;padding:5px 11px;border-radius:8px;cursor:pointer;transition:all .15s
   }
-  .ranges button.on{background:var(--blue-soft);color:#AFC6FF}
+  .ranges button.on{background:var(--crimson-soft);color:#FFB29F}
   .ranges button:hover{color:var(--muted)}
 
   /* status card */
@@ -149,8 +173,8 @@
   .axis{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);
     font-weight:700;font-variant-numeric:tabular-nums}
   .limiter{
-    margin-top:14px;background:var(--red-soft);border:1px solid rgba(255,92,92,.25);
-    border-radius:var(--r-md);padding:10px 13px;font-size:12.5px;color:#FFB4B4;font-weight:600;line-height:1.45
+    margin-top:14px;background:var(--red-soft);border:1px solid rgba(255,92,77,.3);
+    border-radius:var(--r-md);padding:10px 13px;font-size:12.5px;color:#FFBAAE;font-weight:600;line-height:1.45
   }
   .limiter b{color:var(--red);letter-spacing:.04em}
 
@@ -162,29 +186,29 @@
     display:flex;align-items:center;gap:11px;padding:9px 8px;border-radius:12px;
     cursor:pointer;transition:background .15s;
   }
-  .rowitem:hover{background:rgba(78,127,255,.07)}
+  .rowitem:hover{background:rgba(226,74,59,.07)}
   .cbox{
     width:17px;height:17px;border-radius:6px;border:1.5px solid var(--border2);flex:none;
     display:grid;place-items:center;color:transparent;font-size:11px;transition:all .18s;background:var(--inset)
   }
-  .rowitem.done .cbox{background:var(--green);border-color:var(--green);color:#06281a}
+  .rowitem.done .cbox{background:var(--gold);border-color:var(--gold);color:#2A1508}
   .rowitem .nm{font-weight:700;font-size:13.5px;flex:1;min-width:0;overflow:hidden;
     text-overflow:ellipsis;white-space:nowrap}
   .rowitem.done .nm{color:var(--faint);text-decoration:line-through}
   .rowitem .amt{font-family:var(--font-num);font-variant-numeric:tabular-nums;font-weight:600;
     color:var(--muted);font-size:12.5px;white-space:nowrap}
   .markall{
-    margin-top:10px;width:100%;background:none;border:none;color:var(--blue);font:inherit;
+    margin-top:10px;width:100%;background:none;border:none;color:var(--gold);font:inherit;
     font-weight:800;font-size:12.5px;letter-spacing:.03em;padding:11px;border-radius:12px;cursor:pointer;
     transition:background .15s;display:flex;align-items:center;justify-content:center;gap:8px
   }
-  .markall:hover{background:var(--blue-soft)}
+  .markall:hover{background:var(--gold-soft)}
 
-  /* ranked bars (top categories style) */
+  /* ranked bars */
   .bars{display:flex;flex-direction:column;gap:4px}
   .bar-row{display:grid;grid-template-columns:20px 1fr 64px 120px;gap:10px;align-items:center;
     padding:6px 6px;border-radius:10px;cursor:pointer;transition:background .15s}
-  .bar-row:hover{background:rgba(78,127,255,.07)}
+  .bar-row:hover{background:rgba(226,74,59,.07)}
   .bar-row .rk{font-size:10.5px;color:var(--faint);font-weight:800;font-variant-numeric:tabular-nums}
   .bar-row .nm{display:flex;align-items:center;gap:8px;font-weight:700;font-size:13px;min-width:0}
   .bar-row .nm span.txt{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -197,7 +221,7 @@
   .rings{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;padding:6px 0 2px}
   .ring{display:flex;flex-direction:column;align-items:center;gap:9px;cursor:pointer;
     padding:10px 4px;border-radius:14px;transition:background .15s}
-  .ring:hover{background:rgba(78,127,255,.06)}
+  .ring:hover{background:rgba(226,74,59,.06)}
   .ringviz{position:relative;width:76px;height:76px}
   .ringviz svg{transform:rotate(-90deg)}
   .ringviz .em{position:absolute;inset:0;display:grid;place-items:center;font-size:26px}
@@ -207,8 +231,8 @@
   /* upcoming */
   .uplist{display:flex;flex-direction:column}
   .uprow{display:flex;align-items:center;gap:10px;padding:8.5px 6px;border-radius:10px;transition:background .15s}
-  .uprow:hover{background:rgba(78,127,255,.06)}
-  .uprow .dt{font-size:11px;font-weight:800;color:var(--orange);width:52px;flex:none;
+  .uprow:hover{background:rgba(226,74,59,.06)}
+  .uprow .dt{font-size:11px;font-weight:800;color:var(--ember);width:52px;flex:none;
     font-variant-numeric:tabular-nums;letter-spacing:.03em}
   .uprow .em{font-size:14px;width:20px;text-align:center}
   .uprow .nm{font-weight:700;font-size:13px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -218,7 +242,7 @@
   /* macros card */
   .macros .big{font-size:26px}
   .macros .sub{color:var(--muted);font-size:12.5px;font-weight:700}
-  .macros .sub b{color:var(--green)}
+  .macros .sub b{color:var(--gold)}
   .stack{margin-top:14px}
   .stack .lbl{display:flex;gap:16px;font-size:11.5px;color:var(--muted);font-weight:700;margin-top:9px}
   .stack .lbl i{font-style:normal;display:flex;align-items:center;gap:6px}
@@ -232,11 +256,12 @@
     font:inherit;font-size:12px;font-weight:700;padding:6px 13px;cursor:pointer;transition:all .15s
   }
   .chip:hover{border-color:var(--border2);color:var(--text)}
-  .chip.on{background:var(--blue-soft);border-color:rgba(78,127,255,.4);color:#AFC6FF}
+  .chip.on{background:var(--crimson-soft);border-color:rgba(226,74,59,.45);color:#FFB29F}
   .sect{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
     color:var(--faint);padding:18px 4px 8px}
   .lrow{
-    background:var(--card);border:1px solid var(--border);border-radius:var(--r-md);
+    background:linear-gradient(180deg,#201216,#1B1013);
+    border:1px solid var(--border);border-radius:var(--r-md);
     padding:13px 16px;margin-bottom:8px;cursor:pointer;transition:border-color .18s,transform .18s;
   }
   .lrow:hover{border-color:var(--border2);transform:translateY(-1px)}
@@ -247,7 +272,7 @@
   .lrow .sub{color:var(--muted);font-size:12.5px;margin:6px 0 0 32px;font-weight:600;line-height:1.5}
   .lrow .detail{
     display:none;margin:10px 0 2px 32px;padding:11px 14px;background:var(--inset);
-    border-radius:11px;font-size:12.5px;color:#B9C5E4;line-height:1.6;border:1px solid var(--border)
+    border-radius:11px;font-size:12.5px;color:#D8C0AE;line-height:1.6;border:1px solid var(--border)
   }
   .lrow.open .detail{display:block;animation:vin .25s ease}
   .detail b{color:var(--text);font-weight:800}
@@ -262,7 +287,7 @@
   .seq{display:flex;align-items:center;justify-content:center;width:26px;height:26px;flex:none;
     border-radius:9px;background:var(--inset);border:1px solid var(--border);
     font-family:var(--font-num);font-weight:800;font-size:11.5px;color:var(--muted)}
-  .seq.done{background:var(--green-soft);border-color:rgba(55,214,127,.35);color:var(--green)}
+  .seq.done{background:var(--gold-soft);border-color:rgba(240,168,64,.4);color:var(--gold)}
 
   footer.credits{margin-top:34px;color:var(--faint);font-size:11.5px;font-weight:600;text-align:center}
   footer.credits b{color:var(--muted)}
@@ -273,18 +298,21 @@
     .side{position:static;height:auto;flex-direction:row;align-items:center;overflow-x:auto;
       padding:10px 12px;gap:4px;border-right:none;border-bottom:1px solid var(--border)}
     .brand{padding:0 8px 0 0}.brand b{display:none}
-    .search,.navlab,.side .foot,.readline,.nav-item .cnt{display:none}
+    .search,.side .foot,.readline,.nav-item .cnt{display:none}
     .nav-item{white-space:nowrap;padding:7px 12px;border-radius:999px}
+    .nav-item.active{box-shadow:none}
     .g-dash{grid-template-columns:1fr}
     .rings{grid-template-columns:repeat(3,1fr)}
     .main{padding:0 14px 50px}
     .bar-row{grid-template-columns:20px 1fr 54px 70px}
+    .scene svg{height:88px}.scene.tall svg{height:130px}
   }
   @media (prefers-reduced-motion:reduce){
     *,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}
   }
 </style>
 
+<div class="grain" aria-hidden="true"></div>
 <div class="app">
   <aside class="side">
     <div class="brand"><span class="gear">⚙️</span><b>Optimization</b></div>
@@ -310,6 +338,58 @@
 
     <!-- ══ DASHBOARD ══ -->
     <section class="view on" id="view-dashboard">
+
+      <!-- hero: desert dawn, long road, red kite -->
+      <div class="scene tall" role="img" aria-label="Painted desert dawn with a long road and a red kite">
+        <svg viewBox="0 0 1200 170" preserveAspectRatio="xMidYMax slice">
+          <defs>
+            <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#2A1215"/><stop offset=".38" stop-color="#7A3327"/>
+              <stop offset=".7" stop-color="#D9803F"/><stop offset="1" stop-color="#F2BC6E"/>
+            </linearGradient>
+            <radialGradient id="sun" cx=".5" cy=".5" r=".5">
+              <stop offset="0" stop-color="#FFE9B8" stop-opacity=".95"/>
+              <stop offset=".5" stop-color="#F5B45C" stop-opacity=".55"/>
+              <stop offset="1" stop-color="#F5B45C" stop-opacity="0"/>
+            </radialGradient>
+            <filter id="soft"><feGaussianBlur stdDeviation="1.1"/></filter>
+          </defs>
+          <rect width="1200" height="170" fill="url(#sky)"/>
+          <circle cx="820" cy="120" r="120" fill="url(#sun)"/>
+          <!-- drifting cloud strokes -->
+          <g fill="#5C2620" opacity=".35" filter="url(#soft)">
+            <ellipse cx="220" cy="38" rx="170" ry="10"/><ellipse cx="540" cy="22" rx="120" ry="7"/>
+            <ellipse cx="980" cy="46" rx="150" ry="9"/><ellipse cx="380" cy="64" rx="90" ry="6"/>
+          </g>
+          <g fill="#F2BC6E" opacity=".28" filter="url(#soft)">
+            <ellipse cx="700" cy="78" rx="130" ry="6"/><ellipse cx="1050" cy="92" rx="100" ry="5"/>
+          </g>
+          <!-- mesas -->
+          <path d="M0 128 L70 128 88 104 150 104 166 128 320 128 320 170 0 170Z" fill="#341015" opacity=".85"/>
+          <path d="M880 132 L950 132 968 100 1050 100 1068 132 1200 132 1200 170 880 170Z" fill="#341015" opacity=".7"/>
+          <!-- road with center dashes -->
+          <path d="M520 170 L610 170 598 128 578 128Z" fill="#241014"/>
+          <g stroke="#F2BC6E" stroke-width="2.4" opacity=".8">
+            <line x1="589" y1="166" x2="589" y2="156"/><line x1="588.6" y1="148" x2="588.6" y2="140"/><line x1="588.2" y1="134" x2="588.2" y2="130"/>
+          </g>
+          <!-- red diamond kite with looping tail -->
+          <g>
+            <path d="M330 34 L352 58 L330 84 L308 58 Z" fill="#D8402F" stroke="#8C2318" stroke-width="1.4"/>
+            <line x1="330" y1="34" x2="330" y2="84" stroke="#8C2318" stroke-width="1"/>
+            <line x1="308" y1="58" x2="352" y2="58" stroke="#8C2318" stroke-width="1"/>
+            <path d="M330 84 C 322 102 344 108 334 124 C 328 134 314 132 312 142" fill="none" stroke="#D8402F" stroke-width="2" opacity=".85"/>
+            <path d="M330 84 C 350 120 300 140 316 168" fill="none" stroke="#3A1712" stroke-width="1.1" opacity=".6"/>
+          </g>
+          <!-- dust motes -->
+          <g fill="#FFE2AC">
+            <circle cx="140" cy="96" r="1.4" opacity=".7"/><circle cx="420" cy="112" r="1.1" opacity=".5"/>
+            <circle cx="660" cy="60" r="1.3" opacity=".6"/><circle cx="1120" cy="70" r="1.2" opacity=".55"/>
+            <circle cx="905" cy="58" r="1" opacity=".5"/><circle cx="250" cy="60" r="1" opacity=".45"/>
+          </g>
+        </svg>
+        <span class="cap">Phase 2 · the long road<b>The build is done. The reveal is not.</b></span>
+      </div>
+
       <div class="grid g-dash">
         <div class="card hoverable">
           <div class="card-h"><span class="t">Cut progress</span><button class="linky" data-go="goals">Trajectory ›</button></div>
@@ -325,18 +405,18 @@
           <div class="card-h"><span class="t">Composition</span><button class="linky" data-go="labs">Labs ›</button></div>
           <div class="duo">
             <div>
-              <div class="lab" style="color:var(--green)"><i style="background:var(--green)"></i>FFMI (norm.)</div>
+              <div class="lab" style="color:var(--gold)"><i style="background:var(--gold)"></i>FFMI (norm.)</div>
               <div class="big val">23.8</div>
-              <div class="delta" style="color:var(--green)">↗ 95th pct natural</div>
+              <div class="delta" style="color:var(--gold)">↗ 95th pct natural</div>
             </div>
             <div>
-              <div class="lab" style="color:var(--amber)"><i style="background:var(--amber)"></i>Body fat</div>
+              <div class="lab" style="color:var(--ember)"><i style="background:var(--ember)"></i>Body fat</div>
               <div class="big val">20.0<span style="font-size:16px;color:var(--muted)">%</span></div>
-              <div class="delta" style="color:var(--amber)">BIA ±3–6 pts</div>
+              <div class="delta" style="color:var(--ember)">BIA ±3–6 pts</div>
             </div>
           </div>
           <div class="meterline" title="FFMI 23.8 of ~25 natural ceiling">
-            <span id="ffmibar" style="background:linear-gradient(90deg,#37D67F,#B9E44A);width:0"></span>
+            <span id="ffmibar" style="background:linear-gradient(90deg,#F0A840,#E24A3B);width:0"></span>
           </div>
           <div class="axis"><span>18</span><span>FFMI · ceiling ≈ 25</span><span>25</span></div>
           <div class="limiter"><b>RED · GATING</b> — Sleep apnea device not started. It gates GH/IGF-1, testosterone, insulin sensitivity and recovery. Nothing on this board ranks above it.</div>
@@ -360,16 +440,16 @@
 
         <div class="card hoverable macros">
           <div class="card-h"><span class="t">Fuel today</span><button class="linky" data-go="protocols">Nutrition ›</button></div>
-          <div class="big" style="font-size:26px;color:var(--green)">184 g protein</div>
+          <div class="big" style="font-size:26px;color:var(--gold)">184 g protein</div>
           <div class="sub">↗ floor <b>160–176 g</b> · calories are a ceiling</div>
           <div class="stack">
             <div class="meterline" style="margin:12px 0 4px">
-              <span style="background:var(--blue);width:56%" title="Smoothie 915 kcal"></span>
-              <span style="background:var(--teal);width:44%;margin-left:2px" title="Dinner ~900 kcal"></span>
+              <span style="background:var(--gold);width:56%" title="Smoothie 915 kcal"></span>
+              <span style="background:var(--ember);width:44%;margin-left:2px" title="Dinner ~900 kcal"></span>
             </div>
             <div class="lbl">
-              <i><span class="swatch" style="background:var(--blue)"></span>AM smoothie <b>915 kcal · 107P</b></i>
-              <i><span class="swatch" style="background:var(--teal)"></span>Dinner <b>~900 kcal · 77P</b></i>
+              <i><span class="swatch" style="background:var(--gold)"></span>AM smoothie <b>915 kcal · 107P</b></i>
+              <i><span class="swatch" style="background:var(--ember)"></span>Dinner <b>~900 kcal · 77P</b></i>
             </div>
             <div class="lbl" style="color:var(--faint)"><i>Ceiling <b style="color:var(--muted)">1,815–1,920 kcal</b> · two meals, three components, no exceptions</i></div>
           </div>
@@ -384,12 +464,169 @@
     </section>
 
     <!-- ══ LIST VIEWS ══ -->
-    <section class="view" id="view-protocols"><div class="tools" id="f-protocols"></div><div id="l-protocols"></div></section>
-    <section class="view" id="view-supplements"><div class="tools" id="f-supplements"></div><div id="l-supplements"></div></section>
-    <section class="view" id="view-labs"><div class="tools" id="f-labs"></div><div id="l-labs"></div></section>
-    <section class="view" id="view-goals"><div class="tools" id="f-goals"></div><div id="l-goals"></div></section>
-    <section class="view" id="view-questions"><div class="tools" id="f-questions"></div><div id="l-questions"></div></section>
-    <section class="view" id="view-decisions"><div class="tools" id="f-decisions"></div><div id="l-decisions"></div></section>
+    <section class="view" id="view-protocols">
+      <div class="scene" role="img" aria-label="Desert dawn with mesas">
+        <svg viewBox="0 0 1200 110" preserveAspectRatio="xMidYMax slice">
+          <defs><linearGradient id="pSky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#3A1518"/><stop offset=".55" stop-color="#9C452C"/><stop offset="1" stop-color="#E8A353"/>
+          </linearGradient></defs>
+          <rect width="1200" height="110" fill="url(#pSky)"/>
+          <circle cx="960" cy="86" r="70" fill="#FFDD9A" opacity=".35"/>
+          <g fill="#5C2620" opacity=".4"><ellipse cx="300" cy="26" rx="180" ry="7"/><ellipse cx="760" cy="40" rx="140" ry="6"/></g>
+          <path d="M0 84 L90 84 112 56 190 56 210 84 420 84 420 110 0 110Z" fill="#2C0F13" opacity=".9"/>
+          <path d="M760 90 L860 90 884 62 980 62 1000 90 1200 90 1200 110 760 110Z" fill="#2C0F13" opacity=".75"/>
+          <g fill="#FFE2AC"><circle cx="520" cy="50" r="1.2" opacity=".6"/><circle cx="640" cy="72" r="1" opacity=".5"/><circle cx="180" cy="42" r="1.1" opacity=".5"/></g>
+        </svg>
+        <span class="cap">Daily operating system<b>22 live protocols · road &amp; home</b></span>
+      </div>
+      <div class="tools" id="f-protocols"></div><div id="l-protocols"></div>
+    </section>
+
+    <section class="view" id="view-supplements">
+      <div class="scene" role="img" aria-label="Dark field with rising embers">
+        <svg viewBox="0 0 1200 110" preserveAspectRatio="xMidYMax slice">
+          <defs><linearGradient id="sBg" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#150A0E"/><stop offset=".7" stop-color="#3A1013"/><stop offset="1" stop-color="#6E2117"/>
+          </linearGradient>
+          <radialGradient id="glowE" cx=".5" cy="1" r="1">
+            <stop offset="0" stop-color="#E8763C" stop-opacity=".35"/><stop offset="1" stop-color="#E8763C" stop-opacity="0"/>
+          </radialGradient></defs>
+          <rect width="1200" height="110" fill="url(#sBg)"/>
+          <rect width="1200" height="110" fill="url(#glowE)"/>
+          <g fill="#F0A840"><circle cx="120" cy="82" r="1.6" opacity=".8"/><circle cx="185" cy="52" r="1.1" opacity=".55"/>
+            <circle cx="340" cy="70" r="1.9" opacity=".85"/><circle cx="410" cy="34" r="1" opacity=".45"/>
+            <circle cx="565" cy="60" r="1.5" opacity=".7"/><circle cx="640" cy="24" r="1" opacity=".4"/>
+            <circle cx="820" cy="76" r="2" opacity=".9"/><circle cx="905" cy="44" r="1.2" opacity=".55"/>
+            <circle cx="1060" cy="64" r="1.6" opacity=".75"/><circle cx="1130" cy="30" r="1" opacity=".45"/></g>
+          <g fill="#E24A3B"><circle cx="255" cy="88" r="1.7" opacity=".8"/><circle cx="500" cy="92" r="2" opacity=".85"/>
+            <circle cx="730" cy="86" r="1.5" opacity=".7"/><circle cx="980" cy="90" r="1.8" opacity=".8"/>
+            <circle cx="80" cy="40" r="1" opacity=".4"/><circle cx="1170" cy="80" r="1.3" opacity=".6"/></g>
+          <g stroke="#E8763C" stroke-width="1" opacity=".35">
+            <path d="M120 82 C 116 70 124 62 120 50"/><path d="M340 70 C 336 58 344 50 340 38"/>
+            <path d="M820 76 C 816 64 824 56 820 44"/><path d="M1060 64 C 1056 52 1064 44 1060 32"/>
+          </g>
+        </svg>
+        <span class="cap">The stack<b>27 compounds · rated 1–40, evidence-tiered</b></span>
+      </div>
+      <div class="tools" id="f-supplements"></div><div id="l-supplements"></div>
+    </section>
+
+    <section class="view" id="view-labs">
+      <div class="scene" role="img" aria-label="Dusk city skyline with a red signal beam">
+        <svg viewBox="0 0 1200 110" preserveAspectRatio="xMidYMax slice">
+          <defs><linearGradient id="lSky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#1B2C5A"/><stop offset=".55" stop-color="#4A2A52"/><stop offset="1" stop-color="#8C3236"/>
+          </linearGradient></defs>
+          <rect width="1200" height="110" fill="url(#lSky)"/>
+          <!-- red beam -->
+          <path d="M708 0 L742 0 700 110 678 110 Z" fill="#E24A3B" opacity=".8"/>
+          <path d="M712 0 L724 0 694 110 688 110 Z" fill="#FF8A6E" opacity=".5"/>
+          <!-- skyline -->
+          <g fill="#10070B">
+            <rect x="0" y="58" width="90" height="52"/><rect x="96" y="40" width="60" height="70"/>
+            <rect x="170" y="66" width="110" height="44"/><rect x="292" y="34" width="52" height="76"/>
+            <rect x="356" y="58" width="88" height="52"/><rect x="460" y="46" width="66" height="64"/>
+            <rect x="540" y="68" width="120" height="42"/><rect x="760" y="42" width="58" height="68"/>
+            <rect x="830" y="62" width="96" height="48"/><rect x="940" y="30" width="54" height="80"/>
+            <rect x="1006" y="56" width="80" height="54"/><rect x="1100" y="44" width="100" height="66"/>
+          </g>
+          <!-- lit windows -->
+          <g fill="#F2BC6E" opacity=".5">
+            <rect x="108" y="52" width="5" height="6"/><rect x="124" y="64" width="5" height="6"/>
+            <rect x="304" y="46" width="5" height="6"/><rect x="320" y="60" width="5" height="6"/>
+            <rect x="952" y="42" width="5" height="6"/><rect x="968" y="58" width="5" height="6"/>
+            <rect x="1120" y="58" width="5" height="6"/><rect x="1140" y="72" width="5" height="6"/>
+          </g>
+          <!-- splatter -->
+          <g fill="#E24A3B"><circle cx="240" cy="26" r="1.4" opacity=".7"/><circle cx="420" cy="18" r="1" opacity=".5"/>
+            <circle cx="880" cy="22" r="1.3" opacity=".6"/><circle cx="1050" cy="14" r="1" opacity=".5"/>
+            <circle cx="620" cy="30" r="1.2" opacity=".6"/></g>
+        </svg>
+        <span class="cap">The signal panel<b>17 markers · retests Sept 15</b></span>
+      </div>
+      <div class="tools" id="f-labs"></div><div id="l-labs"></div>
+    </section>
+
+    <section class="view" id="view-goals">
+      <div class="scene" role="img" aria-label="Road to the horizon at golden hour">
+        <svg viewBox="0 0 1200 110" preserveAspectRatio="xMidYMax slice">
+          <defs><linearGradient id="gSky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#43181B"/><stop offset=".6" stop-color="#B85C33"/><stop offset="1" stop-color="#F2BC6E"/>
+          </linearGradient>
+          <radialGradient id="gSun" cx=".5" cy=".5" r=".5">
+            <stop offset="0" stop-color="#FFE9B8" stop-opacity=".9"/><stop offset="1" stop-color="#FFE9B8" stop-opacity="0"/>
+          </radialGradient></defs>
+          <rect width="1200" height="110" fill="url(#gSky)"/>
+          <circle cx="600" cy="74" r="80" fill="url(#gSun)"/>
+          <rect x="0" y="74" width="1200" height="36" fill="#2C0F13" opacity=".85"/>
+          <path d="M480 110 L720 110 612 74 588 74Z" fill="#180A0E"/>
+          <g stroke="#F2BC6E" stroke-width="2.2" opacity=".85">
+            <line x1="600" y1="106" x2="600" y2="98"/><line x1="600" y1="92" x2="600" y2="87"/><line x1="600" y1="83" x2="600" y2="80"/>
+          </g>
+          <g fill="#FFE2AC"><circle cx="200" cy="40" r="1.2" opacity=".6"/><circle cx="1000" cy="34" r="1.2" opacity=".6"/><circle cx="820" cy="52" r="1" opacity=".5"/></g>
+        </svg>
+        <span class="cap">The 13-goal road<b>Debt cleared · Thailand ~Feb 2030 · running ahead of pace</b></span>
+      </div>
+      <div class="tools" id="f-goals"></div><div id="l-goals"></div>
+    </section>
+
+    <section class="view" id="view-questions">
+      <div class="scene" role="img" aria-label="A lone cloaked figure facing a wall of red fog">
+        <svg viewBox="0 0 1200 110" preserveAspectRatio="xMidYMax slice">
+          <defs>
+            <radialGradient id="qGlow" cx=".62" cy=".2" r="1">
+              <stop offset="0" stop-color="#C4372B"/><stop offset=".45" stop-color="#6E1B18"/><stop offset="1" stop-color="#1A0B0E"/>
+            </radialGradient>
+            <filter id="qSoft"><feGaussianBlur stdDeviation="2"/></filter>
+          </defs>
+          <rect width="1200" height="110" fill="url(#qGlow)"/>
+          <g fill="#E24A3B" opacity=".5" filter="url(#qSoft)">
+            <ellipse cx="740" cy="26" rx="200" ry="16"/><ellipse cx="560" cy="52" rx="150" ry="12"/>
+            <ellipse cx="900" cy="60" rx="130" ry="10"/>
+          </g>
+          <g fill="#3A0F12" opacity=".7" filter="url(#qSoft)">
+            <ellipse cx="220" cy="70" rx="220" ry="20"/><ellipse cx="1080" cy="80" rx="180" ry="16"/>
+          </g>
+          <!-- lit ground + lone figure -->
+          <path d="M0 96 Q 600 84 1200 98 L1200 110 L0 110Z" fill="#E8C58C" opacity=".28"/>
+          <g fill="#0E0609">
+            <path d="M330 66 C 327 60 333 58 333 54 C 333 50 327 50 327 46 C 327 42 336 41 337 46 C 338 50 334 51 334 54 C 340 58 342 64 341 72 L 343 96 L 337 96 L 335 78 L 331 96 L 325 96 L 328 74 Z"/>
+            <path d="M328 60 C 320 68 318 84 320 94 L 326 92 C 324 82 326 70 331 64 Z" opacity=".9"/>
+          </g>
+          <g fill="#FFD9A0"><circle cx="480" cy="30" r="1" opacity=".6"/><circle cx="1020" cy="24" r="1.1" opacity=".55"/><circle cx="150" cy="34" r="1" opacity=".5"/></g>
+        </svg>
+        <span class="cap">What stands unanswered<b>16 open questions · 3 critical</b></span>
+      </div>
+      <div class="tools" id="f-questions"></div><div id="l-questions"></div>
+    </section>
+
+    <section class="view" id="view-decisions">
+      <div class="scene paper" role="img" aria-label="Ink brush strokes on parchment">
+        <svg viewBox="0 0 1200 110" preserveAspectRatio="xMidYMax slice">
+          <defs>
+            <pattern id="hatch" width="7" height="7" patternTransform="rotate(38)" patternUnits="userSpaceOnUse">
+              <rect width="7" height="7" fill="none"/><line x1="0" y1="0" x2="0" y2="7" stroke="#241A14" stroke-width="1.1"/>
+            </pattern>
+            <pattern id="hatch2" width="9" height="9" patternTransform="rotate(-24)" patternUnits="userSpaceOnUse">
+              <rect width="9" height="9" fill="none"/><line x1="0" y1="0" x2="0" y2="9" stroke="#241A14" stroke-width="0.9"/>
+            </pattern>
+          </defs>
+          <rect width="1200" height="110" fill="#EDE0C8"/>
+          <rect width="1200" height="110" fill="url(#hatch)" opacity=".14"/>
+          <rect x="640" width="560" height="110" fill="url(#hatch2)" opacity=".12"/>
+          <!-- ink brush strokes -->
+          <path d="M-20 84 C 220 60 420 96 660 74 C 860 56 1040 88 1220 70 L1220 110 L-20 110 Z" fill="#171009" opacity=".92"/>
+          <path d="M-20 96 C 260 82 520 104 800 90 C 980 82 1120 96 1220 88 L1220 110 L-20 110Z" fill="#2E2114" opacity=".6"/>
+          <path d="M60 30 C 180 22 300 38 430 28" stroke="#171009" stroke-width="7" fill="none" stroke-linecap="round" opacity=".85"/>
+          <path d="M760 24 C 880 34 990 18 1130 30" stroke="#171009" stroke-width="5" fill="none" stroke-linecap="round" opacity=".7"/>
+          <!-- ink flecks -->
+          <g fill="#171009"><circle cx="470" cy="40" r="2.2"/><circle cx="500" cy="26" r="1.4"/><circle cx="1150" cy="42" r="1.8"/>
+            <circle cx="700" cy="36" r="1.2"/><circle cx="240" cy="48" r="1.5"/></g>
+        </svg>
+        <span class="cap">Verdicts, in ink<b>21 rulings · each with its reversal condition</b></span>
+      </div>
+      <div class="tools" id="f-decisions"></div><div id="l-decisions"></div>
+    </section>
   </div>
 </div>
 
@@ -592,19 +829,19 @@ function drawChart(key){
   let svg=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Weight trajectory chart">
     <defs>
       <linearGradient id="lg${key}" x1="0" y1="0" x2="1" y2="0">
-        <stop offset="0" stop-color="#37D67F"/><stop offset=".6" stop-color="#CBE04C"/><stop offset="1" stop-color="#FFC94A"/>
+        <stop offset="0" stop-color="#F0A840"/><stop offset=".6" stop-color="#E8763C"/><stop offset="1" stop-color="#E24A3B"/>
       </linearGradient>
       <linearGradient id="fg${key}" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stop-color="rgba(122,214,110,.16)"/><stop offset="1" stop-color="rgba(122,214,110,0)"/>
+        <stop offset="0" stop-color="rgba(232,118,60,.18)"/><stop offset="1" stop-color="rgba(232,118,60,0)"/>
       </linearGradient>
     </defs>
-    <line x1="${P}" y1="${Y(c.goal)}" x2="${W-P}" y2="${Y(c.goal)}" stroke="#26355A" stroke-dasharray="3 5" stroke-width="1.5"/>
-    <text x="${W-P}" y="${Y(c.goal)-6}" text-anchor="end" fill="#55648F" font-size="10" font-weight="700" font-family="Outfit,sans-serif">${c.goal} lb ${c.done?"· done":"target"}</text>`;
-  if(c.proj) svg+=`<path d="${path(c.proj)}" fill="none" stroke="#3D4E7C" stroke-width="2.5" stroke-dasharray="1 7" stroke-linecap="round"/>`;
+    <line x1="${P}" y1="${Y(c.goal)}" x2="${W-P}" y2="${Y(c.goal)}" stroke="#4C2429" stroke-dasharray="3 5" stroke-width="1.5"/>
+    <text x="${W-P}" y="${Y(c.goal)-6}" text-anchor="end" fill="#7C5F58" font-size="10" font-weight="700" font-family="Outfit,sans-serif">${c.goal} lb ${c.done?"· done":"target"}</text>`;
+  if(c.proj) svg+=`<path d="${path(c.proj)}" fill="none" stroke="#5C3034" stroke-width="2.5" stroke-dasharray="1 7" stroke-linecap="round"/>`;
   svg+=`<path d="${path(c.pts)} L ${X(last[0])} ${H-P} L ${X(c.pts[0][0])} ${H-P} Z" fill="url(#fg${key})" stroke="none"/>
     <path class="mainline" d="${path(c.pts)}" fill="none" stroke="url(#lg${key})" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
-    <circle cx="${X(last[0])}" cy="${Y(last[1])}" r="5" fill="#FFC94A" stroke="#0A111F" stroke-width="2.5"/>
-    <g font-family="Outfit,sans-serif" font-size="10" font-weight="700" fill="#55648F">
+    <circle cx="${X(last[0])}" cy="${Y(last[1])}" r="5" fill="#E24A3B" stroke="#120B0D" stroke-width="2.5"/>
+    <g font-family="Outfit,sans-serif" font-size="10" font-weight="700" fill="#7C5F58">
       ${c.cap.map((t,i)=>`<text x="${X(i/(c.cap.length-1))}" y="${H-2}" text-anchor="${i==0?"start":i==c.cap.length-1?"end":"middle"}">${t}</text>`).join("")}
     </g></svg>
     <div class="badge" style="left:${(X(last[0])/W*100).toFixed(1)}%;top:${(Y(last[1])/H*100).toFixed(1)}%">${c.lab}</div>`;
@@ -651,7 +888,7 @@ $("#markall").addEventListener("click",()=>{REVIEW.forEach(r=>store["rev-"+r.id]
 renderReview();
 
 /* ═══ dashboard: top supplements ═══ */
-const BARCOLORS=["#A78BFA","#4E7FFF","#37D67F","#FFC94A","#FF9F43","#F284B8","#3ECFCB"];
+const BARCOLORS=["#E24A3B","#F0A840","#E8763C","#6D87D8","#A98BD8","#E87C93","#5BC77E"];
 (function(){
   const top=SUPPS.filter(s=>s.s==="Active"||s.s==="Planned").slice(0,7);
   $("#topsupp").innerHTML=top.map((s,i)=>`
@@ -668,9 +905,9 @@ const BARCOLORS=["#A78BFA","#4E7FFF","#37D67F","#FFC94A","#FF9F43","#F284B8","#3
 const RINGS=[
   {em:"😴",v:0.06,col:"var(--red)",rv:"Not started",rl:"Sleep apnea device"},
   {em:"🥩",v:0.96,col:"var(--green)",rv:"184 g",rl:"Protein · on plan"},
-  {em:"⚖️",v:0.15,col:"var(--amber)",rv:"3.5 / 24.8 lb",rl:"Phase-2 cut"},
-  {em:"🔬",v:0.0,col:"var(--orange)",rv:"Unbooked",rl:"DEXA ground truth"},
-  {em:"🧠",v:0.62,col:"var(--amber)",rv:"Amber",rl:"Execution > research"}
+  {em:"⚖️",v:0.15,col:"var(--gold)",rv:"3.5 / 24.8 lb",rl:"Phase-2 cut"},
+  {em:"🔬",v:0.0,col:"var(--ember)",rv:"Unbooked",rl:"DEXA ground truth"},
+  {em:"🧠",v:0.62,col:"var(--gold)",rv:"Amber",rl:"Execution > research"}
 ];
 (function(){
   const R=32,C=2*Math.PI*R;
@@ -678,7 +915,7 @@ const RINGS=[
     <div class="ring" data-go="protocols">
       <div class="ringviz">
         <svg width="76" height="76" viewBox="0 0 76 76">
-          <circle cx="38" cy="38" r="${R}" fill="none" stroke="#1A2742" stroke-width="6"/>
+          <circle cx="38" cy="38" r="${R}" fill="none" stroke="#2E181C" stroke-width="6"/>
           <circle class="arc" cx="38" cy="38" r="${R}" fill="none" stroke="${r.col}" stroke-width="6"
             stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C}" data-off="${(C*(1-Math.max(r.v,.02))).toFixed(1)}"/>
         </svg>
@@ -748,7 +985,7 @@ const vSupps=buildView("supplements",SUPPS,
    section:s=>s.s==="Ruled Out"?"Ruled out":(s.s==="Gated"?"Gated":(s.s==="Reduce/Cut if stacking"?"Reduce / cut if stacking":"Stack")),
    row:s=>`<div class="lrow"><div class="top">
       <span class="em">${CAT_EMOJI[s.cat[0]]||"💊"}</span><span class="nm">${esc(s.n)}</span>
-      <span class="ratebar"><span class="track"><i style="width:${(s.r/40*100)}%;background:${s.r>=26?"var(--green)":s.r>=18?"var(--amber)":"var(--red)"}"></i></span></span>
+      <span class="ratebar"><span class="track"><i style="width:${(s.r/40*100)}%;background:${s.r>=26?"var(--green)":s.r>=18?"var(--gold)":"var(--red)"}"></i></span></span>
       <span class="num" style="font-size:12.5px;color:var(--muted)">${s.r}/40</span>
       <span class="meta">${pill("Tier "+s.tier,TIER_PILL[s.tier])}${sPill(s.s)}</span></div>
     <div class="sub">${esc(s.dose)} · ${esc(s.timing)} · ${s.cat.map(c=>esc(c)).join(", ")}</div>
