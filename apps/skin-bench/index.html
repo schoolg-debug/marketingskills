@@ -213,6 +213,62 @@
   td.wcol{color:var(--dim);white-space:nowrap;font-size:12.5px}
   .slotchip{font-size:11.5px;color:var(--dim);white-space:nowrap}
 
+  /* ================= PRICE ================= */
+  .pcol{white-space:nowrap;font-variant-numeric:tabular-nums}
+  .pnow{font-family:var(--font-d);font-weight:700;font-size:14px}
+  .pwas{font-size:11px;color:var(--faint);text-decoration:line-through;margin-left:5px}
+  .psize{display:block;font-size:10.5px;color:var(--faint);letter-spacing:.02em;margin-top:1px}
+  .psale{display:inline-block;font-size:9.5px;font-weight:800;letter-spacing:.08em;color:var(--teal);
+    background:var(--teal-dim);border-radius:5px;padding:1px 5px;margin-left:5px;vertical-align:1px}
+  .pest{border-bottom:1px dotted var(--faint);cursor:help}
+  .punk{font-size:11.5px;color:var(--faint);font-style:italic}
+  .qcol{white-space:nowrap;font-variant-numeric:tabular-nums;min-width:150px}
+  .qtot{font-family:var(--font-d);font-weight:600;font-size:13.5px;color:var(--violet2)}
+  .qunits{display:block;font-size:10.5px;color:var(--faint);margin-top:1px}
+  .qone{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--teal);background:var(--teal-dim);border-radius:5px;padding:2px 6px}
+  .qmany{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--amber);background:var(--amber-dim);border-radius:5px;padding:2px 6px}
+  .qnote{display:block;font-size:11px;color:var(--dim);margin-top:5px;line-height:1.45;white-space:normal;max-width:260px}
+  .delta{font-size:10.5px;font-weight:700;margin-left:6px;font-variant-numeric:tabular-nums}
+  .dup{color:var(--red)} .ddn{color:var(--teal)}
+  .priceline{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-top:9px;
+    padding-top:9px;border-top:1px dashed var(--line)}
+  .priceline .lab{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);font-weight:700}
+
+  /* price watch */
+  .refreshbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:var(--panel-s);
+    border:1px solid var(--line);border-radius:var(--r-md);padding:12px 16px;margin-bottom:16px}
+  .refreshbar .dotlive{width:7px;height:7px;border-radius:50%;background:var(--teal);flex-shrink:0;
+    box-shadow:0 0 0 0 rgba(62,214,181,.6);animation:pulse 2.6s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(62,214,181,.5)}70%{box-shadow:0 0 0 9px rgba(62,214,181,0)}100%{box-shadow:0 0 0 0 rgba(62,214,181,0)}}
+  .refreshbar b{font-family:var(--font-d);font-size:13px}
+  .refreshbar span{font-size:12px;color:var(--dim)}
+  .refreshbar .stamp{margin-left:auto;font-family:var(--font-m);font-size:11px;color:var(--faint)}
+  body.phone .refreshbar .stamp{margin-left:0;width:100%}
+  .spendgrid{display:grid;gap:10px;margin-bottom:18px}
+  body.desktop .spendgrid{grid-template-columns:repeat(4,1fr)}
+  body.phone .spendgrid{grid-template-columns:1fr 1fr}
+  .spend{background:var(--panel-s);border:1px solid var(--line);border-radius:var(--r-md);padding:14px 16px}
+  .spend .sk{font-size:11px;color:var(--dim);font-weight:600}
+  .spend .sv{font-family:var(--font-d);font-size:23px;font-weight:700;margin-top:3px;font-variant-numeric:tabular-nums}
+  .spend .sn{font-size:11px;color:var(--faint);margin-top:2px}
+  .cartrow{display:flex;align-items:center;gap:12px;padding:11px 14px;border-bottom:1px solid var(--line)}
+  .cartrow:last-child{border-bottom:0}
+  .cartrow .cn{flex:1;font-size:13.5px;font-weight:500;min-width:0}
+  .cartrow .cn small{display:block;color:var(--faint);font-size:11px;font-weight:400;margin-top:1px}
+  .cartrow .cq{font-family:var(--font-m);font-size:12px;color:var(--dim);white-space:nowrap}
+  .cartrow .cp{font-family:var(--font-d);font-weight:700;font-size:14px;white-space:nowrap;font-variant-numeric:tabular-nums}
+  .savebox{border:1px solid rgba(62,214,181,.3);background:linear-gradient(180deg,rgba(62,214,181,.07),transparent);
+    border-radius:var(--r-lg);padding:16px 18px;margin:18px 0}
+  .savebox h3{font-family:var(--font-d);font-size:14.5px;display:flex;gap:8px;align-items:center;margin-bottom:4px}
+  .savebox p{font-size:12.5px;color:var(--dim)}
+  .savelist{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+  .saveitem{display:flex;gap:10px;align-items:baseline;font-size:12.5px;color:var(--dim);
+    background:rgba(62,214,181,.05);border-radius:10px;padding:9px 12px}
+  .saveitem b{color:var(--ink);font-weight:600}
+  .saveitem .amt{margin-left:auto;font-family:var(--font-d);font-weight:700;color:var(--teal);white-space:nowrap}
+
   .grouph{
     display:flex;align-items:center;gap:10px;margin:26px 0 10px;
   }
@@ -721,14 +777,205 @@ const EXCLUDED=[
 ["Tretinoin · minoxidil · essential oils · derma-stamp · UPF sleeves · window film","Not Sephora/Ulta categories — sources unchanged from the protocols."],
 ["Any glycolic >7% · any peel · any scrub · at-home needling device · hydroquinone · IPL/BBL","Skin Protocol no-fly list — unchanged."]];
 
+/* ============================================================
+   PRICES — verified against retailer + brand pages on the date in PRICE_META.
+   [ now, wasIfOnSale(0=none), size, retailer, unitsPerQuarter, quarterTotal, bulkNote, verified(1)|estimate(0) ]
+   "unitsPerQuarter" is derived from this protocol's real burn rate, not a guess at
+   an average user: SPF is two-finger AM + reapply at every 3-hour stop; actives are
+   PM-only; hair runs the Nizoral/zinc rotation with a monthly clarify.
+============================================================ */
+const PRICE_META={checked:'2026-08-27',source:'Ulta, brand DTC sites, Walmart/Target where Sephora blocks crawling'};
+const PRICE={
+/* ---- FACE · cleansers ---- */
+"Round Lab 1025 Dokdo Cleanser":[11.24,14.99,"150 ml","Ulta",2,22.48,"No jumbo exists — two 150 ml bottles cover 90 days of double-cleansing.",1],
+"Skinfix Barrier+ Foaming Oil Cleanser":[30,0,"5 oz","Sephora",1,30,"One 5 oz bottle clears the quarter.",1],
+"CeraVe Hydrating Cleanser (current)":[18.99,0,"16 oz","Ulta",1,18.99,"16 oz runs about six months — one bottle covers two quarters.",1],
+"Cetaphil Gentle Skin Cleanser":[12.74,16.99,"16 oz","Ulta",1,12.74,"16 oz is a two-quarter bottle. Cheapest cleanser slot on the bench.",1],
+"Anua Heartleaf Quercetinol Pore Deep Cleansing Foam":[15,0,"150 ml","Ulta",2,30,"Two tubes per quarter.",0],
+"Skin1004 Hyalu-Cica Gentle Cleansing Milk":[14,0,"125 ml","Ulta",2,28,"Two bottles per quarter.",0],
+"Byoma Creamy Jelly Cleanser · Bubble Fresh Start Gel":[12.99,0,"175 ml","Ulta",2,25.98,"Two bottles per quarter.",1],
+"Double-cleanse: Anua Heartleaf Cleansing Oil · Inkey Oat Cleansing Balm":[20,0,"200 ml","Ulta",1,20,"One 200 ml bottle of the Anua oil covers 90 nights of SPF removal.",1],
+/* ---- FACE · AM brighteners ---- */
+"Peach & Lily Transparen-C Pro Spot Treatment":[39,0,"30 ml","Ulta",1,39,"Spot use — one tube per quarter.",0],
+"Naturium Vitamin C Complex Serum":[21,0,"30 ml","Sephora",1,21,"Jumbo 60 ml is $38 — two quarters for $4 less than buying twice.",1],
+"Maelove Glow Maker (current)":[32.95,0,"30 ml","DTC",1,32.95,"One 30 ml bottle per quarter at 4 drops a morning.",1],
+"Hyper Skin Hyper Clear Brightening Vitamin C":[32,0,"30 ml","Sephora",1,32,"One bottle per quarter.",0],
+"Beauty of Joseon Glow Deep Serum (Rice + Alpha-Arbutin)":[17,0,"30 ml","Both",1,17,"The 60 ml size is the same listing — take it and skip a reorder.",1],
+"Sunday Riley C.E.O. 15% Vitamin C":[80,0,"30 ml","Sephora",1,80,"Priciest brightener on the bench by 4×.",0],
+"The Ordinary Ascorbyl Tetraisopalmitate 20% in Vitamin F":[16,0,"30 ml","Both",1,16,"One bottle per quarter.",0],
+"Good Molecules Vitamin C Booster Powder":[8,0,"6 g","Ulta",2,16,"Powder keeps indefinitely — the heat-proof road option.",0],
+/* ---- FACE · moisturizers ---- */
+"Aestura Atobarrier 365 Cream":[36,0,"80 ml","Sephora",2,72,"Two jars a quarter at twice daily. No larger size at Sephora.",0],
+"Skinfix Barrier+ Triple Lipid-Peptide Cream":[54,0,"1.7 oz","Sephora",2,108,"XL 3.3 oz is the real quarter buy; the $46 refill cuts every reorder after.",1],
+"CeraVe Moisturizing Lotion (current)":[19.99,0,"16 oz","Ulta",1,19.99,"16 oz easily clears 90 days as a tret buffer.",1],
+"Round Lab Birch Juice Moisturizing Cream":[30.6,36,"80 ml","Ulta",2,61.2,"Two jars a quarter.",1],
+"Torriden Dive-In Low-Molecular HA Cream":[22,0,"80 ml","Sephora",2,44,"Two jars a quarter.",0],
+"Naturium Plant Ceramide Rich Cream · Byoma Gel-Cream":[25,0,"50 ml","Sephora / Ulta",2,50,"Two jars a quarter.",1],
+"Eucerin Advanced Repair · Cetaphil Moisturizing Cream":[14,0,"16 oz","Ulta",1,14,"Tub size — one covers the quarter with room to spare.",0],
+"Dieux Instant Angel · Tower 28 SOS Daily Barrier Recovery Cream":[45,0,"50 ml","Sephora",2,90,"Instant Angel comes in 100 ml — that's the single-purchase quarter.",1],
+"Skin1004 Hyalu-Cica Moisture Cream · Anua Heartleaf 70 Calming Cream":[20,0,"75 ml","Ulta",2,40,"Two jars a quarter.",0],
+/* ---- FACE · SPF daily driver ---- */
+"Isntree Hyaluronic Acid Watery Sun Gel SPF 50+":[24,0,"50 ml","Ulta",3,72,"Three bottles. Face SPF is the one slot where no jumbo exists — budget for it.",0],
+"Beauty of Joseon Relief Sun: Rice + Probiotics SPF 50+":[18,0,"50 ml","Both",3,54,"Sold in 2-packs on the brand site — one 2-pack plus a single covers the quarter.",0],
+"Anua Heartleaf Silky Moisture Sun Cream SPF 50 (current)":[22,0,"50 ml","Ulta",3,66,"Now listed at Ulta as Zero-Cast Moisturizing Finish Sunscreen — same slot, new name.",0],
+"Skin1004 Hyalu-Cica Water-Fit Sun Serum SPF 50+":[17.1,19,"50 ml × 2","Ulta",2,34.2,"Already sold as a twin pack — 1½ packs is the quarter. Best $/ml SPF on the bench.",1],
+"Round Lab Birch Juice Moisturizing Sun Cream SPF 50+":[24,0,"50 ml","Ulta",3,72,"Three bottles a quarter.",0],
+"Black Girl Sunscreen Make It Matte SPF 45":[19.99,0,"3 oz","Ulta",2,39.98,"3 oz is generous for a face SPF — two bottles clear 90 days.",0],
+"Innisfree Daily UV Defense SPF 36":[15,0,"50 ml","Sephora",3,45,"Three bottles a quarter.",0],
+/* ---- FACE · tinted mineral ---- */
+"Fenty Skin Hydra Vizor Huez Tinted Mineral SPF 30":[39,0,"1.7 oz","Sephora",1,39,"Refillable — the refill is the cheaper repeat buy.",0],
+"Tower 28 SunnyDays SPF 30 Tinted":[32,0,"1 oz","Sephora",1,32,"Selective-day product — one tube per quarter.",1],
+"LRP Anthelios Mineral Tinted, Deep (current pick)":[39.99,0,"1.7 oz","Ulta",1,39.99,"One bottle per quarter on selective days.",1],
+"Ilia Super Serum Skin Tint SPF 40":[48,0,"30 ml","Sephora",1,48,"One bottle per quarter.",1],
+"EltaMD UV Daily Tinted SPF 40 (now in multiple tints)":[45,0,"1.7 oz","Ulta",1,45,"One tube per quarter.",0],
+/* ---- FACE · sticks ---- */
+"Round Lab Birch Juice Sun Stick SPF 50+":[22,0,"23 g","Ulta",2,44,"Two sticks a quarter at 3-hour-stop reapplication.",0],
+"Beauty of Joseon Matte Sun Stick (Mugwort + Camelia) SPF 50+":[18,0,"18 g","Both",2,36,"Two sticks a quarter.",0],
+"Isntree Hyaluronic Acid Airy Sun Stick SPF 50+":[22,0,"22 g","Ulta",2,44,"Two sticks a quarter.",0],
+"Shiseido Clear Sunscreen Stick SPF 50+":[32,0,"20 g","Sephora",2,64,"Two sticks — the priciest way to fill this slot.",0],
+/* ---- FACE · azelaic ---- */
+"Naturium Azelaic Topical Acid 10%":[20,0,"30 ml","Sephora",1,20,"One tube per quarter on alternate nights.",1],
+"Anua Azelaic Acid 10 Hyaluron Serum (current)":[22,0,"30 ml","Ulta",2,44,"Nightly use burns a 30 ml bottle in about 45 days.",1],
+"Topicals Faded Serum":[28,38,"1.7 oz","Sephora",1,28,"Jumbo size exists and is the single-purchase quarter.",1],
+"The Ordinary Azelaic Acid Suspension 10%":[12,0,"30 ml","Both",2,24,"Cheapest full-strength azelaic anywhere.",0],
+/* ---- FACE · retinoids ---- */
+"Medik8 Crystal Retinal (start 1 → 3 → 6)":[69,0,"30 ml","Sephora",1,69,"One tube per quarter — retinal is used sparingly.",0],
+"Differin (adapalene 0.1%) Gel":[29.24,38.99,"1.6 oz","Ulta",1,29.24,"The 1.6 oz pump is ~4 months. The 0.5 oz at $14.99 costs far more per gram.",1],
+"Naturium Retinaldehyde Cream Serum 0.1%":[32,0,"30 ml","Sephora",1,32,"One tube per quarter.",1],
+"COSRX The Retinol 0.5 Oil":[25,0,"20 ml","Ulta",1,25,"One bottle per quarter.",0],
+"Dr. Dennis Gross Advanced Retinol + Ferulic Overnight":[92,0,"1 oz","Sephora",1,92,"Most expensive single item on the face bench.",0],
+/* ---- FACE · pigment ---- */
+"Eadem Milk Marvel Dark Spot Serum":[68,0,"30 ml","Sephora",1,68,"One bottle per quarter.",1],
+"Good Molecules Discoloration Correcting Serum":[12,0,"30 ml","Ulta",1,12,"Best cost-per-quarter of any active on the whole bench.",1],
+"COSRX Alpha-Arbutin 2% (current)":[25,0,"30 ml","Ulta",1,25,"One bottle per quarter.",1],
+"Anua Niacinamide 10 + TXA 4% Serum":[22,0,"30 ml","Ulta",1,22,"One bottle per quarter.",1],
+"Naturium Tranexamic Topical Acid 5%":[20,0,"30 ml","Sephora",1,20,"One bottle per quarter.",1],
+"The Inkey List Tranexamic Acid Night Treatment":[16,0,"30 ml","Sephora",1,16,"One bottle per quarter.",0],
+"Hyper Skin Hyper Even Brightening Dark Spot Cream":[46,0,"50 ml","Sephora",1,46,"One jar per quarter.",0],
+/* ---- FACE · optional ---- */
+"Anua Heartleaf 77% Toner · Skin1004 Centella Ampoule · Torriden Dive-In Serum":[23,0,"250 ml","Ulta / Sephora",1,23,"Anua sells a 500 ml at $34.50 — the quarter bottle, and it saves $11.50 over two smalls.",1],
+"Medik8 Crystal Retinal Ceramide Eye · Good Molecules Caffeine Eye Cream":[8,0,"15 ml","Sephora / Ulta",1,8,"Good Molecules side; the Medik8 eye runs about $59.",0],
+"Biodance Collagen-Real Deep Mask":[5,0,"1 sheet","Both",6,30,"Reset days only — roughly six sheets a quarter.",0],
+/* ---- LIP ---- */
+"Skinfix Barrier+ Lip Repair Balm":[25,0,"0.5 oz","Sephora",2,50,"Two tubes a quarter at road-level reapplication.",1],
+"Aquaphor Lip Repair (day) · Healing Ointment (overnight seal)":[5.99,0,"0.35 oz","Ulta",3,17.97,"Buy the 2-pack at $11.99 plus one single — reapplying every 2 hours eats a tube in a month.",1],
+"The Ordinary Squalane + Amino Acids Lip Balm (current)":[8.9,0,"15 ml","Both",2,17.8,"Two tubes a quarter.",0],
+"Dieux Lip Butter":[22,0,"0.5 oz","Sephora",2,44,"Two tubes a quarter.",0],
+"Cetaphil Healing Ointment":[12,0,"1.7 oz","Ulta",1,12,"One tube covers the quarter for lips and knuckles both.",0],
+"EltaMD UV Lip Balm SPF 36":[23,0,"0.14 oz","Ulta",2,46,"Two tubes a quarter.",0],
+"Aquaphor Lip Protectant + Sunscreen SPF 30":[5.99,0,"0.35 oz","Ulta",2,11.98,"Two tubes a quarter — the cheapest way to cover the lip-SPF slot.",0],
+"Sun Bum SPF 30 (current)":[4.99,0,"0.15 oz","Ulta",0,0,"Being replaced — brand under active litigation. Do not rebuy.",0],
+"Ultra Violette Sheen Screen SPF 50 (tinted)":[27,0,"0.5 oz","Sephora",1,27,"One tube per quarter.",0],
+"Vacation Lip Sunscreen SPF 30":[14,0,"0.5 oz","Both",2,28,"Two tubes a quarter — scented, so only once lips are fully healed.",1],
+/* ---- BODY ---- */
+"Black Girl Sunscreen SPF 30 Moisturizing Lotion":[16.99,0,"3 oz","Ulta",4,67.96,"3 oz is small for daily arm and neck coverage — the 6 oz size is the better quarter buy.",1],
+"EltaMD UV Sport SPF 50 · EltaMD UV Lotion SPF 30+":[33,0,"7 oz","Ulta",2,66,"Two bottles a quarter.",0],
+"CeraVe Hydrating Body Sunscreen SPF 30 (planned buy)":[15,0,"5 oz","Ulta",3,45,"Three bottles a quarter.",0],
+"Isntree Watery Sun Gel (large) · BOJ Relief Sun (arms/hands)":[24,0,"100 ml","Ulta / Both",2,48,"The large Isntree is the body-sized bottle.",0],
+"Sol de Janeiro Rio Radiance SPF 50 Body Lotion":[38,0,"6.7 oz","Both",2,76,"Two bottles a quarter — Lane B days only.",0],
+"Vacation Classic Lotion SPF 30/50 · Bondi Sands Body SPF 50":[15,0,"6 oz","Both / Ulta",3,45,"The 20 oz Sun Jug is $48 — near-identical money for three times the sunscreen.",1],
+"Nécessaire The Body Retinol":[65,0,"150 ml","Sephora",1,65,"Three nights a week — one tube clears the quarter exactly.",1],
+"Medix 5.5 Retinol + Ferulic · Gold Bond Retinol Overnight (owned)":[12,0,"15 oz","Walmart",1,12,"Big-bottle drugstore retinol — one covers the quarter.",0],
+"Naturium Retinol Body Lotion":[26,0,"200 ml","Sephora",1,26,"One bottle per quarter.",1],
+"Versed Press Restart Gentle Retinol Body Lotion":[20,0,"200 ml","Ulta",1,20,"One bottle per quarter.",0],
+"Good Molecules Discoloration Correcting Body Treatment":[15,0,"120 ml","Ulta",1,15,"One bottle per quarter.",1],
+"Topicals Faded Serum (used on body spots)":[28,0,"1.7 oz","Sephora",1,28,"Spot use only — one bottle lasts well past a quarter.",1],
+"Naturium Tranexamic 5% · Hyper Skin Hyper Even":[20,0,"30 ml","Sephora",1,20,"One bottle per quarter.",1],
+"Skinfix Barrier+ Lipid-Boost Body Cream":[34,48,"8 oz","Sephora",2,68,"Currently $14 under list — a good moment to buy the quarter up front.",1],
+"CeraVe Moisturizing Cream · LRP Lipikar (current seal)":[19.99,0,"16 oz","Ulta",2,39.98,"Two tubs a quarter for full-body nightly sealing.",1],
+"Nécessaire The Body Lotion — Fragrance-Free":[30,0,"200 ml","Sephora",2,60,"The 450 ml at $52 is the quarter bottle and saves $8 over two smalls.",1],
+"Washes: Nécessaire FF · Byoma · Cetaphil":[28,0,"250 ml","Sephora / Ulta",1,28,"The 500 ml at $42 is the single-purchase quarter.",1],
+"Aquaphor Healing Ointment":[18.74,24.99,"14 oz","Ulta",1,18.74,"The 14 oz jar lasts most of a year. Buy it once, on sale, and forget it.",1],
+"Megababe Thigh Rescue Anti-Chafe Stick":[14,0,"2.1 oz","Ulta",2,28,"Mega Thigh Rescue at $20 is the single stick that covers 90 days of ten-hour seats.",1],
+"Nécessaire The Deodorant (FF) · Salt & Stone Deodorant":[24,0,"75 g","Sephora",2,48,"Two sticks a quarter.",1],
+"Nécessaire Body Wash Fragrance-Free":[28,0,"250 ml","Sephora",1,28,"The 500 ml at $42 covers the quarter in one bottle.",1],
+/* ---- HAIR ---- */
+"Jupiter Balancing Shampoo (zinc pyrithione 1%)":[28,0,"8.5 oz","Ulta",1,28,"Week-2 of the rotation only — one bottle runs about two quarters.",1],
+"Nizoral A-D (ketoconazole 1%) (current)":[16.88,0,"7 oz","Walmart",1,16.88,"Week-1 rotation only — one bottle is roughly six months.",1],
+"Briogeo Scalp Revival Dandruff Relief (3% salicylic)":[34,0,"8 oz","Both",1,34,"Rotation slot — one bottle covers two quarters.",0],
+"Nioxin Scalp Recovery Anti-Dandruff (zinc)":[28,0,"6.8 oz","Ulta",1,28,"Backup zinc option.",0],
+"Briogeo Charcoal + Coconut Micro-Exfoliating Shampoo":[42,0,"8 oz","Both",1,42,"Monthly clarify only — one bottle is close to a year.",1],
+"As I Am Coconut CoWash (current)":[8.99,0,"16 oz","Ulta",1,8.99,"The 32 oz at $16.99 is eight months of co-washing. Best bulk value on the entire bench.",1],
+"Kinky-Curly Come Clean (current clarifier)":[12,0,"8 oz","Ulta",1,12,"Monthly reset — one bottle is eight months.",1],
+"Pattern Beauty Cleansing Shampoo":[22,0,"7.8 oz","Both",1,22,"One bottle per quarter.",1],
+"Bread Beauty Supply Hair-Wash":[12,0,"small","Sephora",1,12,"Sized up on the brand site — take the larger for the quarter.",1],
+"Adwoa Beauty Baomint Moisturizing Shampoo":[28,0,"8 oz","Sephora",1,28,"One bottle per quarter.",0],
+"Camille Rose Sweet Ginger Cleansing Rinse":[14,0,"12 oz","Ulta",1,14,"One bottle per quarter.",0],
+"Melanin Haircare African Black Soap Shampoo":[24,0,"8 oz","Ulta",1,24,"One bottle per quarter.",0],
+"TGIN Honey Miracle Hair Mask":[19.99,0,"12 oz","Ulta",1,19.99,"Bi-weekly deep conditioning — one jar clears the quarter.",1],
+"Briogeo Don't Despair, Repair! Mask":[39,0,"8 oz","Both",1,39,"One jar per quarter.",1],
+"Shea Moisture Manuka · Cantu Deep Treatment (current)":[7.49,15.96,"12 oz","Ulta",1,7.49,"Cantu is under half list right now. Cheapest deep conditioner slot going.",1],
+"Camille Rose Algae Renew Deep Conditioner":[20,0,"12 oz","Ulta",1,20,"One jar per quarter.",0],
+"Adwoa Baomint Deep Treatment · Bread Hair-Mask":[14,0,"small","Sephora",1,14,"One jar per quarter.",1],
+"Pattern Intensive Conditioner · As I Am Hydration Elation":[9.99,0,"16 oz","Both / Ulta",1,9.99,"Rinse-out after every wash — one jar covers the quarter.",1],
+"Melanin Haircare Softening Leave-In":[26,0,"8 oz","Ulta",1,26,"One bottle per quarter.",0],
+"Kinky-Curly Knot Today":[14,0,"8 oz","Ulta",1,14,"Weekly use lands one bottle at almost exactly 90 days.",1],
+"As I Am Leave-In Conditioner (current)":[10.5,0,"8 oz","Ulta",1,10.5,"One bottle per quarter.",1],
+"Camille Rose Curl Love Milk · TGIN Green Tea Leave-In":[16.99,0,"13 oz","Ulta",1,16.99,"One bottle per quarter.",1],
+"Pattern Leave-In Conditioner":[29,0,"12 oz","Both",1,29,"One bottle per quarter.",1],
+"Tropic Isle Living JBCO (current)":[7.99,0,"4 oz","Ulta",1,7.99,"One 4 oz bottle covers the quarter for scalp and beard both.",1],
+"Melanin Haircare Multi-Use Pure Oil Blend":[25,0,"4 oz","Ulta",1,25,"One bottle per quarter.",0],
+"Briogeo Rosemary Pre-Wash Scalp Oil":[32,0,"1.7 oz","Both",1,32,"Jumbo size listed on the brand site is the quarter buy.",1],
+"Pattern Jojoba Oil Hair Serum":[25,0,"3.9 oz","Both",1,25,"Doubles as the beard oil — one bottle serves both benches.",0],
+"Ceremonia Aceite de Moska Scalp Oil":[24,0,"3.4 oz","Sephora",1,24,"One bottle per quarter.",0],
+"Jamaican Mango & Lime Black Castor Oil":[8,0,"4 oz","Ulta",1,8,"Backup JBCO when Tropic Isle is out.",0],
+"Melanin Haircare Twist-Elongating Style Cream":[28,0,"8 oz","Ulta",1,28,"One jar per quarter.",0],
+"Kinky-Curly Curling Custard":[20,0,"8 oz","Ulta",1,20,"One jar per quarter.",1],
+"Shea Moisture 100% Raw Shea Butter (current)":[12,0,"10.5 oz","Ulta",1,12,"Flagged parent — swap to TGIN or Melanin Haircare at the next reorder.",0],
+"TGIN Butter Cream Daily Moisturizer":[16.99,0,"12 oz","Ulta",1,16.99,"Daily refresh between wash days — one jar per quarter.",1],
+"Camille Rose Curl Maker · Pattern Curl Gel":[29,0,"9.8 oz","Ulta / Both",1,29,"Pattern's 25 oz at $49 is two and a half quarters in one bottle.",1],
+"As I Am DoubleButter · Cantu Shea Butter Leave-In":[9.99,0,"8 oz","Ulta",1,9.99,"One jar per quarter.",1],
+"Bread Hair-Cream · Pattern Styling Cream":[26,0,"8 oz","Sephora / Both",1,26,"One jar per quarter.",0],
+"Kitsch Satin Pillowcase · Sleep Bonnet":[20,0,"set","Ulta",0,0,"Durable goods, not a consumable. Buy two bonnets so one is always clean.",0],
+"The Doux Mousse Def Texture Foam":[16.99,0,"7 oz","Ulta",1,16.99,"One can per quarter for the 1–2 week cornrow refresh.",0],
+"Evolve Satin Bonnet / Durag":[10,0,"each","Ulta",0,0,"Durable goods. Buy two.",0],
+"Pattern Edge Control · Cantu Edge Stay Gel":[16,0,"2.7 oz","Both / Ulta",1,16,"Light hand — one jar lasts well past a quarter.",0],
+"Slip Pure Silk Pillowcase":[89,0,"queen","Sephora",0,0,"Durable goods. The real-silk upgrade if you want it.",0],
+/* ---- BEARD & BROW ---- */
+"Every Man Jack Beard Oil":[12,0,"1 oz","Ulta",1,12,"One bottle per quarter.",1],
+"Kirkland minoxidil 5% foam (current)":[48.99,50.99,"6 × 2.11 oz","Costco",0.5,24.5,"The 6-month box is two full quarters. Lowest cost-per-day item you own.",1],
+"Every Man Jack Beard Wash":[12,0,"6.7 oz","Ulta",1,12,"Two to three washes a week — one bottle per quarter.",1],
+"Duke Cannon Beard Oil · Wash · Balm":[20,0,"each","Ulta",1,20,"Per item, per quarter.",0],
+"Anastasia Brow Wiz — Ebony or Dark Brown":[26,0,"0.003 oz","Both",1,26,"One pencil per quarter.",0],
+"NYX Micro Brow Pencil (current stopgap)":[12,0,"0.003 oz","Ulta",1,12,"One pencil per quarter.",1],
+"Fenty Brow MVP · Rare Beauty Brow Harmony":[22,0,"each","Sephora",1,22,"One pencil per quarter.",0],
+"Fenty Pro Filt'r Setting Powder (translucent)":[34,0,"0.3 oz","Sephora",0,0,"Occasional use — one lasts well over a year.",0],
+/* ---- ORAL ---- */
+"Heliocare Advanced Antioxidant":[29,0,"60 caps","Ulta",1.5,43.5,"60 capsules is 60 days. A full quarter needs one and a half boxes — buy two.",1],
+"Lumineux Whitening Strips & Toothpaste":[25,0,"kit","Ulta",1,25,"One kit per quarter.",0],
+"Spotlight Oral Care":[12,0,"each","Ulta",1,12,"One tube per quarter.",0],
+"Crest":[0,0,"—","—",0,0,"Skipped on the parent flag.",0]
+};
+function P(name){return PRICE[name]||null}
+function money(n){return '$'+(n%1===0?n.toFixed(0):n.toFixed(2))}
+function priceCell(name){
+  const p=P(name);
+  if(!p)return '<span class="punk">Not yet priced</span>';
+  if(!p[0])return '<span class="punk">—</span>';
+  const est=p[7]?'':' pest';
+  const t=p[7]?'':'title="List price carried from the brand’s own page — the next refresh re-verifies it at the retailer."';
+  return `<span class="pnow${est}" ${t}>${money(p[0])}</span>`+
+    (p[1]?`<span class="pwas">${money(p[1])}</span><span class="psale">Sale</span>`:'')+
+    `<span class="psize">${p[2]} · ${p[3]}</span>`;
+}
+function qtrCell(name){
+  const p=P(name);
+  if(!p||!p[4])return '<span class="punk">—</span>';
+  const one=p[4]<=1;
+  return `<span class="qtot">${money(p[5])}</span> <span class="${one?'qone':'qmany'}">${one?'1 buy':p[4]+'×'}</span>`+
+    `<span class="qunits">${p[4]===0.5?'one box covers 2 quarters':p[4]+' × '+p[2]+' per 90 days'}</span>`+
+    `<span class="qnote">${p[6]}</span>`;
+}
+
 /* ============================================================ STATE + NAV ============================================================ */
 const NAVSECTIONS=[
  {lab:'Overview',items:[['home','🏠','Home']]},
  {lab:'Variety Bench',items:Object.keys(BENCHES).map(k=>[('b:'+k),BENCHES[k].icon,BENCHES[k].label]).concat([['scent','🌫️','Scent Bench']])},
+ {lab:'Money',items:[['prices','💰','Price Watch']]},
  {lab:'Programs',items:[['bonus','🫧','Bonus Shelf'],['proc','🔁','Procedure Swaps']]},
  {lab:'Screens',items:[['brands','⚖️','Brands & Audit']]}
 ];
-const TABS=[['home','Home','M3 10.5 12 3l9 7.5M5.5 9.5V20h13V9.5'],['bench','Benches','M4 5h16M4 12h16M4 19h16'],['bonus','Bonus','M12 3l2.2 6.8H21l-5.4 4 2 6.9-5.6-4.2-5.6 4.2 2-6.9-5.4-4h6.8z'],['proc','Swaps','M4 7h13l-3-3M20 17H7l3 3'],['brands','Brands','M12 3l8 3v6c0 4.5-3.4 7.8-8 9-4.6-1.2-8-4.5-8-9V6z']];
+const TABS=[['home','Home','M3 10.5 12 3l9 7.5M5.5 9.5V20h13V9.5'],['bench','Benches','M4 5h16M4 12h16M4 19h16'],['prices','Prices','M12 2v20M17 6.5c0-1.9-2.2-3-5-3s-5 1-5 3 2.2 2.7 5 3.4 5 1.4 5 3.6-2.2 3-5 3-5-1.1-5-3'],['bonus','Bonus','M12 3l2.2 6.8H21l-5.4 4 2 6.9-5.6-4.2-5.6 4.2 2-6.9-5.4-4h6.8z'],['proc','Swaps','M4 7h13l-3-3M20 17H7l3 3'],['brands','Brands','M12 3l8 3v6c0 4.5-3.4 7.8-8 9-4.6-1.2-8-4.5-8-9V6z']];
 let state={view:'home',bench:'face',q:'',role:'all',screen:'all',light:'all',open:{}};
 
 function counts(rows){const c={g:0,y:0,w:0,r:0,o:0,m:0};rows.forEach(r=>c[r[3]]++);return c}
@@ -832,17 +1079,20 @@ function renderBench(k){
       const head=`<div class="grouph"><span class="gt">${slot}</span><span class="gn">${sr.length}</span><span class="rule"></span></div>`;
       if(phone){
         return head+`<div class="cardlist">`+sr.map(r=>{
-          const id=k+'|'+r[0];
+          const id=k+'|'+r[0];const p=P(r[0]);
           return `<div class="pcard ${state.open[id]?'open':''}" data-card="${esc(id)}">
             <div class="r1"><div class="nm">${esc(r[0])}</div>${pill(SCREEN,r[3])}</div>
             <div class="meta">${rolePills(r[2])}<span class="loc">${esc(r[4])}</span></div>
-            <div class="why">${esc(r[5])}</div>
+            ${p&&p[0]?`<div class="priceline"><span class="lab">Now</span>${priceCell(r[0])}
+              ${p[4]?`<span class="lab" style="margin-left:6px">Quarter</span><span class="qtot">${money(p[5])}</span>
+              <span class="${p[4]<=1?'qone':'qmany'}">${p[4]<=1?'1 buy':p[4]+'×'}</span>`:''}</div>`:''}
+            <div class="why">${esc(r[5])}${p&&p[6]?`<span class="qnote"><b style="color:var(--violet2)">Quarter buy:</b> ${esc(p[6])}</span>`:''}</div>
           </div>`;
         }).join('')+`</div>`;
       }
       return head+`<div class="tablewrap"><div class="tscroll"><table class="bench">
-        <thead><tr><th>Product</th><th>Role</th><th>Screen</th><th>Where</th><th>Why it fits</th></tr></thead>
-        <tbody>${sr.map(r=>`<tr><td class="prod">${esc(r[0])}</td><td style="white-space:nowrap">${rolePills(r[2])}</td><td>${pill(SCREEN,r[3])}</td><td class="wcol">${esc(r[4])}</td><td class="why">${esc(r[5])}</td></tr>`).join('')}</tbody>
+        <thead><tr><th>Product</th><th>Role</th><th>Screen</th><th>Price now</th><th>Per quarter</th><th>Why it fits</th></tr></thead>
+        <tbody>${sr.map(r=>`<tr><td class="prod">${esc(r[0])}<span class="psize">${esc(r[4])}</span></td><td style="white-space:nowrap">${rolePills(r[2])}</td><td>${pill(SCREEN,r[3])}</td><td class="pcol">${priceCell(r[0])}</td><td class="qcol">${qtrCell(r[0])}</td><td class="why">${esc(r[5])}</td></tr>`).join('')}</tbody>
       </table></div></div>`;
     }).join('');
   }
@@ -981,6 +1231,80 @@ function renderBrands(){
   </div>`;
 }
 
+/* ---------- price watch ---------- */
+/* Appended to by the scheduled refresh: {name, date, from, to} */
+const PRICE_LOG=[];
+function allPriced(){
+  const seen={},out=[];
+  Object.entries(BENCHES).forEach(([k,B])=>B.rows.forEach(r=>{
+    if(seen[r[0]])return; seen[r[0]]=1;
+    const p=P(r[0]); if(p&&p[0])out.push({name:r[0],bench:B.icon+' '+B.label,slot:r[1],role:r[2],p});
+  }));
+  return out;
+}
+function renderPrices(){
+  const q=state.q.toLowerCase();
+  const items=allPriced();
+  const current=items.filter(i=>i.role.includes('C')&&i.p[4]);
+  const leaders=items.filter(i=>i.role.includes('L')&&i.p[4]);
+  const curTotal=current.reduce((a,i)=>a+i.p[5],0);
+  const leadTotal=leaders.reduce((a,i)=>a+i.p[5],0);
+  const verified=items.filter(i=>i.p[7]).length;
+  const onSale=items.filter(i=>i.p[1]);
+  const unpriced=Object.values(BENCHES).flatMap(b=>b.rows).filter(r=>!P(r[0])&&!/^Skip:/.test(r[0])).length;
+  const NEG=/no jumbo|no larger|no bigger/i;
+  const POS=/jumbo|32 oz|450 ml|500 ml|20 oz|2-pack|twin pack|XL |refill|6-month|Mega |25 oz|60 ml|larger|bigger/i;
+  const bulk=items.filter(i=>POS.test(i.p[6])&&!NEG.test(i.p[6]));
+  const shown=q?items.filter(i=>(i.name+i.bench+i.slot).toLowerCase().includes(q)):items;
+  const sorted=[...shown].sort((a,b)=>b.p[5]-a.p[5]);
+  const clean=s=>s.replace(/ \(current[^)]*\)/,'').split(' · ')[0];
+  return `<div class="view">
+    <div class="vhead"><div class="eyebrow">Live pricing</div>
+    <h1 class="vtitle">💰 Price Watch</h1>
+    <p class="vsub">What every bottle costs today, and what it costs to hold that slot for a full 90 days. A quarter buy is one purchase that lasts the quarter — not three months' worth bought at once.</p></div>
+
+    <div class="refreshbar">
+      <span class="dotlive"></span>
+      <b>Prices verified ${PRICE_META.checked}</b>
+      <span>· ${verified} of ${items.length} confirmed at the retailer this run${unpriced?` · ${unpriced} row${unpriced===1?'':'s'} still queued`:''}</span>
+      <span class="stamp">AUTO-REFRESH · WEEKLY</span>
+    </div>
+
+    <div class="spendgrid">
+      <div class="spend"><div class="sk">Your current stack</div><div class="sv">${money(curTotal)}</div><div class="sn">per quarter · ${current.length} products you own</div></div>
+      <div class="spend"><div class="sk">All slot leaders</div><div class="sv">${money(leadTotal)}</div><div class="sn">per quarter if you upgraded every slot</div></div>
+      <div class="spend"><div class="sk">On sale right now</div><div class="sv">${onSale.length}</div><div class="sn">below list at the retailer</div></div>
+      <div class="spend"><div class="sk">Bulk wins</div><div class="sv">${bulk.length}</div><div class="sn">a bigger SKU beats repeat buys</div></div>
+    </div>
+
+    <div class="savebox">
+      <h3>📦 Buy these in the bigger size</h3>
+      <p>Each of these has a larger SKU that covers the whole quarter in one purchase — fewer reorders from the road, and usually cheaper per unit.</p>
+      <div class="savelist">${bulk.slice(0,10).map(i=>`<div class="saveitem"><b>${esc(clean(i.name))}</b><span style="flex:1">${esc(i.p[6])}</span><span class="amt">${money(i.p[5])}/qtr</span></div>`).join('')}</div>
+    </div>
+
+    <div class="grouph"><span class="gt">🧺 Your current stack — the quarterly restock</span><span class="gn">${money(curTotal)}</span><span class="rule"></span></div>
+    <div class="tablewrap">${current.slice().sort((a,b)=>b.p[5]-a.p[5]).map(i=>`<div class="cartrow">
+      <div class="cn">${esc(clean(i.name))}<small>${esc(i.slot)} · ${esc(i.p[2])} · ${esc(i.p[3])}</small></div>
+      <div class="cq">${i.p[4]===0.5?'½ box':i.p[4]+'×'}</div>
+      <div class="cp">${money(i.p[5])}</div></div>`).join('')}
+      <div class="cartrow" style="background:rgba(143,125,248,.07)"><div class="cn"><b>Quarterly total, current stack</b></div><div class="cq"></div><div class="cp" style="color:var(--violet2)">${money(curTotal)}</div></div>
+    </div>
+
+    <div class="grouph"><span class="gt">📉 Price changes since last check</span><span class="rule"></span></div>
+    ${PRICE_LOG.length?`<div class="tablewrap">${PRICE_LOG.map(l=>`<div class="cartrow"><div class="cn">${esc(l.name)}<small>${l.date}</small></div><div class="cp ${l.to>l.from?'dup':'ddn'}">${money(l.from)} → ${money(l.to)}</div></div>`).join('')}</div>`
+    :`<div class="rulecard">This is the first price snapshot, so there is nothing to compare against yet. The weekly refresh re-checks every retailer page and records each move here with a ▲ or ▼ against the previous figure — so a sunscreen creeping up, or a sale landing on the Skinfix cream, surfaces without you going looking.</div>`}
+
+    <div class="grouph"><span class="gt">💵 Every priced item, dearest quarter first</span><span class="gn">${sorted.length}</span><span class="rule"></span></div>
+    <div class="tablewrap"><div class="tscroll"><table class="bench">
+      <thead><tr><th>Product</th><th>Bench</th><th>Price now</th><th>Per quarter</th><th>The quarter buy</th></tr></thead>
+      <tbody>${sorted.map(i=>`<tr><td class="prod">${esc(i.name)}</td><td class="wcol">${esc(i.bench)}</td><td class="pcol">${priceCell(i.name)}</td><td class="pcol"><span class="qtot">${money(i.p[5])}</span><span class="qunits">${i.p[4]===0.5?'½ box':i.p[4]+' × '+i.p[2]}</span></td><td class="why">${esc(i.p[6])}</td></tr>`).join('')}</tbody>
+    </table></div></div>
+
+    <div class="rulecard" style="margin-top:20px"><b>How to read a quarter price.</b> It is the real cost of keeping that slot filled for 90 days at your usage — SPF reapplied at every three-hour stop, actives PM-only, hair on the Nizoral rotation. A <span class="qone">1 buy</span> badge means one bottle does the whole quarter. A <span class="qmany">3×</span> badge means you reorder mid-quarter, so take the bigger SKU when the note says one exists. Dotted prices are list prices carried from the brand's own page rather than re-checked at the retailer; the weekly refresh promotes them as it confirms them.</div>
+  </div>`;
+}
+
 /* ---------- home ---------- */
 function ring(pct,color,label,center){
   const r=36,c=2*Math.PI*r,off=c*(1-pct);
@@ -1028,7 +1352,7 @@ function renderHome(){
       <div class="stat"><div class="k">Bench items</div><div class="v">${all.length}</div></div>
       <div class="stat"><div class="k">🧺 Currently owned</div><div class="v">${currents}</div></div>
       <div class="stat"><div class="k">🔴 To replace</div><div class="v">${all.filter(r=>r[3]==='r').length+1}<small> (Sun Bum lip)</small></div></div>
-      <div class="stat"><div class="k">Bonus cap</div><div class="v">$25<small>/qtr</small></div></div>
+      <div class="stat"><div class="k">💰 Quarterly restock</div><div class="v">${money(allPriced().filter(i=>i.role.includes('C')&&i.p[4]).reduce((a,i)=>a+i.p[5],0))}<small> current stack</small></div></div>
     </div>
     <section class="homesec"><h2>Jump in</h2><div class="secsub">Every bench is grouped by slot — shop a shelf at a time.</div>
     <div class="homegrid">
@@ -1037,6 +1361,7 @@ function renderHome(){
       <button class="qcard" data-go="bonus"><span class="qi">🫧</span><b>Bonus Shelf</b><span>The "sure, why not" list — honest about what it does.</span><span class="qn">${BONUS.length} items →</span></button>
       <button class="qcard" data-go="proc"><span class="qi">🔁</span><b>Procedure Swaps</b><span>Same job or better, three gates, zero exceptions.</span><span class="qn">3 slots →</span></button>
       <button class="qcard" data-go="brands"><span class="qi">⚖️</span><b>Brands &amp; Audit</b><span>Litigation screen + your current shelf's verdict.</span><span class="qn">${LIT.length} brands →</span></button>
+      <button class="qcard" data-go="prices"><span class="qi">💰</span><b>Price Watch</b><span>Today's price on every bottle, plus what one quarter costs.</span><span class="qn">verified ${PRICE_META.checked} →</span></button>
     </div></section>
     <section class="homesec"><h2>The operating rules</h2><div class="secsub">Same rules everywhere — they're why the bench can be trusted blind.</div>
     <div class="rulegrid">
@@ -1067,6 +1392,7 @@ function renderMain(){
     v==='scent'?renderScent():
     v==='bonus'?renderBonus():
     v==='proc'?renderProc():
+    v==='prices'?renderPrices():
     renderBrands();
   bindChips();
   document.querySelectorAll('[data-card]').forEach(el=>el.onclick=()=>{
