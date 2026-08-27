@@ -1,0 +1,1094 @@
+<title>Skin Bench</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Albert+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --bg:#0A0C14; --bg2:#0D101B; --panel:#12152290; --panel-s:#121522; --raised:#1A1E30; --raised2:#20253C;
+    --line:rgba(150,163,214,.11); --line2:rgba(150,163,214,.2);
+    --ink:#EAECF8; --dim:#8E95B5; --faint:#5C6284;
+    --violet:#8F7DF8; --violet2:#B7A8FF; --violet-dim:rgba(143,125,248,.14);
+    --teal:#3ED6B5; --teal-dim:rgba(62,214,181,.13);
+    --amber:#EFB95C; --amber-dim:rgba(239,185,92,.13);
+    --gray:#9AA3C0; --gray-dim:rgba(154,163,192,.13);
+    --red:#F0797F; --red-dim:rgba(240,121,127,.13);
+    --orange:#EE9A5F; --orange-dim:rgba(238,154,95,.14);
+    --blue:#6FA9F5; --blue-dim:rgba(111,169,245,.13);
+    --pink:#EF7FBE;
+    --r-lg:20px; --r-md:14px; --r-sm:9px;
+    --font-d:'Sora',ui-sans-serif,system-ui,sans-serif;
+    --font-b:'Albert Sans',ui-sans-serif,system-ui,-apple-system,sans-serif;
+    --font-m:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{background:var(--bg)}
+  body{
+    background:var(--bg); color:var(--ink); font-family:var(--font-b);
+    font-size:15px; line-height:1.5; -webkit-font-smoothing:antialiased; min-height:100vh;
+  }
+  ::selection{background:rgba(143,125,248,.35)}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+  input{font:inherit;color:inherit}
+  a{color:var(--violet2)}
+  :focus-visible{outline:2px solid var(--violet);outline-offset:2px;border-radius:6px}
+  @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+  /* ================= SHELL ================= */
+  #stage{min-height:100vh;background:
+    radial-gradient(900px 480px at 85% -10%,rgba(143,125,248,.13),transparent 60%),
+    radial-gradient(700px 420px at -10% 30%,rgba(62,214,181,.06),transparent 55%),
+    var(--bg);}
+  #app{display:flex;flex-direction:column;min-height:100vh}
+
+  /* phone frame on wide viewports */
+  body.phone #stage{padding:28px 16px;display:flex;justify-content:center;align-items:flex-start}
+  @media(min-width:760px){
+    body.phone #app{
+      width:414px;height:min(880px,calc(100vh - 56px));min-height:0;border-radius:48px;
+      border:1px solid var(--line2);outline:8px solid #05060B;box-shadow:0 40px 90px rgba(0,0,0,.6);
+      overflow:hidden;background:var(--bg);position:relative;
+    }
+  }
+  @media(max-width:759px){ body.phone #stage{padding:0} }
+  body.desktop #stage{padding:0}
+  body.desktop #app{max-width:1440px;margin:0 auto}
+
+  /* ================= HEADER ================= */
+  header.top{
+    display:flex;align-items:center;gap:14px;padding:14px 20px;
+    position:sticky;top:0;z-index:40;
+    background:rgba(10,12,20,.72);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+    border-bottom:1px solid var(--line);
+  }
+  .brand{display:flex;align-items:center;gap:10px;flex-shrink:0}
+  .brand .mark{
+    width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-size:17px;
+    background:linear-gradient(135deg,#8F7DF8,#5E4FD0);box-shadow:0 4px 14px rgba(143,125,248,.35);
+  }
+  .brand b{font-family:var(--font-d);font-weight:700;font-size:16px;letter-spacing:.01em}
+  .brand small{display:block;color:var(--dim);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:600}
+  .searchbox{flex:1;max-width:520px;position:relative}
+  .searchbox svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);opacity:.5}
+  .searchbox input{
+    width:100%;padding:9px 14px 9px 36px;border-radius:12px;border:1px solid var(--line);
+    background:var(--panel-s);color:var(--ink);font-size:14px;transition:border-color .2s;
+  }
+  .searchbox input::placeholder{color:var(--faint)}
+  .searchbox input:focus{border-color:var(--violet);outline:none}
+  .hspace{flex:1}
+  /* mode switch */
+  .modeswitch{
+    display:flex;gap:2px;padding:3px;border-radius:11px;background:var(--panel-s);
+    border:1px solid var(--line);flex-shrink:0;
+  }
+  .modeswitch button{
+    display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:8px;
+    font-size:12.5px;font-weight:600;color:var(--dim);transition:all .22s;
+  }
+  .modeswitch button.on{background:var(--raised2);color:var(--ink);box-shadow:0 2px 8px rgba(0,0,0,.35)}
+  body.phone .modeswitch button span.lbl{display:none}
+  body.phone header.top{padding:12px 16px}
+  body.phone .brand small{display:none}
+  body.phone .searchbox{display:none}
+
+  /* phone sticky search below header */
+  .psearch{display:none;padding:10px 16px 4px;position:sticky;top:63px;z-index:30;
+    background:linear-gradient(rgba(10,12,20,.85),rgba(10,12,20,.6) 80%,transparent);
+    backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);}
+  body.phone .psearch{display:block}
+  .psearch input{width:100%;padding:10px 16px 10px 38px;border-radius:14px;border:1px solid var(--line);
+    background:var(--panel-s);color:var(--ink);font-size:14px}
+  .psearch{position:relative}
+  .psearch .wrap{position:relative}
+  .psearch svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);opacity:.5}
+
+  /* ================= LAYOUT ================= */
+  .frame{flex:1;display:flex;min-height:0}
+  body.phone .frame{overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none}
+  body.phone .frame::-webkit-scrollbar{display:none}
+  nav.side{
+    width:230px;flex-shrink:0;padding:18px 12px 32px;border-right:1px solid var(--line);
+    display:flex;flex-direction:column;gap:2px;position:sticky;top:63px;align-self:flex-start;
+    max-height:calc(100vh - 63px);overflow-y:auto;
+  }
+  body.phone nav.side{display:none}
+  .navlab{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);
+    font-weight:700;padding:14px 12px 6px;font-family:var(--font-d)}
+  .navlab:first-child{padding-top:2px}
+  nav.side button{
+    display:flex;align-items:center;gap:10px;width:100%;padding:8px 12px;border-radius:10px;
+    font-size:13.5px;font-weight:500;color:var(--dim);transition:background .15s,color .15s;text-align:left;
+  }
+  nav.side button:hover{background:rgba(150,163,214,.06);color:var(--ink)}
+  nav.side button.on{background:var(--violet-dim);color:var(--violet2);font-weight:600}
+  nav.side button .ico{width:18px;text-align:center;flex-shrink:0}
+  nav.side button .n{margin-left:auto;font-family:var(--font-m);font-size:11px;color:var(--faint);
+    background:rgba(150,163,214,.08);padding:1px 7px;border-radius:20px}
+  nav.side button.on .n{color:var(--violet2);background:rgba(143,125,248,.16)}
+
+  main{flex:1;min-width:0;padding:22px 26px 60px}
+  body.phone main{padding:8px 16px 110px}
+
+  /* ================= BOTTOM NAV (phone) ================= */
+  .bottomnav{display:none}
+  body.phone .bottomnav{
+    display:flex;position:sticky;bottom:0;z-index:50;margin-top:auto;
+    background:rgba(13,15,26,.82);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+    border-top:1px solid var(--line);padding:8px 8px calc(10px + env(safe-area-inset-bottom));
+  }
+  @media(min-width:760px){ body.phone .bottomnav{position:absolute;left:0;right:0;bottom:0} }
+  .bottomnav button{
+    flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 2px;
+    color:var(--faint);font-size:10px;font-weight:600;letter-spacing:.02em;border-radius:12px;transition:color .18s;
+  }
+  .bottomnav button svg{transition:transform .2s}
+  .bottomnav button.on{color:var(--violet2)}
+  .bottomnav button.on svg{transform:translateY(-1px)}
+
+  /* ================= COMMON COMPONENTS ================= */
+  .view{animation:vin .3s ease}
+  @keyframes vin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  h1.vtitle{font-family:var(--font-d);font-size:22px;font-weight:700;letter-spacing:-.01em;text-wrap:balance}
+  .vsub{color:var(--dim);font-size:13.5px;max-width:640px;margin-top:4px}
+  .vhead{margin-bottom:18px}
+  .eyebrow{font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--violet2);font-weight:700;font-family:var(--font-d);margin-bottom:6px}
+
+  .card{background:var(--panel-s);border:1px solid var(--line);border-radius:var(--r-lg);padding:18px}
+  .pill{display:inline-flex;align-items:center;gap:5px;padding:2.5px 9px;border-radius:20px;
+    font-size:11px;font-weight:600;letter-spacing:.01em;white-space:nowrap}
+  .pill .dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+  .p-g{background:var(--teal-dim);color:var(--teal)} .p-g .dot{background:var(--teal)}
+  .p-y{background:var(--amber-dim);color:var(--amber)} .p-y .dot{background:var(--amber)}
+  .p-w{background:var(--gray-dim);color:var(--gray)} .p-w .dot{background:var(--gray)}
+  .p-r{background:var(--red-dim);color:var(--red)} .p-r .dot{background:var(--red)}
+  .p-o{background:var(--orange-dim);color:var(--orange)} .p-o .dot{background:var(--orange)}
+  .p-b{background:var(--blue-dim);color:var(--blue)} .p-b .dot{background:var(--blue)}
+  .p-v{background:var(--violet-dim);color:var(--violet2)} .p-v .dot{background:var(--violet)}
+  .p-m{background:var(--gray-dim);color:var(--gray)} .p-m .dot{background:var(--teal)}
+
+  /* chips row */
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 4px}
+  body.phone .chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-left:-16px;margin-right:-16px;padding:0 16px}
+  body.phone .chips::-webkit-scrollbar{display:none}
+  .chip{
+    padding:6px 13px;border-radius:20px;border:1px solid var(--line);background:var(--panel-s);
+    font-size:12.5px;font-weight:600;color:var(--dim);white-space:nowrap;transition:all .18s;flex-shrink:0;
+  }
+  .chip:hover{border-color:var(--line2);color:var(--ink)}
+  .chip.on{background:var(--violet-dim);border-color:rgba(143,125,248,.45);color:var(--violet2)}
+
+  /* stat strip */
+  .statstrip{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+  .stat{
+    flex:1;min-width:130px;background:var(--panel-s);border:1px solid var(--line);border-radius:var(--r-md);
+    padding:12px 15px;
+  }
+  .stat .k{font-size:11px;font-weight:600;color:var(--dim);letter-spacing:.03em;display:flex;align-items:center;gap:6px}
+  .stat .v{font-family:var(--font-d);font-size:21px;font-weight:700;margin-top:2px;font-variant-numeric:tabular-nums}
+  .stat .v small{font-size:12px;color:var(--faint);font-weight:500;font-family:var(--font-b)}
+  body.phone .statstrip{gap:8px}
+  body.phone .stat{min-width:calc(50% - 4px)}
+
+  /* coverage bar */
+  .covbar{height:9px;border-radius:6px;overflow:hidden;display:flex;background:var(--raised);margin:10px 0 8px}
+  .covbar i{height:100%;display:block}
+  .covleg{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--dim)}
+  .covleg b{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+  .covleg .sw{width:8px;height:8px;border-radius:3px;display:inline-block;margin-right:5px}
+
+  /* ================= TABLE (desktop) ================= */
+  .tablewrap{border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;background:var(--panel-s)}
+  .tscroll{overflow-x:auto}
+  table.bench{width:100%;border-collapse:collapse;font-size:13.5px;min-width:840px}
+  table.bench th{
+    text-align:left;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);
+    font-weight:700;padding:11px 14px;border-bottom:1px solid var(--line);font-family:var(--font-d);
+    background:rgba(150,163,214,.03);white-space:nowrap;
+  }
+  table.bench td{padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+  table.bench tr:last-child td{border-bottom:0}
+  table.bench tr:hover td{background:rgba(150,163,214,.035)}
+  td.prod{font-weight:600;max-width:290px}
+  td.why{color:var(--dim);font-size:12.5px;max-width:400px;min-width:220px}
+  td.wcol{color:var(--dim);white-space:nowrap;font-size:12.5px}
+  .slotchip{font-size:11.5px;color:var(--dim);white-space:nowrap}
+
+  .grouph{
+    display:flex;align-items:center;gap:10px;margin:26px 0 10px;
+  }
+  .grouph:first-of-type{margin-top:18px}
+  .grouph .gt{font-family:var(--font-d);font-weight:600;font-size:14.5px}
+  .grouph .gn{font-family:var(--font-m);font-size:11px;color:var(--faint)}
+  .grouph .rule{flex:1;height:1px;background:var(--line)}
+
+  /* ================= CARDS (phone) ================= */
+  .cardlist{display:flex;flex-direction:column;gap:9px}
+  .pcard{
+    background:var(--panel-s);border:1px solid var(--line);border-radius:16px;padding:13px 15px;
+    transition:border-color .18s; cursor:pointer;
+  }
+  .pcard:active{transform:scale(.985)}
+  .pcard .r1{display:flex;align-items:flex-start;gap:10px}
+  .pcard .nm{font-weight:600;font-size:14px;flex:1;line-height:1.35}
+  .pcard .meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;align-items:center}
+  .pcard .meta .loc{font-size:11px;color:var(--faint);font-weight:600}
+  .pcard .why{
+    max-height:0;overflow:hidden;transition:max-height .3s ease,margin .3s ease;
+    color:var(--dim);font-size:12.5px;line-height:1.55;
+  }
+  .pcard.open .why{max-height:300px;margin-top:10px}
+  .pcard.open{border-color:rgba(143,125,248,.4)}
+
+  /* ================= RINGS ================= */
+  .rings{display:flex;gap:12px;margin-bottom:16px}
+  .ringcard{
+    flex:1;background:var(--panel-s);border:1px solid var(--line);border-radius:var(--r-lg);
+    padding:16px 12px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;
+  }
+  .ring{position:relative;width:86px;height:86px}
+  .ring svg{transform:rotate(-90deg)}
+  .ring .rc{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--font-d);
+    font-weight:700;font-size:18px;font-variant-numeric:tabular-nums}
+  .ring .rc small{display:block;font-size:9px;color:var(--faint);font-weight:600;letter-spacing:.08em;text-transform:uppercase;font-family:var(--font-b)}
+  .ringcard .rlab{font-size:11.5px;font-weight:600;color:var(--dim)}
+  circle.track{stroke:var(--raised);fill:none}
+  circle.prog{fill:none;stroke-linecap:round;transition:stroke-dashoffset 1s cubic-bezier(.22,1,.36,1)}
+
+  /* ================= HOME ================= */
+  .hero{margin:14px 0 20px}
+  body.desktop .hero{margin-top:6px}
+  .hero h1{font-family:var(--font-d);font-size:27px;font-weight:800;letter-spacing:-.02em;line-height:1.15;text-wrap:balance}
+  .hero p{color:var(--dim);font-size:14px;margin-top:6px;max-width:560px}
+  .hero .date{font-family:var(--font-m);font-size:11px;color:var(--faint);letter-spacing:.06em;margin-bottom:8px}
+  .homegrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+  body.desktop .homegrid{grid-template-columns:repeat(4,1fr)}
+  .qcard{
+    background:var(--panel-s);border:1px solid var(--line);border-radius:var(--r-lg);padding:16px;
+    display:flex;flex-direction:column;gap:6px;cursor:pointer;transition:transform .18s,border-color .18s;text-align:left;
+  }
+  .qcard:hover{transform:translateY(-2px);border-color:var(--line2)}
+  .qcard .qi{font-size:20px}
+  .qcard b{font-family:var(--font-d);font-size:14px;font-weight:600}
+  .qcard span{font-size:11.5px;color:var(--dim)}
+  .qcard .qn{font-family:var(--font-m);font-size:11px;color:var(--violet2);margin-top:auto;padding-top:4px}
+
+  .rulecard{border-left:3px solid var(--violet);border-radius:6px var(--r-md) var(--r-md) 6px;
+    background:var(--panel-s);border-top:1px solid var(--line);border-right:1px solid var(--line);border-bottom:1px solid var(--line);
+    padding:13px 16px;font-size:13px;color:var(--dim)}
+  .rulecard b{color:var(--ink)}
+  .rulegrid{display:grid;gap:10px;margin-top:12px}
+  body.desktop .rulegrid{grid-template-columns:1fr 1fr}
+
+  .sos{border:1px solid rgba(240,121,127,.3);background:linear-gradient(180deg,rgba(240,121,127,.07),transparent);border-radius:var(--r-lg);padding:18px;margin-top:22px}
+  .sos h3{font-family:var(--font-d);font-size:15px;display:flex;gap:8px;align-items:center}
+  .sos ol{margin:10px 0 0 18px;color:var(--dim);font-size:13px;display:flex;flex-direction:column;gap:8px}
+  .sos ol b{color:var(--ink)}
+  .sos .never{margin-top:12px;font-size:12.5px;color:var(--red);background:var(--red-dim);border-radius:10px;padding:10px 13px}
+
+  section.homesec{margin-top:26px}
+  section.homesec>h2{font-family:var(--font-d);font-size:16px;font-weight:700;margin-bottom:4px}
+  section.homesec>.secsub{color:var(--dim);font-size:12.5px;margin-bottom:12px}
+
+  /* ================= BONUS ================= */
+  .lightlegend{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
+  .bonusgrid{display:grid;gap:10px}
+  body.desktop .bonusgrid{grid-template-columns:repeat(auto-fill,minmax(330px,1fr))}
+  .bcard{background:var(--panel-s);border:1px solid var(--line);border-radius:16px;padding:15px;display:flex;flex-direction:column;gap:9px}
+  .bcard .bh{display:flex;gap:10px;align-items:flex-start}
+  .bcard .bh b{flex:1;font-size:14px;font-weight:600;line-height:1.35}
+  .bcard .facts{display:flex;gap:6px;flex-wrap:wrap}
+  .bcard .what{font-size:12.5px;color:var(--dim);line-height:1.55}
+  .bcard .cond{font-size:12.5px;line-height:1.55;border-radius:10px;padding:9px 12px}
+  .bcard .cond b{font-weight:700;letter-spacing:.04em;font-size:10.5px;text-transform:uppercase;display:block;margin-bottom:2px}
+  .cond.c-g{background:var(--teal-dim);color:var(--teal)}
+  .cond.c-y{background:var(--amber-dim);color:var(--amber)}
+  .cond.c-r{background:var(--red-dim);color:var(--red)}
+  .bfoot{display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--faint);margin-top:auto}
+  .bfoot .prc{font-family:var(--font-m);font-weight:600;color:var(--dim)}
+
+  /* ================= PROCEDURES ================= */
+  .gatecard{display:grid;gap:10px;margin:14px 0 20px}
+  body.desktop .gatecard{grid-template-columns:repeat(3,1fr)}
+  .gate{background:var(--panel-s);border:1px solid var(--line);border-radius:var(--r-md);padding:14px}
+  .gate .gn{font-family:var(--font-m);font-size:10px;color:var(--violet2);letter-spacing:.14em}
+  .gate b{display:block;font-family:var(--font-d);font-size:13.5px;margin:4px 0 3px}
+  .gate p{font-size:12px;color:var(--dim)}
+  .regbox{border:1px solid rgba(239,185,92,.35);background:linear-gradient(180deg,rgba(239,185,92,.08),transparent);
+    border-radius:var(--r-lg);padding:16px 18px;margin-bottom:20px}
+  .regbox h3{font-family:var(--font-d);font-size:14.5px;display:flex;align-items:center;gap:8px}
+  .regbox ul{margin:9px 0 0 18px;font-size:13px;color:var(--dim);display:flex;flex-direction:column;gap:6px}
+  .regbox ul b{color:var(--ink)}
+  .slotsec{margin-top:26px}
+  .slotsec .sh{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:4px}
+  .slotsec .sh h2{font-family:var(--font-d);font-size:17px;font-weight:700}
+  .slotsec .job{color:var(--dim);font-size:13px;margin-bottom:12px;max-width:660px}
+  .swaplist{display:flex;flex-direction:column;gap:8px}
+  .swap{background:var(--panel-s);border:1px solid var(--line);border-radius:14px;padding:12px 15px;
+    display:grid;grid-template-columns:1fr auto;gap:4px 14px;align-items:start}
+  .swap .sn{font-weight:600;font-size:13.5px}
+  .swap .sv{grid-row:span 2;display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+  .swap .sm{color:var(--dim);font-size:12.5px;max-width:640px}
+  .swap .cost{font-family:var(--font-m);font-size:11px;color:var(--faint)}
+  .closedbox{margin-top:12px;background:var(--gray-dim);border-radius:12px;padding:11px 14px;font-size:12.5px;color:var(--gray)}
+  .flags{display:grid;gap:10px;margin-top:12px}
+  body.desktop .flags{grid-template-columns:1fr 1fr}
+  .flag{background:var(--panel-s);border:1px solid var(--line);border-radius:var(--r-md);padding:13px 15px;font-size:12.5px;color:var(--dim)}
+  .flag b{color:var(--ink);display:block;font-size:13px;margin-bottom:3px;font-family:var(--font-d);font-weight:600}
+  .stacktbl .swap{grid-template-columns:1fr}
+  .seasonrow{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+  .season{font-size:11.5px;background:var(--raised);border-radius:8px;padding:4px 9px;color:var(--dim)}
+  .season b{color:var(--ink);font-weight:600}
+
+  /* ================= BRANDS ================= */
+  .brandrow td:first-child{font-weight:600}
+  .verd{color:var(--dim);font-size:12.5px}
+
+  /* scent */
+  .lanecard{background:var(--panel-s);border:1px solid var(--line);border-radius:var(--r-lg);padding:16px;margin-bottom:12px}
+  .lanecard h3{font-family:var(--font-d);font-size:14.5px;margin-bottom:10px}
+  .lrow{padding:10px 0;border-top:1px solid var(--line);font-size:13px}
+  .lrow .lyr{font-weight:600;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--violet2);font-family:var(--font-d)}
+  .lrow .cur{color:var(--dim);font-size:12.5px;margin-top:3px}
+  .lrow .cur b{color:var(--ink);font-weight:600}
+  .lrow .opts{color:var(--dim);font-size:12.5px;margin-top:3px}
+
+  .empty{padding:40px 20px;text-align:center;color:var(--faint);font-size:13.5px}
+  .foot{margin-top:34px;color:var(--faint);font-size:11.5px;text-align:center;padding-bottom:8px}
+  .foot b{color:var(--dim)}
+</style>
+
+<div id="stage"><div id="app">
+  <header class="top">
+    <div class="brand">
+      <div class="mark">🧴</div>
+      <div><b>Skin Bench</b><small>Aesthetic Protocol HQ</small></div>
+    </div>
+    <div class="searchbox">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="q1" type="search" placeholder="Search every bench — product, brand, slot…" autocomplete="off">
+    </div>
+    <div class="hspace"></div>
+    <div class="modeswitch" role="group" aria-label="Layout mode">
+      <button id="mDesk" title="Desktop mode">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+        <span class="lbl">Desktop</span>
+      </button>
+      <button id="mPhone" title="Phone mode">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="7" y="2" width="10" height="20" rx="3"/><path d="M11 18h2"/></svg>
+        <span class="lbl">Phone</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="psearch"><div class="wrap">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    <input id="q2" type="search" placeholder="Search the benches…" autocomplete="off">
+  </div></div>
+
+  <div class="frame">
+    <nav class="side" id="sidenav"></nav>
+    <main id="main"></main>
+  </div>
+
+  <nav class="bottomnav" id="bottomnav"></nav>
+</div></div>
+
+<script>
+/* ============================================================
+   DATA — compiled Aug 26, 2026 from Aesthetic Protocol HQ (Notion):
+   Sephora & Ulta Variety Bench, Procedure Swap Bench, The Bonus Shelf.
+   role: L leader · C current · B bench · S skip · P planned
+   screen: g ✅ clear · y 🟡 parent flag · w ⚪ closed · r 🔴 active/replace · o ⚠️ controversy · m mixed
+============================================================ */
+const SCREEN={g:['✅ Clear','p-g'],y:['🟡 Parent flag','p-y'],w:['⚪ Closed','p-w'],r:['🔴 Excluded','p-r'],o:['⚠️ Controversy','p-o'],m:['⚪ / ✅','p-m']};
+const ROLE={L:['⭐ Slot leader','p-y'],C:['🧺 Current','p-b'],B:['🪑 Bench','p-w'],S:['⛔ Skip','p-r'],P:['🛒 Planned buy','p-g']};
+
+const BENCHES={
+face:{label:'Face Bench',icon:'✨',tag:'Main-character skin. Nine slots, every one benched deep.',rows:[
+["Round Lab 1025 Dokdo Cleanser","🧼 Cleansers","L","g","Ulta","Low-pH, mild surfactants, removes SPF fully without tightness. The K-beauty benchmark cleanser."],
+["Skinfix Barrier+ Foaming Oil Cleanser","🧼 Cleansers","L","g","Sephora","Lipid-replenishing, dissolves SPF; built for compromised barriers."],
+["CeraVe Hydrating Cleanser (current)","🧼 Cleansers","C","y","Ulta","Ceramides, non-foaming."],
+["Cetaphil Gentle Skin Cleanser","🧼 Cleansers","B","g","Ulta","The drugstore constant; also the no-bag fallback."],
+["Anua Heartleaf Quercetinol Pore Deep Cleansing Foam","🧼 Cleansers","B","g","Ulta","Foam without stripping; pairs with your Anua stack."],
+["Skin1004 Hyalu-Cica Gentle Cleansing Milk","🧼 Cleansers","B","g","Ulta","Milk texture, centella; best on tretinoin nights."],
+["Byoma Creamy Jelly Cleanser · Bubble Fresh Start Gel","🧼 Cleansers","B","g","Ulta","Barrier-lipid gels, budget tier."],
+["Double-cleanse: Anua Heartleaf Cleansing Oil · Inkey Oat Cleansing Balm","🧼 Cleansers","B","g","Ulta / Sephora","Two fingers of SPF twice a day needs an oil step at night (PM SPF removal)."],
+["Peach & Lily Transparen-C Pro Spot Treatment","🍊 AM Brighteners","L","g","Ulta","20% ethyl ascorbic acid, stable derivative, fragrance-free; doubles as a dark-spot targeter."],
+["Naturium Vitamin C Complex Serum","🍊 AM Brighteners","L","g","Sephora","Tetrahexyldecyl-ascorbate-led blend — oil-soluble, heat- and light-stable, fragrance-free. The truck-cab vitamin C."],
+["Maelove Glow Maker (current)","🍊 AM Brighteners","C","g","DTC only","L-ascorbic — oxidizes in cab heat. Home base."],
+["Hyper Skin Hyper Clear Brightening Vitamin C","🍊 AM Brighteners","B","g","Sephora","15% L-ascorbic + kojic + turmeric, formulated for melanin-rich skin and PIH. Home-base bottle (not heat-stable)."],
+["Beauty of Joseon Glow Deep Serum (Rice + Alpha-Arbutin)","🍊 AM Brighteners","B","g","Both","Not vitamin C — arbutin brightener; a gentle AM alternate on tret-heavy weeks."],
+["Sunday Riley C.E.O. 15% Vitamin C","🍊 AM Brighteners","B","g","Sephora","THD-ascorbate; premium tier. Light citrus from extracts — patch test."],
+["The Ordinary Ascorbyl Tetraisopalmitate 20% in Vitamin F","🍊 AM Brighteners","B","y","Both","Same stable THD chemistry, budget price."],
+["Good Molecules Vitamin C Booster Powder","🍊 AM Brighteners","B","g","Ulta","L-ascorbic as a dry powder — fully stable until mixed into moisturizer each morning. Smart road hack."],
+["Aestura Atobarrier 365 Cream","🧴 Moisturizers","L","g","Sephora","Korea's #1 barrier cream (Amorepacific derm line): ceramide capsules, fragrance-free, eczema-grade. The tret-buffer upgrade."],
+["Skinfix Barrier+ Triple Lipid-Peptide Cream","🧴 Moisturizers","L","g","Sephora","Ceramide/cholesterol/fatty-acid ratio done right; fragrance-free."],
+["CeraVe Moisturizing Lotion (current)","🧴 Moisturizers","C","y","Ulta","Ceramides + HA, buffer layer for tret."],
+["Round Lab Birch Juice Moisturizing Cream","🧴 Moisturizers","B","g","Ulta","Light gel-cream, fragrance-free; summer/AM texture."],
+["Torriden Dive-In Low-Molecular HA Cream","🧴 Moisturizers","B","g","Sephora","Hydration-first, fragrance-free."],
+["Skin1004 Hyalu-Cica Moisture Cream · Anua Heartleaf 70 Calming Cream","🧴 Moisturizers","B","g","Ulta","Centella / heartleaf calming — for post-tret redness nights."],
+["Dieux Instant Angel · Tower 28 SOS Daily Barrier Recovery Cream","🧴 Moisturizers","B","g","Sephora","Fragrance-free, NEA-grade sensitivity; both excellent tret buffers."],
+["Naturium Plant Ceramide Rich Cream · Byoma Gel-Cream","🧴 Moisturizers","B","g","Sephora / Ulta","Budget ceramide options."],
+["Eucerin Advanced Repair · Cetaphil Moisturizing Cream","🧴 Moisturizers","B","m","Ulta","Drugstore constants; fine on face or body."],
+["Isntree Hyaluronic Acid Watery Sun Gel SPF 50+","🔆 SPF — daily driver","L","g","Ulta","Lightest texture in the group; no cast, fragrance-free."],
+["Beauty of Joseon Relief Sun: Rice + Probiotics SPF 50+","🔆 SPF — daily driver","L","g","Both","The category's reference product; invisible on deep tones, fragrance-free, moisturizing."],
+["Anua Heartleaf Silky Moisture Sun Cream SPF 50 (current)","🔆 SPF — daily driver","C","g","Ulta","Zero cast, owned."],
+["Skin1004 Hyalu-Cica Water-Fit Sun Serum SPF 50+","🔆 SPF — daily driver","B","g","Ulta","Serum-weight, fragrance-free; good under a tinted layer."],
+["Round Lab Birch Juice Moisturizing Sun Cream SPF 50+","🔆 SPF — daily driver","B","g","Ulta","Cream texture for dry weeks; fragrance-free."],
+["Black Girl Sunscreen Make It Matte SPF 45","🔆 SPF — daily driver","B","w","Ulta","Built for melanin-rich skin, no cast, matte for oily central face (Qoves noted shine)."],
+["Innisfree Daily UV Defense SPF 36","🔆 SPF — daily driver","B","g","Sephora","Hybrid, no cast, lower SPF — lighter days only."],
+["Fenty Skin Hydra Vizor Huez Tinted Mineral SPF 30","🎨 SPF — tinted mineral","L","g","Sephora","15.5% zinc, 10 shades built around deep tones, niacinamide, fragrance-free, refillable. The strict-mode equal to Anthelios Deep."],
+["Tower 28 SunnyDays SPF 30 Tinted","🎨 SPF — tinted mineral","L","g","Sephora","14 shades, fragrance-free, first tinted SPF with the National Eczema Association seal."],
+["LRP Anthelios Mineral Tinted, Deep (current pick)","🎨 SPF — tinted mineral","C","y","Ulta","4 shades incl. Deep; derm post-procedure standard."],
+["Ilia Super Serum Skin Tint SPF 40","🎨 SPF — tinted mineral","B","g","Sephora","30 shades — the widest deep-tone range at either retailer; skincare-serum base."],
+["EltaMD UV Daily Tinted SPF 40 (now in multiple tints)","🎨 SPF — tinted mineral","B","w","Ulta","Derm standard; swatch the deepest tint on the jawline first — the original single tint went ashy on you."],
+["Round Lab Birch Juice Sun Stick SPF 50+","🖍️ SPF sticks","L","g","Ulta","Clear, no cast, niacinamide + ceramides; the cleanest ingredient list in the stick category."],
+["Beauty of Joseon Matte Sun Stick (Mugwort + Camelia) SPF 50+","🖍️ SPF sticks","B","g","Both","Matte finish for the shiny central face."],
+["Isntree Hyaluronic Acid Airy Sun Stick SPF 50+","🖍️ SPF sticks","B","g","Ulta","Lightest glide; good over the tinted layer."],
+["Shiseido Clear Sunscreen Stick SPF 50+","🖍️ SPF sticks","B","g","Sephora","Sweat-activated, water-resistant; heaviest-duty option for summer runs."],
+["Naturium Azelaic Topical Acid 10%","🌿 Azelaic acid","L","g","Sephora","10% azelaic + niacinamide, fragrance-free, cream-serum that layers under moisturizer without pilling."],
+["Anua Azelaic Acid 10 Hyaluron Serum (current)","🌿 Azelaic acid","C","g","Ulta","Full 10%, serum texture you actually use."],
+["Topicals Faded Serum","🌿 Azelaic acid","B","g","Sephora","Azelaic + tranexamic + niacinamide + kojic + licorice in one — a pigment multi-tool designed for deep skin; PM only, alternate with tret."],
+["The Ordinary Azelaic Acid Suspension 10%","🌿 Azelaic acid","B","y","Both","Cheapest full-strength; thicker texture."],
+["Medik8 Crystal Retinal (start 1 → 3 → 6)","🔁 Retinoid alternates","L","g","Sephora","Retinaldehyde — one step from retinoic acid, ~11× faster than retinol, encapsulated (more heat-tolerant than tret), fragrance-free, a real ladder."],
+["Differin (adapalene 0.1%) Gel","🔁 Retinoid alternates","B","g","Ulta","OTC prescription-grade retinoid; the most heat-stable of the group — the road-week retinoid."],
+["Naturium Retinaldehyde Cream Serum 0.1%","🔁 Retinoid alternates","B","g","Sephora","Same retinal logic, budget tier, fragrance-free."],
+["COSRX The Retinol 0.5 Oil","🔁 Retinoid alternates","B","g","Ulta","Oil-based retinol — least irritating format for your tone."],
+["Dr. Dennis Gross Advanced Retinol + Ferulic Overnight","🔁 Retinoid alternates","B","g","Sephora","Buffered retinol + ferulic + bakuchiol; gentlest entry."],
+["Eadem Milk Marvel Dark Spot Serum","🎯 Pigment / PIH","L","g","Sephora","The only serum at either retailer clinically tested on melanin-rich skin first; niacinamide + encapsulated vitamin C + amber algae; fragrance-free."],
+["Good Molecules Discoloration Correcting Serum","🎯 Pigment / PIH","L","g","Ulta","Tranexamic acid + niacinamide, fragrance-free, budget. Best value in the slot."],
+["COSRX Alpha-Arbutin 2% (current)","🎯 Pigment / PIH","C","g","Ulta","Arbutin + tranexamic + niacinamide."],
+["Anua Niacinamide 10 + TXA 4% Serum","🎯 Pigment / PIH","B","g","Ulta","Stackable with your Anua SPF/azelaic."],
+["Naturium Tranexamic Topical Acid 5%","🎯 Pigment / PIH","B","g","Sephora","Highest tranexamic % at retail; kojic + licorice."],
+["The Inkey List Tranexamic Acid Night Treatment","🎯 Pigment / PIH","B","g","Sephora","Budget PM option."],
+["Hyper Skin Hyper Even Brightening Dark Spot Cream","🎯 Pigment / PIH","B","g","Sephora","Melanin-rich formulation; cream format for dry weeks."],
+["Anua Heartleaf 77% Toner · Skin1004 Centella Ampoule · Torriden Dive-In Serum","🫧 Optional support","B","g","Ulta / Sephora","Calming toner/essence for post-tret redness — only if the core five are running clean. All fragrance-free."],
+["Medik8 Crystal Retinal Ceramide Eye · Good Molecules Caffeine Eye Cream","🫧 Optional support","B","g","Sephora / Ulta","Under-eye (mild pigment/hollowness): sleep and the cut come first. Low priority, as written."],
+["Biodance Collagen-Real Deep Mask","🫧 Optional support","B","g","Both","Sheet mask for reset days. Nice, not necessary."]
+],note:"Shade test for tinted SPF: jawline, daylight, 5 minutes — gray or orange = return it. One retinoid per night, buffered, never alongside acids. Excluded sticks: Supergoop, Sun Bum (🔴 active suits) · Neutrogena, Coppertone, Banana Boat (parent flags)."},
+
+lip:{label:'Lip Bench',icon:'👄',tag:'Repair first, SPF always, nothing that tingles.',rows:[
+["Skinfix Barrier+ Lip Repair Balm","💋 Repair / occlusive","L","g","Sephora","Lipid-repair chemistry, fragrance-free; strict-mode daytime swap."],
+["Aquaphor Lip Repair (day) · Healing Ointment (overnight seal)","💋 Repair / occlusive","L","w","Ulta","Petrolatum + panthenol + shea, fragrance/flavor-free — the barrier-repair standard and your planned Rosy Lips replacement."],
+["The Ordinary Squalane + Amino Acids Lip Balm (current)","💋 Repair / occlusive","C","y","Both","Daytime squalane layer."],
+["Dieux Lip Butter","💋 Repair / occlusive","B","g","Sephora","Occlusive, fragrance-free; premium daytime option."],
+["Cetaphil Healing Ointment","💋 Repair / occlusive","B","g","Ulta","Aquaphor equivalent; multi-use tube for the cab."],
+["EltaMD UV Lip Balm SPF 36","☀️ Lip SPF","L","w","Ulta","Zinc-based, fragrance-free, derm standard; the cleanest plain lip SPF at retail."],
+["Aquaphor Lip Protectant + Sunscreen SPF 30","☀️ Lip SPF","L","w","Ulta","Repair balm and SPF in one tube — fewer steps at the 3-hour stop."],
+["Sun Bum SPF 30 (current)","☀️ Lip SPF","C","r","Ulta","Replace at next restock — brand under active litigation. Swap: EltaMD Lip SPF 36 or Aquaphor Lip SPF 30."],
+["Ultra Violette Sheen Screen SPF 50 (tinted)","☀️ Lip SPF","B","o","Sephora","The iron-oxide (visible-light) option; keep, with the brand caveat in the Litigation Screen."],
+["Vacation Lip Sunscreen SPF 30","☀️ Lip SPF","B","g","Both","Clean brand, but scented/flavored — only once lips are fully healed."]
+],note:"Stays benched: Laneige Lip Sleeping Mask, Summer Fridays, Rhode, eos, Burt's Bees — flavored/fragranced or peppermint; wrong for repair. Never: Carmex, medicated ChapStick, anything with menthol or camphor."},
+
+body:{label:'Body Bench',icon:'🧴',tag:'Body SPF is the anchor product — everything else supports it.',rows:[
+["Black Girl Sunscreen SPF 30 Moisturizing Lotion","☀️ Body SPF","L","w","Ulta","Made for melanin-rich skin: no cast, moisturizing (doubles as lotion on no-shower days), fragrance-free, big bottle."],
+["EltaMD UV Sport SPF 50 · EltaMD UV Lotion SPF 30+","☀️ Body SPF","L","w","Ulta","Water/sweat-resistant 80 min for securement days; the Lotion is the everyday fragrance-free arm/neck bottle."],
+["CeraVe Hydrating Body Sunscreen SPF 30 (planned buy)","☀️ Body SPF","P","y","Ulta","Niacinamide + ceramides."],
+["Isntree Watery Sun Gel (large) · BOJ Relief Sun (arms/hands)","☀️ Body SPF","B","g","Ulta / Both","Face formulas cheap enough to use on the left arm + back of left hand."],
+["Sol de Janeiro Rio Radiance SPF 50 Body Lotion","☀️ Body SPF","B","g","Both","Lane B body SPF that also carries the Cheirosa scent — one product doing two jobs on gourmand days."],
+["Vacation Classic Lotion SPF 30/50 · Bondi Sands Body SPF 50","☀️ Body SPF","B","g","Both / Ulta","Clean brands, scented (coconut) — body only, Lane B days."],
+["Nécessaire The Body Retinol","🌙 Retinol body lotion","L","g","Sephora","Encapsulated retinol + peptides, fragrance-free; the category leader and already in your Lane A brand."],
+["Medix 5.5 Retinol + Ferulic · Gold Bond Retinol Overnight (owned)","🌙 Retinol body lotion","C","g","Walmart","Not at Sephora/Ulta."],
+["Naturium Retinol Body Lotion","🌙 Retinol body lotion","B","g","Sephora","Same job, lower price, big bottle."],
+["Versed Press Restart Gentle Retinol Body Lotion","🌙 Retinol body lotion","B","g","Ulta","Budget option (confirm fragrance-free on the current label)."],
+["Good Molecules Discoloration Correcting Body Treatment","🎯 Body pigment","L","g","Ulta","Tranexamic acid + niacinamide in a body-sized bottle, fragrance-free. Exactly the slot Ambi would fill, without the parent flag."],
+["COSRX Alpha-Arbutin 2% (current)","🎯 Body pigment","C","g","Ulta","Also your groin-safe lane (outer keratinized skin only)."],
+["Topicals Faded Serum (used on body spots)","🎯 Body pigment","B","g","Sephora","Azelaic + tranexamic multi-tool; small bottle, spot use."],
+["Naturium Tranexamic 5% · Hyper Skin Hyper Even","🎯 Body pigment","B","g","Sephora","Face-sized alternates for the neck and hands."],
+["Skinfix Barrier+ Lipid-Boost Body Cream","🧼 Barrier & washes","L","g","Sephora","Ceramide/lipid body cream, fragrance-free; the strict-mode seal."],
+["CeraVe Moisturizing Cream · LRP Lipikar (current seal)","🧼 Barrier & washes","C","y","Ulta","Current seal — keep if you accept parent-level flags."],
+["Nécessaire The Body Lotion — Fragrance-Free","🧼 Barrier & washes","B","g","Sephora","The same lotion as your Lane A anchor, unscented, for recovery nights."],
+["Washes: Nécessaire FF · Byoma · Cetaphil","🧼 Barrier & washes","B","g","Sephora / Ulta","Non-stripping bases for the days you are not building scent."],
+["Aquaphor Healing Ointment","🧼 Barrier & washes","B","w","Ulta","Spot occlusive for cracked knuckles / tight patches."],
+["Megababe Thigh Rescue Anti-Chafe Stick","🩳 Friction zone","L","g","Ulta","Ten hours in a seat = friction pigment. Glides on inner thighs before the shift; aluminum-free."],
+["Nécessaire The Deodorant (FF) · Salt & Stone Deodorant","🩳 Friction zone","B","g","Sephora","Aluminum-free; the Salt & Stone Santal matches your woody lane."],
+["Nécessaire Body Wash Fragrance-Free","🩳 Friction zone","B","g","Sephora","The only wash that belongs near the groin lane — no fragrance, no actives."]
+],note:"Friction-zone rules unchanged: alpha-arbutin only on outer keratinized skin · nothing on mucosa · no glycolic, retinol or scrubs anywhere near this area."},
+
+hair:{label:'Hair & Scalp',icon:'💇',tag:'4a/4b · SD control gates everything — then moisture, seal, define.',rows:[
+["Jupiter Balancing Shampoo (zinc pyrithione 1%)","💊 Medicated (SD)","L","g","Ulta","The ✅ rotation partner — antifungal by a different mechanism, prevents scalp adaptation, no sulfates, built for textured hair."],
+["Nizoral A-D (ketoconazole 1%) (current)","💊 Medicated (SD)","C","y","Ulta","Tier A antifungal — no retail equivalent, so it stays."],
+["Briogeo Scalp Revival Dandruff Relief (3% salicylic)","💊 Medicated (SD)","B","g","Both","The flake-lifter slot (what Jason Dandruff Relief does), Sephora-available."],
+["Nioxin Scalp Recovery Anti-Dandruff (zinc)","💊 Medicated (SD)","B","g","Ulta","Second zinc option if Jupiter is out of stock."],
+["Briogeo Charcoal + Coconut Micro-Exfoliating Shampoo","💊 Medicated (SD)","B","g","Both","Monthly pre-clarify on the scalp only (scrubbing rule is for skin, not scalp)."],
+["As I Am Coconut CoWash (current)","🚿 Wash & clarify","CL","g","Ulta","The co-wash standard for 4b; keep."],
+["Kinky-Curly Come Clean (current clarifier)","🚿 Wash & clarify","CL","g","Ulta","Monthly reset; keep."],
+["Pattern Beauty Cleansing Shampoo","🚿 Wash & clarify","B","g","Both","Sulfate-free, moisture-heavy; good after a braid takedown."],
+["Bread Beauty Supply Hair-Wash","🚿 Wash & clarify","B","g","Sephora","Sephora's best gentle wash for coily hair."],
+["Adwoa Beauty Baomint Moisturizing Shampoo","🚿 Wash & clarify","B","g","Sephora","Mint + rosemary — scalp-forward, SD-friendly, low-lather."],
+["Camille Rose Sweet Ginger Cleansing Rinse","🚿 Wash & clarify","B","g","Ulta","Ginger co-wash; scalp-stimulating rotation."],
+["Melanin Haircare African Black Soap Shampoo","🚿 Wash & clarify","B","g","Ulta","Alternate clarifier that doesn't strip."],
+["TGIN Honey Miracle Hair Mask","🍯 Deep conditioners","L","g","Ulta","The 4b deep-conditioner benchmark; honey + jojoba + olive."],
+["Briogeo Don't Despair, Repair! Mask","🍯 Deep conditioners","L","g","Both","Protein-moisture balanced; the post-takedown mask."],
+["Shea Moisture Manuka · Cantu Deep Treatment (current)","🍯 Deep conditioners","C","m","Ulta","Shea Moisture 🟡 — swap; Cantu ✅ keep."],
+["Camille Rose Algae Renew Deep Conditioner","🍯 Deep conditioners","B","g","Ulta","Blue-green algae + mango butter; slip for detangling."],
+["Adwoa Baomint Deep Treatment · Bread Hair-Mask","🍯 Deep conditioners","B","g","Sephora","Sephora-side rotation."],
+["Pattern Intensive Conditioner · As I Am Hydration Elation","🍯 Deep conditioners","B","g","Both / Ulta","Rinse-out conditioners after every shampoo."],
+["Melanin Haircare Softening Leave-In","💧 Leave-ins","L","g","Ulta","Built by a 4c natural for 4c hair; softens without buildup."],
+["Kinky-Curly Knot Today","💧 Leave-ins","L","g","Ulta","Leave-in + detangler in one; the cult standard for coils."],
+["As I Am Leave-In Conditioner (current)","💧 Leave-ins","C","g","Ulta","Keep."],
+["Camille Rose Curl Love Milk · TGIN Green Tea Leave-In","💧 Leave-ins","B","g","Ulta","Milk-weight alternates."],
+["Pattern Leave-In Conditioner","💧 Leave-ins","B","g","Both","Heaviest of the group — winter/braid prep."],
+["Tropic Isle Living JBCO (current)","🛢️ Oils","CL","g","Ulta","The base carrier; keep."],
+["Melanin Haircare Multi-Use Pure Oil Blend","🛢️ Oils","L","g","Ulta","Pre-blended sealing oil (castor, jojoba, sunflower); one bottle for scalp, shaft and beard."],
+["Briogeo Rosemary Pre-Wash Scalp Oil","🛢️ Oils","B","g","Both","The rosemary slot without Mielle — 🔴 Mielle is excluded."],
+["Pattern Jojoba Oil Hair Serum","🛢️ Oils","B","g","Both","Light jojoba blend — the crossover oil for hair and beard."],
+["Ceremonia Aceite de Moska Scalp Oil","🛢️ Oils","B","g","Sephora","Castor + rosemary; Sephora-side rosemary option."],
+["Jamaican Mango & Lime Black Castor Oil","🛢️ Oils","B","g","Ulta","Second JBCO source when Tropic Isle is out."],
+["Melanin Haircare Twist-Elongating Style Cream","🧈 Creams & definers","L","g","Ulta","The final seal for 4b and the curl-definition Qoves asked for, in one product."],
+["Kinky-Curly Curling Custard","🧈 Creams & definers","L","g","Ulta","The definer that made coil definition a category; use for the \"controlled texture\" barber direction."],
+["Shea Moisture 100% Raw Shea Butter (current)","🧈 Creams & definers","C","y","Ulta","🟡 — swap."],
+["TGIN Butter Cream Daily Moisturizer","🧈 Creams & definers","B","g","Ulta","Daily refresh cream between wash days."],
+["Camille Rose Curl Maker · Pattern Curl Gel","🧈 Creams & definers","B","g","Ulta / Both","Definition without crunch; alternate definers."],
+["As I Am DoubleButter · Cantu Shea Butter Leave-In","🧈 Creams & definers","B","g","Ulta","Heavy butter seals for winter runs."],
+["Bread Hair-Cream · Pattern Styling Cream","🧈 Creams & definers","B","g","Sephora / Both","Lighter cream seals; Sephora-side."],
+["Kitsch Satin Pillowcase · Sleep Bonnet","🛌 Braid · edge · sleep","L","g","Ulta","The 90%-of-the-benefit item from Master Sequence; bonnet for the bunk."],
+["The Doux Mousse Def Texture Foam","🛌 Braid · edge · sleep","L","g","Ulta","The exact spec in your cornrow rules: light-hold, water-based, alcohol-free mousse for the 1–2 week refresh."],
+["Evolve Satin Bonnet / Durag","🛌 Braid · edge · sleep","B","g","Ulta","Budget satin cover; buy two so one is always clean."],
+["Pattern Edge Control · Cantu Edge Stay Gel","🛌 Braid · edge · sleep","B","g","Both / Ulta","Light edge lay — light hand, edges are the traction-alopecia zone."],
+["Slip Pure Silk Pillowcase","🛌 Braid · edge · sleep","B","g","Sephora","22-momme mulberry silk — the real-silk upgrade if you want it."]
+],note:"Rotation stays: week 1 Nizoral · week 2 zinc or salicylic · monthly clarify first. Skip: Head & Shoulders, Ouai Anti-Dandruff (P&G 🟡), Neutrogena T/Sal (Kenvue 🟡). Essential oils stay at Walmart — not a Sephora/Ulta category."},
+
+beard:{label:'Beard & Brow',icon:'🧔',tag:'The frame. Oils, washes and the brow kit — clean brands only.',rows:[
+["Every Man Jack Beard Oil","🪒 Beard","L","g","Ulta","Jojoba/argan base, sandalwood option that matches Lane A; the cleanest men's line at Ulta."],
+["Pattern Jojoba Oil Hair Serum","🪒 Beard","L","g","Both","Near-pure jojoba — closest to \"plain jojoba beard oil\" at either retailer; one bottle serves hair and beard."],
+["Kirkland minoxidil 5% foam (current)","🪒 Beard","C","g","Costco/Amazon","Not a Sephora/Ulta item; unchanged."],
+["Every Man Jack Beard Wash","🪒 Beard","B","g","Ulta","The 2–3×/week beard wash slot."],
+["Duke Cannon Beard Oil · Wash · Balm","🪒 Beard","B","g","Ulta","Full beard set from a clean independent brand."],
+["Melanin Haircare Multi-Use Pure Oil Blend","🪒 Beard","B","g","Ulta","Crossover from the hair bench — beard skin is still skin."],
+["Skip: Jack Black, Cremo (Edgewell 🟡) · Baxter, Kiehl's (L'Oréal 🟡) · Dr. Squatch (🔴)","🪒 Beard","S","r","—","Parent flags and one active suit — the skip list for the beard aisle."],
+["Anastasia Brow Wiz — Ebony or Dark Brown","✏️ Brow","L","g","Both","The category standard; ultra-fine tip for the lip zone and brow peak. Soft black, never jet."],
+["NYX Micro Brow Pencil (current stopgap)","✏️ Brow","C","y","Ulta","🟡 L'Oréal — strict swap is the Brow Wiz."],
+["Fenty Brow MVP · Rare Beauty Brow Harmony","✏️ Brow","B","g","Sephora","Deep-shade ranges built with dark skin in mind."],
+["Fenty Pro Filt'r Setting Powder (translucent)","✏️ Brow","B","g","Sephora","The \"set it if it matters\" step against sweat smudge."]
+],note:"Derma-stamp is Amazon territory, not Sephora/Ulta. Unchanged."},
+
+oral:{label:'Oral & Internal',icon:'🦷',tag:'The Ulta aisle for the inside game.',rows:[
+["Heliocare Advanced Antioxidant","💊 Oral","L","g","Ulta","Polypodium leucotomos 240 mg + nicotinamide 500 mg — your two orals in one capsule; confirm dose on the current label."],
+["Lumineux Whitening Strips & Toothpaste","🦷 Whitening","B","g","Ulta","Peroxide-free, enamel-safe — the whitening slot until the Phase-3 in-office session."],
+["Spotlight Oral Care","🦷 Whitening","B","g","Ulta","Dentist-formulated fluoride toothpaste and mouthwash alternates."],
+["Crest","🦷 Whitening","S","y","—","Skip — P&G parent flag."]
+],note:""}
+};
+
+const SCENT={label:'Scent Bench',icon:'🌫️',tag:'Two lanes, zero mixing. One lane per day · damp skin · 2 sprays max · nothing scented above the jaw.',lanes:[
+{name:'🌲 Lane A — Clean / Woody (work lane)',rows:[
+["Base (wash)","Nécessaire Body Wash Sandalwood/Eucalyptus ✅","⭐ Salt & Stone Santal & Vetiver Body Wash ✅ · Byredo Body Wash ✅ · Glossier Body Hero Wash ✅ (Sephora)"],
+["Lock (lotion)","Nécessaire Body Lotion Sandalwood ✅","⭐ Salt & Stone Santal Body Lotion ✅ · Nécessaire Eucalyptus ✅ · Glossier Body Hero Daily Perfecting Cream ✅"],
+["Movement (mist)","Ouai Melrose Place / North Bondi 🟡","⭐ Phlur Body Mist (Missing Person / Father Figure) ✅ · Salt & Stone Body Mist ✅ · Glossier You Body Mist ✅"],
+["Top (cologne, 2 sprays)","Dior Sauvage ✅ · Nautica Voyage ✅ (Ulta)","Bleu de Chanel ✅ · Montblanc Explorer ✅ · JPG Le Male Le Parfum ✅ · Byredo Bal d'Afrique ✅ · Hugo Boss Bottled ✅. Strict-mode skips: YSL, Armani, Prada, Valentino, Azzaro, Margiela (L'Oréal 🟡) · Tom Ford, Le Labo, Jo Malone (Estée Lauder 🟡)."]
+]},
+{name:'🍦 Lane B — Warm / Gourmand',rows:[
+["Base (wash)","Native Coconut & Vanilla 🟡 (P&G)","⭐ Kopari Coconut Body Wash (Ulta) ✅ · Sol de Janeiro Bum Bum Body Wash ✅"],
+["Lock","Sol de Janeiro Bum Bum Cream (Cheirosa 62) ✅","⭐ Kopari Coconut Melt (Ulta) ✅ · SdJ Cheirosa 71 Body Cream ✅ · Tree Hut Shea Body Butter (Ulta) ✅"],
+["Movement","SdJ Cheirosa 62 Mist ✅","Kayali Vanilla 28 Hair & Body Mist ✅ · Phlur Vanilla Skin Mist ✅ · Ellis Brooklyn Vanilla Milk Mist ✅"],
+["Top","light vanilla-amber","Versace Eros (Ulta) ✅ · Dior Sauvage Elixir ✅ · Kayali Vanilla 28 EDP ✅ · Rabanne 1 Million Elixir (Ulta) ✅"]
+]}
+]};
+
+/* Bonus Shelf: [product, cat, light g/y/r, duration, evidence, price, where, what, condition] */
+const BONUS=[
+["PDRN cream / serum (INKEY, Mixsoon, Skin1004)","Glow & Hydration","g","Days","Cosmetic only","$15–30","Sephora","Delivers real hydration and a dewy finish — from the glycerin, HA, panthenol and occlusive base. The PDRN molecule itself (50k–1.5M Da vs the ~500 Da penetration threshold) does not reach the fibroblasts its mechanism depends on.","Fragrance-free versions only. Enjoy it freely — just never as a substitute for the Rejuran sessions, which are the version of PDRN that actually remodels."],
+["Snail mucin essence (COSRX Advanced 96)","Glow & Hydration","g","Days","Cosmetic only","$15–25","Ulta","Humectant hydration and a smoother, light-reflecting surface. Well tolerated, layers cleanly under moisturiser.","Fine on tret nights as the buffer layer. No conflict with anything in the core stack."],
+["Squalane oil","Glow & Hydration","g","Hours","Cosmetic only","$8–30","Ulta","Seals moisture and adds light reflectivity — the literal 'lit from within' finish, borrowed for a day.","Last step, over moisturiser, PM only. Never between tret and skin — it changes how the tret spreads."],
+["Rice / oat hydrating toner (Anua Rice 70, I'm From)","Glow & Hydration","g","Hours","Cosmetic only","$15–22","Ulta","Humectant prep layer — makes everything after it spread better and makes skin look immediately less dull.","Fragrance-free versions only. Adds a step — skip it on road-minimum days without guilt."],
+["Thermal water face mist (Avène, LRP)","Glow & Hydration","g","Hours","Cosmetic only","$12–18","Ulta","Momentary cooling and comfort. In a hot cab it is a legitimate way to take heat out of the face without stripping anything.","Pat dry or seal with moisturiser — letting mist evaporate off bare skin is net drying."],
+["Peptide moisturiser (Medik8, The Ordinary Buffet)","Glow & Hydration","g","Days","C — anecdotal","$20–45","Sephora","Mostly a good moisturiser. Signal peptides have plausible mechanism and weak-to-moderate human outcome data — nowhere near retinoid-level, and you already run a retinoid.","Fine as an AM moisturiser swap. Do not pay premium prices expecting tret-scale results."],
+["Slugging with Aquaphor / Vaseline","Glow & Hydration","g","Days","B — decent","$0 — own it","Anywhere","Occlusion — cuts transepidermal water loss overnight. Genuinely repairs a barrier stressed by tret, dry cab air and irregular showers.","Over moisturiser, never over bare tret — occlusion increases absorption and irritation. Free; you already own it."],
+["Overnight collagen mask (Biodance Deep Mask)","Masks & Patches","g","Days","Cosmetic only","$4–6 each","Ulta","Occlusive hydrogel sheet — traps water against skin overnight. Morning plumpness is water content, not collagen; topical collagen is far too large to penetrate.","The 'wake up glowing' effect is real and reliable. Ideal the night before a date or photos."],
+["Calming sheet masks (Torriden, Anua Heartleaf)","Masks & Patches","g","Hours","Cosmetic only","$3–5 each","Ulta","Short burst of hydration plus genuine comfort on a post-tret irritated night. Reduces the redness that would otherwise tempt you into skipping tret.","Fragrance-free only. 15–20 min max — leaving a mask on until it dries pulls water back out of the skin."],
+["Under-eye hydrogel patches","Masks & Patches","g","Hours","Cosmetic only","$10–25","Ulta","Temporary de-puff via hydration and mild cooling. Does nothing for pigment or hollowness — Qoves flagged both, and sleep plus the cut are the actual levers there.","You already own these. Best used the morning after a bad sleep night, which OTR guarantees plenty of."],
+["Hydrocolloid patches (Mighty Patch)","Masks & Patches","g","1–2 days","B — decent","$8–13","Ulta","Absorbs fluid from a lesion and — far more importantly — physically blocks you from picking it. Picking is the single largest PIH driver on your tone.","Quietly the most genuinely useful item on this entire page. It sits on the Bonus Shelf only because it treats one spot, not the whole face."],
+["Ice globes / cold roller","Tools","g","Hours","C — anecdotal","$15–25","Amazon","Vasoconstriction — temporary de-puff and tighter-looking skin for a couple of hours. Feels excellent on a heat-flushed face.","Glide, never drag. Clean before every use. Skip entirely for 2 weeks after Sylfirm."],
+["Satin pillowcase / bonnet","Sleep & Accessories","g","Structural","B — decent","$15–20 / 4-pk","Ulta","Low friction — protects edges, and keeps your PM products on your face instead of in the pillow.","Already in the Master Sequence. Listed here so gifted ones are recognised as a genuine yes. Wash every 2–3 nights."],
+["Lip mask / overnight lip treatment","Lips","y","1–2 days","B — decent","$10–25","Sephora","Overnight occlusion — genuinely helpful for the Lip Repair Protocol, but only in unflavoured, unscented form.","CONDITION: unflavoured and unscented ONLY. Laneige, Summer Fridays, eos and Burt's Bees are already benched for flavour or mint. Flavour drives lip-licking — the trauma cycle you are actively reversing."],
+["Gua sha / facial roller","Tools","y","Hours","C — anecdotal","$10–30","Amazon","Temporary lymphatic de-puff and a pleasant ritual. No lasting contour change — facial 'lifting' claims are not supported.","CONDITION: only over a balm or oil so it glides. Dragging a stone across tret-thinned skin is friction trauma, and friction trauma is how PIH starts on Fitzpatrick V–VI. Never on irritated skin, never within 3 weeks of Sylfirm."],
+["Facial steaming","Tools","y","Hours","C — anecdotal","$0–40","Anywhere","Softens surface debris and feels good. Does not 'open pores' — pores have no musculature.","CONDITION: heat is a known trigger for both SD flares and melasma-type pigment. You run SD at 4.5–5/10 and drive a hot cab. Occasional at most, never before a procedure, never followed by extraction."],
+["At-home red-light LED mask (Omnilux, Solawave)","Devices","y","Weeks","B — decent","$150–450","Sephora","Red / near-infrared light has moderate evidence for fine lines and wound healing. Home-device effect sizes are modest and slow — months of near-daily use.","CONDITION: RED / near-infrared ONLY. No blue-light mode, ever — visible light drives pigment on your tone. Device must not run warm. Skip for 2 weeks around any procedure. The cut and sleep outrank it."],
+["Oral collagen peptides","Oral","y","Weeks","C — anecdotal","$25–45/mo","Amazon","Meta-analyses show small but measurable gains in skin hydration and elasticity. Real and modest — and the great majority of those trials are funded by collagen manufacturers.","CONDITION: count it as protein, not skincare. At ~10 g/day it is a mediocre protein source at a premium price. If it displaces whey or food protein during the cut, it is a net negative."],
+["PHA exfoliating toner pads","Pigment","y","Days","C — anecdotal","$15–30","Ulta","Very gentle surface exfoliation. Largely redundant once tretinoin runs nightly — tret already handles turnover.","CONDITION: PHA only (never AHA/BHA pads on the face), max 1×/week, never on a tret night, never within 4 weeks of a procedure. Honestly borderline red — upside over your existing stack is close to zero."],
+["Vitamin C 'brightening' mask or ampoule","Pigment","y","Days","B — decent","$5–35","Ulta","A real active in a fun format. Overlaps almost entirely with the Maelove you already run in the AM.","CONDITION: this is an ACTIVE — one new item at a time, 4+ weeks apart. Never the same night as tret. Never store it in the cab; vitamin C oxidises in heat."],
+["VT Reedle Shot / any 'spicule' or 'needle' ampoule","Devices","r","Nothing","Harmful on Fitz V–VI","$25–35","Ulta","Contains microscopic sponge spicules that embed in skin to force product penetration. It is deliberate micro-injury sold in a serum bottle.","At-home microneedling wearing a disguise — your protocol already rules that out. Uncontrolled injury depth on V–VI is exactly the PIH trigger the whole system is engineered around. A very popular K-beauty gift: say thank you, then no."],
+["Blue-light LED masks or panels","Devices","r","Nothing","Harmful on Fitz V–VI","—","Sephora","Blue and visible light are established drivers of pigmentation in Fitzpatrick IV–VI skin.","Your entire SPF strategy includes iron oxides specifically to block visible light. Buying a device that aims it at your face contradicts the plan. Red / NIR-only devices are the Amber option."],
+["At-home dermaroller / microneedling pen (face)","Devices","r","Nothing","Harmful on Fitz V–VI","—","Amazon","Safe depths do not remodel anything; remodelling depths cause controlled injury that cannot be kept sterile outside a clinic.","Already a written rule: one bad pass equals 6–12 months of pigment. Scalp 1.0 mm and mustache 0.25 mm stay — different goal. Sylfirm X is the clinic-grade version, already scheduled."],
+["At-home IPL / 'laser' device","Devices","r","Nothing","Harmful on Fitz V–VI","—","Amazon","Targets melanin. On Fitzpatrick V–VI it cannot reliably distinguish the pigment in a spot from the pigment in your skin.","Genuinely dangerous — burns and permanent hypopigmentation. Most home units are explicitly not indicated for deep skin tones. Nd:YAG 1064 in a clinic is the only laser on your safe list."],
+["At-home peels (high-% glycolic, TCA, 'peel kits')","Pigment","r","Nothing","Harmful on Fitz V–VI","—","Amazon","Uncontrolled chemical injury with no way to judge depth in real time.","Already on the Skin Protocol no-fly list. Peels on deep skin tones belong to a derm with a Fitzpatrick V–VI portfolio, or to nobody."],
+["Skin-lightening / 'whitening' creams (unregulated sellers)","Pigment","r","Nothing","Harmful on Fitz V–VI","—","Anywhere","Frequently contaminated. Regulators have repeatedly found mercury, undeclared hydroquinone and potent steroids such as clobetasol in imported lightening creams.","Documented real harm: mercury toxicity, steroid atrophy, and rebound pigment worse than the starting point. Your pigment plan is tret + azelaic + iron-oxide SPF. That route is safe and it works."],
+["Physical scrubs, cleansing brushes, konjac scrubbing","Tools","r","Nothing","Harmful on Fitz V–VI","—","Anywhere","Mechanical trauma to the barrier.","The Lip Repair Protocol identifies repeat-trauma scrubbing as the root cause of the darkening you are currently reversing. Zero scrubbing is already the rule — this entry exists so a gifted 'exfoliating set' gets recognised for what it is."],
+["Anything with menthol, camphor or fragrance (face or lips)","Lips","r","Nothing","Harmful on Fitz V–VI","—","Anywhere","The tingle is irritation being marketed as efficacy.","Carmex and medicated ChapStick are already permanently benched. On your tone, every irritation event is a potential pigment event. Fragrance-free above the jaw is non-negotiable."]
+];
+
+const PROC={
+gates:[
+["GATE 1","Same job or better","Matches the slot's output: tone / texture / reflectivity."],
+["GATE 2","Equal or lower pigment + scar risk on V–VI","Non-negotiable. This gate kills most of the industry."],
+["GATE 3","No long-term repercussions","Short-term downtime fine; anything irreversible, cumulative-damage, or multi-year-committed is out. The standard is decades, not seasons."]],
+reg:[
+"<b>Profhilo</b> — not FDA-approved. Evolus signed a July 2026 deal with IBSA to bring it through approval; their own filing implies launch beyond 2026. A US clinic offering it today is using gray-market imported product — unregulated supply chain, no recourse.",
+"<b>Rejuran (PN/PDRN injectable)</b> — not approved for aesthetic injection in the US. Topical PDRN is legal as a cosmetic; the syringe is not.",
+"<b>Sylfirm X</b> — ✅ FDA-cleared. Fully bookable at any reputable US practice.",
+"<b>Not a plan-killer — a routing problem.</b> US-legal swap (default) · Passport route (Profhilo & Rejuran are standard-of-care in Thailand and Korea — your 2027–28 trips make it nearly free in logistics) · Wait for the launch (the slot doesn't expire; Skinvive holds it)."],
+flags:[
+["Eczema on chart (active, dx 2018)","An atopic barrier flares harder and pigments easier. Hard rule: no needling procedure on skin that hasn't been flare-free for 2+ weeks. Say the word \"eczema\" at every consult."],
+["Excedrin contains aspirin","Skip it for ~7 days before any injectable or needling session (bruising/bleeding), alongside the fish-oil pause in the T-5 protocol. Plain acetaminophen is the swap that week."],
+["Lidocaine + anesthesia tolerated (Feb 2026)","No drug allergies on file. Topical numbing for Sylfirm X is a green light."],
+["Scar-quality check before first RF session","Documented trauma scarring (2019). Flat and faded = proceed; raised, thick, or growing past the wound edge = tell the provider — keloid-prone skin changes the entire microneedling conversation on V–VI."]],
+slots:[
+{name:"Slot 1 — Sylfirm X",color:"red",job:"The job: texture + pores + early laxity + pigment, one modality. The slot is really \"insulated-needle RF microneedling\" — Sylfirm X is one brand sitting in it. Peer-reviewed skin-of-color data backs the class, not just the logo.",
+swaps:[
+["Genius (Lutronic)","Full 1:1. Insulated needles, real-time impedance feedback — arguably the best-instrumented device in the class.","$600–1,200","g","Equal or better"],
+["Secret RF","Full 1:1. Insulated needles, widely available, often cheaper.","$500–1,000","g","Equal"],
+["Potenza (insulated tips)","Full 1:1 if the practice uses insulated tips — confirm before booking, it runs both.","$600–1,200","g","Equal, one question to ask"],
+["EndyMed Intensif / Vivace","Same class, solid track record.","$500–1,000","g","Equal"],
+["Morpheus8","The famous one — but it runs deeper, coagulates fat, and carries more reported grid-pattern PIH on darker skin than the pulsed platforms.","$800–1,500","y","Only with a V–VI portfolio provider"],
+["Professional microneedling (SkinPen)","~70% of the job at ~30% of the price. Texture + pores + pigment, no RF tightening.","$200–400","y","Budget bench"],
+["Nd:YAG 1064 laser toning","Pigment slice only. Already your rescue laser — can substitute the pigment portion of a skipped Sylfirm year.","$250–500","y","Partial (tone)"],
+["Pico 1064 (PicoWay)","Pigment + subtle texture, minimal heat. The gentlest laser option for V–VI tone work.","$400–800","y","Partial (tone)"],
+["Low-density 1927nm thulium (LaseMD Ultra / Moxi)","Glow + pigment; published success treating PIH in skin of color — but it is an epidermal laser, so the margin for provider error is thinner than RF.","$500–900","r","Conditional — SOC-expert only, low density, test spot"],
+["Salicylic / mandelic peel series","Tone + texture maintenance between device years. The two acids with the best V–VI safety record.","$100–200 ×4–6","y","Budget bench"],
+["HIFU (Sofwave / Ultherapy)","Laxity only, color-blind. At 25 with no laxity complaint, it solves a problem you don't have.","$1,500–3,500","w","Not yet — file for your 30s"]],
+closed:"Bench permanently closed: IPL/BBL · ablative CO2 · alexandrite/ruby · deep TCA · high-density 1550/1927 · at-home microneedling. No price or provider reopens these on your tone."},
+{name:"Slot 2 — Profhilo",color:"teal",job:"The job: the \"lit from within\" reflectivity — deep hydration and skin-quality remodeling with zero epidermal injury.",
+swaps:[
+["Skinvive (Juvéderm)","The only FDA-approved microdroplet HA skin booster in the US. Same goal, different geometry — intradermal microdroplets across the cheeks vs Profhilo's 5-point spread. ~6-month duration. The US-legal 1:1.","$600–900","g","The default US swap"],
+["Profhilo abroad 🇹🇭🇰🇷🇬🇧","The original, where it's licensed. Bangkok/Seoul pricing often beats US gray-market. Schedule ≥48h before flights and away from hard training days.","$300–600 abroad","g","Passport route"],
+["Restylane Skinboosters","Same class, long track record in Europe/Asia — but also not FDA-approved in the US. Abroad-only option.","$400–700 abroad","y","Abroad bench"],
+["NCTF 135HA mesotherapy","HA + vitamin cocktail microinjections. Weaker evidence base, more sessions, popular in EU/Asia.","$200–400 ×3+","y","Thin evidence"],
+["Hyperdilute Sculptra / biostimulators","Often pitched as the \"better Profhilo.\" It isn't for you: poly-L-lactic acid commits your face for 2+ years, isn't dissolvable, and carries a nodule tail-risk.","$800–1,500","r","Fails Gate 3 — bench closed"]],closed:""},
+{name:"Slot 3 — Rejuran",color:"blue",job:"The job: texture + elasticity + repair signaling (polynucleotides), near-zero pigment risk.",
+swaps:[
+["Microneedling + topical PDRN/exosomes (same visit)","The US-legal replica: open microchannels, then flood them with topical PDRN or exosome serum. Evidence younger than injected PN, but the same biology delivered legally — and it piggybacks on a session already in the calendar.","+$100–300 on a needling session","g","The default US swap"],
+["Rejuran abroad 🇰🇷🇹🇭","The original, in the countries that invented the category. Korea is the world's deepest bench of Rejuran injectors; Thailand close behind.","$150–400 / session abroad","g","Passport route"],
+["Plinest / Nucleofill","The Italian originals of the polynucleotide class — same molecule family, licensed in Europe/UK.","$250–500 abroad","y","Abroad bench"],
+["Skinvive","Covers the hydration/reflectivity share of the job, not the regenerative-signaling share.","$600–900","y","Partial"],
+["PRF (not PRP) under-eye","Autologous — your own blood, zero product-regulation issue, zero allergy risk. Earns a look only if under-eye texture becomes a specific complaint.","$500–800","y","Situational only"]],closed:""}],
+stacks:[
+["🇺🇸 US-Legal Year (default)","$1,800–2,800",["Jan–Feb|Insulated RF microneedling (any 🟢 device)","Apr–May|Skinvive","Jun–Aug|Blackout — nothing","Oct–Nov|Microneedling + PDRN/exosome topical"]],
+["🛂 Passport Year (2027+)","$1,200–2,200",["Jan–Feb|Sylfirm X at home","Apr–May|Profhilo #1 (Bangkok/Seoul trip)","Jun–Aug|Blackout — nothing","Oct–Nov|Rejuran or Profhilo #2 (trip #2)"]],
+["💰 Budget Year","$900–1,600",["Jan–Feb|SkinPen microneedling series","Apr–May|Peel series or Nd:YAG toning","Jun–Aug|Blackout — nothing","Oct–Nov|Microneedling + PDRN topical"]],
+["👑 Original Plan","$2,000–3,500",["Jan–Feb|Sylfirm X","Apr–May|Profhilo #1 (gray-market in US — see Regulatory Reality)","Jun–Aug|Blackout — nothing","Oct–Nov|Rejuran or Profhilo #2"]]],
+watch:[
+"Evolus wins Profhilo FDA approval → Skinvive rows demote to bench, Profhilo becomes the US starter. Watch for the announcement (2027+).",
+"US PN/PDRN injectable approval → same promotion for the Rejuran slot.",
+"Any raised or keloid scarring found at the scar check → all needling rows freeze until a derm clears them.",
+"Eczema flare pattern worsens → injectable-only years (Skinvive/Profhilo) are the fallback; they don't touch the barrier."]};
+
+const LIT=[
+["Anua · Beauty of Joseon · COSRX · Skin1004 · Round Lab · Medicube · Isntree · Torriden · Aestura · Laneige · Innisfree","g","K-beauty (Amorepacific for COSRX/Aestura/Laneige/Innisfree). No litigation found."],
+["Topicals · Hyper Skin · Eadem · Tower 28 · Fenty Skin · Ilia · Skinfix · Nécessaire · Dieux · Salt & Stone · Good Molecules · The Inkey List · Peach & Lily · Bubble · Byoma · Vacation · Megababe · Kitsch · Slip","g","No litigation found."],
+["As I Am · Kinky-Curly · Cantu · Tropic Isle Living · TGIN · Melanin Haircare · Pattern · Bread · Adwoa · The Doux · Camille Rose · Briogeo · Jupiter · Every Man Jack · Duke Cannon · Anastasia · Cetaphil · Differin","g","No active litigation found (Camille Rose 2018 \"natural\" labeling suit, closed)."],
+["Sol de Janeiro (L'Occitane)","g","Only suits are ones it filed against dupe brands, plus a TCPA text case — nothing about product safety or use."],
+["CeraVe · La Roche-Posay · Kiehl's · SkinCeuticals · YTTP · NYX · Baxter (L'Oréal)","y","Six class actions pending over benzene in CeraVe Acne Foaming cleansers and LRP Effaclar Duo (benzoyl-peroxide products only); separate hair-relaxer litigation. Your Hydrating Cleanser, Moisturizing Lotion and Anthelios are not named products."],
+["Neutrogena · Aveeno · OGX · Nizoral · Ambi (Kenvue)","y","OGX hair-loss class components mostly settled; individual injury claims continue. Neutrogena benzene sunscreen suits settled."],
+["Ouai · Native · Olay · Head & Shoulders · First Aid Beauty (P&G)","y","Brands clean; parent carries the active Mielle litigation."],
+["Shea Moisture · Vaseline · Dove · Paula's Choice · Dermalogica · Murad · Tatcha · K18 · Nutrafol (Unilever)","y","TRESemmé DMDM-hydantoin hair-loss cases still active in 2026; Dove Sensitive \"hypoallergenic\" suit May 2026; Paula's Choice \"Made in USA\" suit 2025."],
+["The Ordinary · Clinique · Dr. Jart · Aveda · Le Labo · Tom Ford (Estée Lauder)","y","Clinique named in the benzoyl-peroxide/benzene actions. The Ordinary itself is clean."],
+["e.l.f. · Naturium · Rhode (e.l.f.)","y","Slack-fill suit on two e.l.f. SKUs (2025). Naturium itself clean."],
+["Banana Boat · Hawaiian Tropic · Jack Black · Cremo · Bulldog (Edgewell)","y","State false-advertising action over reef-safe claims (2025)."],
+["Aquaphor · Eucerin (Beiersdorf)","w","Coppertone benzene suit settled; nothing active found."],
+["EltaMD (Colgate-Palmolive)","w","\"Transparent Zinc Oxide\" mislabeling class action dismissed with prejudice Oct 2024. Parent has unrelated talc litigation."],
+["Black Girl Sunscreen","w","Prop 65 benzophenone notice settled 2023 with reformulation."],
+["Olaplex","w","Hair-loss class action denied certification 2023; \"Made in USA\" settled 2025."],
+["Supergoop","r","\"100% Mineral\" mislabeling class action filed Dec 2025, active; reef-safe state settlement 2025. Excluded."],
+["Sun Bum","r","SPF-50 mineral lotion \"lower SPF than labeled\" class action filed Nov 2025, active. Excluded — this is your current lip SPF."],
+["Mielle Organics (P&G)","r","Rosemary Mint oil hair-loss class actions filed 2025, active. Excluded."],
+["Dr. Squatch","r","False-advertising class action 2025. Excluded."],
+["Ultra Violette","o","No lawsuit. 2025 Australian consumer testing put Lean Screen at SPF 4; product pulled. Brand-level testing credibility is the concern — Sheen Screen (your lip pick) was not the tested product."]];
+
+const AUDIT=[
+["Anua SPF 50 · Anua Azelaic 10%","g","Clean. Keep."],
+["COSRX Alpha-Arbutin 2%","g","Clean. Keep."],
+["As I Am · Kinky-Curly · Cantu · Tropic Isle JBCO","g","Clean. Keep."],
+["Nécessaire · Sol de Janeiro","g","Clean. Keep."],
+["Maelove Glow Maker","g","(Not at Sephora/Ulta) Pure L-ascorbic — home base only. Heat-stable retail swaps in the Face Bench."],
+["CeraVe Hydrating Cleanser / Lotion / Cream","y","Keep if you accept parent-level flags. Strict-mode swaps in the Face Bench."],
+["LRP Anthelios Mineral Tinted (Deep)","y","Clean product, flagged parent. Fenty Hydra Vizor Huez is the strict-mode equal."],
+["Nizoral (ketoconazole)","y","No retail ketoconazole alternative exists. Keep; rotate with a ✅ zinc-pyrithione or salicylic shampoo."],
+["Vaseline Rosy Lips","y","Already slated for Aquaphor — do it."],
+["The Ordinary Squalane lip balm · PHA lip serum","y","Product clean. Strict swap: Skinfix Lip Repair Balm."],
+["Ouai mist · Native body wash","y","(P&G) Strict swaps: Phlur / Salt & Stone mist; Nécessaire or Kopari wash."],
+["NYX Micro Brow Pencil","y","(L'Oréal) Strict swap: Anastasia Brow Wiz (Ebony / Dark Brown)."],
+["Shea Moisture (conditioner, raw shea)","y","Swap to TGIN / Camille Rose / Melanin Haircare (all ✅)."],
+["Ultra Violette Sheen Screen","o","Usable; know the brand's testing history."],
+["Sun Bum SPF 30 (lips)","r","Replace at next restock — EltaMD UV Lip Balm SPF 36 or Aquaphor Lip Protectant SPF 30."]];
+
+const EXCLUDED=[
+["Supergoop · Sun Bum · Mielle · Dr. Squatch","🔴 Active product litigation."],
+["Glow Recipe · Laneige · Innisfree creams · Tatcha · Fenty Skin cleansers · Sol de Janeiro on the face","Fragranced — fine below the jaw only."],
+["Paula's Choice · Dermalogica · Murad · Kiehl's · SkinCeuticals · Youth to the People · First Aid Beauty","Good products, 🟡 parent flags (Unilever / L'Oréal / P&G) — use only if you accept parent-level exposure."],
+["Drunk Elephant","2025 recall for an ingredient mix-up; fragrance-free but no reason to prefer it over the ✅ options."],
+["Olaplex","⚪ closed litigation, but bond-repair is not a 4b-retention lever in your plan — no slot for it."],
+["Tretinoin · minoxidil · essential oils · derma-stamp · UPF sleeves · window film","Not Sephora/Ulta categories — sources unchanged from the protocols."],
+["Any glycolic >7% · any peel · any scrub · at-home needling device · hydroquinone · IPL/BBL","Skin Protocol no-fly list — unchanged."]];
+
+/* ============================================================ STATE + NAV ============================================================ */
+const NAVSECTIONS=[
+ {lab:'Overview',items:[['home','🏠','Home']]},
+ {lab:'Variety Bench',items:Object.keys(BENCHES).map(k=>[('b:'+k),BENCHES[k].icon,BENCHES[k].label]).concat([['scent','🌫️','Scent Bench']])},
+ {lab:'Programs',items:[['bonus','🫧','Bonus Shelf'],['proc','🔁','Procedure Swaps']]},
+ {lab:'Screens',items:[['brands','⚖️','Brands & Audit']]}
+];
+const TABS=[['home','Home','M3 10.5 12 3l9 7.5M5.5 9.5V20h13V9.5'],['bench','Benches','M4 5h16M4 12h16M4 19h16'],['bonus','Bonus','M12 3l2.2 6.8H21l-5.4 4 2 6.9-5.6-4.2-5.6 4.2 2-6.9-5.4-4h6.8z'],['proc','Swaps','M4 7h13l-3-3M20 17H7l3 3'],['brands','Brands','M12 3l8 3v6c0 4.5-3.4 7.8-8 9-4.6-1.2-8-4.5-8-9V6z']];
+let state={view:'home',bench:'face',q:'',role:'all',screen:'all',light:'all',open:{}};
+
+function counts(rows){const c={g:0,y:0,w:0,r:0,o:0,m:0};rows.forEach(r=>c[r[3]]++);return c}
+function benchCount(k){return BENCHES[k].rows.length}
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;')}
+
+/* ============================================================ RENDER ============================================================ */
+const $=s=>document.querySelector(s);
+function setMode(m,save=true){
+  document.body.classList.toggle('phone',m==='phone');
+  document.body.classList.toggle('desktop',m!=='phone');
+  $('#mDesk').classList.toggle('on',m!=='phone');
+  $('#mPhone').classList.toggle('on',m==='phone');
+  if(save){try{localStorage.setItem('sb-mode',m)}catch(e){}}
+}
+function go(view,bench){
+  state.view=view; if(bench)state.bench=bench;
+  state.role='all';state.screen='all';state.light='all';
+  render();
+  const fr=document.querySelector('body.phone .frame');
+  (fr||window).scrollTo({top:0});
+}
+function render(){renderNav();renderBottom();renderMain()}
+
+function renderNav(){
+  $('#sidenav').innerHTML=NAVSECTIONS.map(s=>
+    `<div class="navlab">${s.lab}</div>`+s.items.map(([id,ico,lab])=>{
+      const on=(id===state.view)||(id.startsWith('b:')&&state.view==='bench'&&state.bench===id.slice(2));
+      const n=id.startsWith('b:')?benchCount(id.slice(2)):(id==='bonus'?BONUS.length:id==='scent'?8:'');
+      return `<button class="${on?'on':''}" data-nav="${id}"><span class="ico">${ico}</span>${lab}${n?`<span class="n">${n}</span>`:''}</button>`;
+    }).join('')).join('');
+  document.querySelectorAll('#sidenav [data-nav]').forEach(b=>b.onclick=()=>{
+    const id=b.dataset.nav;
+    if(id.startsWith('b:'))go('bench',id.slice(2));else go(id);
+  });
+}
+function renderBottom(){
+  $('#bottomnav').innerHTML=TABS.map(([id,lab,path])=>{
+    const on=(id===state.view)||(id==='bench'&&(state.view==='bench'||state.view==='scent'));
+    return `<button class="${on?'on':''}" data-tab="${id}">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="${path}"/></svg>${lab}</button>`;
+  }).join('');
+  document.querySelectorAll('#bottomnav [data-tab]').forEach(b=>b.onclick=()=>{
+    const id=b.dataset.tab;
+    go(id==='bench'?'bench':id, id==='bench'?state.bench:null);
+  });
+}
+
+function pill(map,k){const p=map[k]||['?','p-w'];return `<span class="pill ${p[1]}"><span class="dot"></span>${p[0]}</span>`}
+function rolePills(r){return r.split('').map(x=>pill(ROLE,x)).join(' ')}
+
+function filterRows(rows){
+  const q=state.q.toLowerCase();
+  return rows.filter(r=>{
+    if(state.role!=='all'&&!r[2].includes(state.role))return false;
+    if(state.screen!=='all'&&r[3]!==state.screen)return false;
+    if(q&&!(r[0]+' '+r[1]+' '+r[4]+' '+r[5]).toLowerCase().includes(q))return false;
+    return true;
+  });
+}
+
+function screenStrip(rows){
+  const c=counts(rows);const total=rows.length||1;
+  const segs=[['g','--teal'],['y','--amber'],['w','--gray'],['o','--orange'],['r','--red'],['m','--blue']].filter(([k])=>c[k]);
+  return `<div class="card" style="padding:14px 16px;margin-bottom:16px">
+    <div style="display:flex;justify-content:space-between;align-items:baseline">
+      <span style="font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);font-family:var(--font-d)">Litigation screen coverage</span>
+      <span style="font-family:var(--font-m);font-size:11px;color:var(--faint)">${rows.length} items</span>
+    </div>
+    <div class="covbar">${segs.map(([k,v])=>`<i style="width:${c[k]/total*100}%;background:var(${v})"></i>`).join('')}</div>
+    <div class="covleg">${segs.map(([k,v])=>`<span><span class="sw" style="background:var(${v})"></span>${SCREEN[k][0]} <b>${c[k]}</b></span>`).join('')}</div>
+  </div>`;
+}
+
+function chipbar(){
+  const roles=[['all','All roles'],['L','⭐ Leaders'],['C','🧺 Current'],['B','🪑 Bench']];
+  const screens=[['all','All screens'],['g','✅'],['y','🟡'],['w','⚪'],['r','🔴']];
+  return `<div class="chips">
+    ${roles.map(([k,l])=>`<button class="chip ${state.role===k?'on':''}" data-role="${k}">${l}</button>`).join('')}
+    <span style="width:1px;background:var(--line);flex-shrink:0"></span>
+    ${screens.map(([k,l])=>`<button class="chip ${state.screen===k?'on':''}" data-screen="${k}">${l}</button>`).join('')}
+  </div>`;
+}
+function bindChips(){
+  document.querySelectorAll('[data-role]').forEach(b=>b.onclick=()=>{state.role=b.dataset.role;renderMain()});
+  document.querySelectorAll('[data-screen]').forEach(b=>b.onclick=()=>{state.screen=b.dataset.screen;renderMain()});
+  document.querySelectorAll('[data-light]').forEach(b=>b.onclick=()=>{state.light=b.dataset.light;renderMain()});
+}
+
+/* ---------- bench view ---------- */
+function renderBench(k){
+  const B=BENCHES[k];const rows=filterRows(B.rows);
+  const slots=[...new Set(B.rows.map(r=>r[1]))];
+  const phone=document.body.classList.contains('phone');
+  let body='';
+  if(!rows.length){body=`<div class="empty">Nothing matches — clear a filter or the search.</div>`}
+  else{
+    body=slots.map(slot=>{
+      const sr=rows.filter(r=>r[1]===slot);
+      if(!sr.length)return '';
+      const head=`<div class="grouph"><span class="gt">${slot}</span><span class="gn">${sr.length}</span><span class="rule"></span></div>`;
+      if(phone){
+        return head+`<div class="cardlist">`+sr.map(r=>{
+          const id=k+'|'+r[0];
+          return `<div class="pcard ${state.open[id]?'open':''}" data-card="${esc(id)}">
+            <div class="r1"><div class="nm">${esc(r[0])}</div>${pill(SCREEN,r[3])}</div>
+            <div class="meta">${rolePills(r[2])}<span class="loc">${esc(r[4])}</span></div>
+            <div class="why">${esc(r[5])}</div>
+          </div>`;
+        }).join('')+`</div>`;
+      }
+      return head+`<div class="tablewrap"><div class="tscroll"><table class="bench">
+        <thead><tr><th>Product</th><th>Role</th><th>Screen</th><th>Where</th><th>Why it fits</th></tr></thead>
+        <tbody>${sr.map(r=>`<tr><td class="prod">${esc(r[0])}</td><td style="white-space:nowrap">${rolePills(r[2])}</td><td>${pill(SCREEN,r[3])}</td><td class="wcol">${esc(r[4])}</td><td class="why">${esc(r[5])}</td></tr>`).join('')}</tbody>
+      </table></div></div>`;
+    }).join('');
+  }
+  return `<div class="view">
+    <div class="vhead"><div class="eyebrow">Sephora &amp; Ulta Variety Bench</div>
+      <h1 class="vtitle">${B.icon} ${B.label}</h1><p class="vsub">${B.tag}</p></div>
+    ${screenStrip(B.rows)}${chipbar()}${body}
+    ${B.note?`<div class="rulecard" style="margin-top:22px"><b>Bench notes.</b> ${esc(B.note)}</div>`:''}
+  </div>`;
+}
+
+/* ---------- scent ---------- */
+function renderScent(){
+  const q=state.q.toLowerCase();
+  return `<div class="view">
+    <div class="vhead"><div class="eyebrow">Sephora &amp; Ulta Variety Bench</div>
+    <h1 class="vtitle">🌫️ Scent Bench</h1><p class="vsub">${SCENT.tag}</p></div>
+    ${SCENT.lanes.map(l=>{
+      const rows=l.rows.filter(r=>!q||(r[0]+r[1]+r[2]).toLowerCase().includes(q));
+      if(!rows.length)return '';
+      return `<div class="lanecard"><h3>${l.name}</h3>
+      ${rows.map(r=>`<div class="lrow"><div class="lyr">${esc(r[0])}</div>
+        <div class="cur"><b>Current:</b> ${esc(r[1])}</div>
+        <div class="opts"><b style="color:var(--ink);font-weight:600">Bench:</b> ${esc(r[2])}</div></div>`).join('')}
+      </div>`;
+    }).join('')}
+    <div class="rulecard"><b>Lane discipline.</b> One lane per day, never mixed. Deodorant and hair products stay fragrance-free or lane-matched. Zero scent on a no-bag day — a scent-free day beats a mismatched lane.</div>
+  </div>`;
+}
+
+/* ---------- bonus ---------- */
+function renderBonus(){
+  const q=state.q.toLowerCase();
+  const LIGHT={g:['✅ Green — say yes freely','p-g'],y:['🟡 Amber — one condition attached','p-y'],r:['🔴 Red — no, even as a gift','p-r']};
+  const rows=BONUS.filter(r=>(state.light==='all'||r[2]===state.light)&&(!q||(r[0]+r[1]+r[7]+r[8]).toLowerCase().includes(q)));
+  const cats=[...new Set(rows.map(r=>r[1]))];
+  const c={g:0,y:0,r:0};BONUS.forEach(r=>c[r[2]]++);
+  return `<div class="view">
+    <div class="vhead"><div class="eyebrow">The "sure, why not" list</div>
+    <h1 class="vtitle">🫧 The Bonus Shelf</h1>
+    <p class="vsub">Cosmetic-tier: changes how skin <em>looks today</em>, not what it <em>is</em> in six months. The effect is real — just borrowed, not built. Core Five compounds; this resets daily.</p></div>
+    <div class="statstrip">
+      <div class="stat"><div class="k"><span class="pill p-g"><span class="dot"></span>Green</span></div><div class="v">${c.g}</div></div>
+      <div class="stat"><div class="k"><span class="pill p-y"><span class="dot"></span>Amber</span></div><div class="v">${c.y}</div></div>
+      <div class="stat"><div class="k"><span class="pill p-r"><span class="dot"></span>Red</span></div><div class="v">${c.r}</div></div>
+      <div class="stat"><div class="k">Budget cap</div><div class="v">$25<small>/quarter</small></div></div>
+    </div>
+    <div class="rulecard"><b>The guardrail.</b> The shelf gets attention only when the Core Five ran clean for the last 7 days. Skipped SPF at stops this week? The shelf is closed — not as punishment, as accurate accounting of where the return actually is. The cap exists so the Bonus Shelf never eats the sunscreen budget: PDRN cream vs a third tube of Anua — the Anua wins every time.</div>
+    <div class="chips">
+      ${[['all','All lights'],['g','✅ Green'],['y','🟡 Amber'],['r','🔴 Red']].map(([k,l])=>`<button class="chip ${state.light===k?'on':''}" data-light="${k}">${l}</button>`).join('')}
+    </div>
+    ${cats.map(cat=>{
+      const cr=rows.filter(r=>r[1]===cat);
+      return `<div class="grouph"><span class="gt">${cat}</span><span class="gn">${cr.length}</span><span class="rule"></span></div>
+      <div class="bonusgrid">${cr.map(r=>{
+        const cls=r[2]==='g'?'c-g':r[2]==='y'?'c-y':'c-r';
+        const condLab=r[2]==='g'?'Fine print':r[2]==='y'?'The condition':'Why not';
+        return `<div class="bcard">
+          <div class="bh"><b>${esc(r[0])}</b>${pill(LIGHT,r[2]).replace(LIGHT[r[2]][0],LIGHT[r[2]][0].split(' — ')[0])}</div>
+          <div class="facts">
+            <span class="pill p-v"><span class="dot"></span>${r[3]}</span>
+            <span class="pill p-w"><span class="dot"></span>${esc(r[4])}</span>
+          </div>
+          <div class="what">${esc(r[7])}</div>
+          <div class="cond ${cls}"><b>${condLab}</b>${esc(r[8])}</div>
+          <div class="bfoot"><span>${esc(r[6])}</span><span class="prc">${esc(r[5])}</span></div>
+        </div>`;
+      }).join('')}</div>`;
+    }).join('')||'<div class="empty">Nothing matches.</div>'}
+    <div class="rulecard" style="margin-top:22px"><b>The rules.</b> Nothing here ever displaces a Core Five slot · cosmetic-only items enter freely, tonight · anything with an active follows the 4-week rule · nothing new within 2 weeks either side of a procedure · above the jaw, fragrance-free still wins · red stays red even as a gift — graciously received, quietly never used.</div>
+  </div>`;
+}
+
+/* ---------- procedures ---------- */
+function renderProc(){
+  const V={g:['🟢','p-g'],y:['🟡','p-y'],r:['🔴','p-r'],w:['⚪','p-w']};
+  const q=state.q.toLowerCase();
+  return `<div class="view">
+    <div class="vhead"><div class="eyebrow">The Variety Bench, but for procedures</div>
+    <h1 class="vtitle">🔁 Procedure Swap Bench</h1>
+    <p class="vsub">Every swap that fills one of the three booked slots — Sylfirm X, Profhilo, Rejuran — and does the same job as well or better on Fitzpatrick V–VI skin. The slot is fixed; the brand is not.</p></div>
+    <div class="gatecard">${PROC.gates.map(g=>`<div class="gate"><div class="gn">${g[0]}</div><b>${g[1]}</b><p>${g[2]}</p></div>`).join('')}</div>
+    <div class="regbox"><h3>🚨 Regulatory reality — read before booking</h3><ul>${PROC.reg.map(r=>`<li>${r}</li>`).join('')}</ul></div>
+    <div class="grouph"><span class="gt">⚕️ Flags from your health records</span><span class="rule"></span></div>
+    <div class="flags">${PROC.flags.map(f=>`<div class="flag"><b>${esc(f[0])}</b>${esc(f[1])}</div>`).join('')}</div>
+    ${PROC.slots.map(s=>{
+      const swaps=s.swaps.filter(w=>!q||(w[0]+w[1]+w[4]).toLowerCase().includes(q));
+      return `<div class="slotsec">
+        <div class="sh"><h2>${s.name}</h2></div><p class="job">${esc(s.job)}</p>
+        <div class="swaplist">${swaps.map(w=>`<div class="swap">
+          <div class="sn">${esc(w[0])}</div>
+          <div class="sv"><span class="pill ${V[w[3]][1]}"><span class="dot"></span>${esc(w[4])}</span><span class="cost">${esc(w[2])}</span></div>
+          <div class="sm">${esc(w[1])}</div>
+        </div>`).join('')}</div>
+        ${s.closed?`<div class="closedbox">⛔ ${esc(s.closed)}</div>`:''}
+      </div>`;
+    }).join('')}
+    <div class="grouph" style="margin-top:30px"><span class="gt">🧩 Swap Stacks — whole-year builds</span><span class="rule"></span></div>
+    <p class="vsub" style="margin-bottom:12px">The skeleton never moves: Jan–Feb energy · Apr–May injectable · Jun–Aug nothing · Oct–Nov injectable. Blackout and 4-week spacing are load-bearing — swap the players, never the calendar.</p>
+    <div class="swaplist stacktbl">${PROC.stacks.map(st=>`<div class="swap">
+      <div style="display:flex;justify-content:space-between;gap:10px;align-items:baseline"><span class="sn">${st[0]}</span><span class="cost">≈ ${st[1]}/yr</span></div>
+      <div class="seasonrow">${st[2].map(x=>{const [a,b]=x.split('|');return `<span class="season"><b>${a}</b> · ${b}</span>`}).join('')}</div>
+    </div>`).join('')}</div>
+    <div class="rulecard" style="margin-top:18px"><b>Passport fine print.</b> Treat at the start of a Thailand block, not the end — burn the 48h no-sweat window before Muay Thai, zero fresh injection sites under headgear. Thailand UV is equatorial: tinted mineral SPF rules apply doubly.</div>
+    <div class="grouph" style="margin-top:26px"><span class="gt">🔮 What would change this bench</span><span class="rule"></span></div>
+    <div class="flags">${PROC.watch.map(w=>`<div class="flag">${esc(w)}</div>`).join('')}</div>
+  </div>`;
+}
+
+/* ---------- brands ---------- */
+function renderBrands(){
+  const q=state.q.toLowerCase();
+  const lit=LIT.filter(r=>!q||(r[0]+r[2]).toLowerCase().includes(q));
+  const aud=AUDIT.filter(r=>!q||(r[0]+r[2]).toLowerCase().includes(q));
+  const exc=EXCLUDED.filter(r=>!q||(r[0]+r[1]).toLowerCase().includes(q));
+  const phone=document.body.classList.contains('phone');
+  const litBody=phone
+    ?`<div class="cardlist">${lit.map(r=>`<div class="pcard open"><div class="r1"><div class="nm">${esc(r[0])}</div>${pill(SCREEN,r[1]==='g'?'g':r[1])}</div><div class="why" style="max-height:none;margin-top:8px">${esc(r[2])}</div></div>`).join('')}</div>`
+    :`<div class="tablewrap"><div class="tscroll"><table class="bench"><thead><tr><th>Brand (parent)</th><th>Status</th><th>What it is</th></tr></thead><tbody>
+      ${lit.map(r=>`<tr class="brandrow"><td style="max-width:340px">${esc(r[0])}</td><td>${pill(SCREEN,r[1])}</td><td class="why">${esc(r[2])}</td></tr>`).join('')}</tbody></table></div></div>`;
+  const audBody=phone
+    ?`<div class="cardlist">${aud.map(r=>`<div class="pcard open"><div class="r1"><div class="nm">${esc(r[0])}</div>${pill(SCREEN,r[1])}</div><div class="why" style="max-height:none;margin-top:8px">${esc(r[2])}</div></div>`).join('')}</div>`
+    :`<div class="tablewrap"><div class="tscroll"><table class="bench"><thead><tr><th>On your shelf now</th><th>Screen</th><th>Verdict</th></tr></thead><tbody>
+      ${aud.map(r=>`<tr class="brandrow"><td>${esc(r[0])}</td><td>${pill(SCREEN,r[1])}</td><td class="why">${esc(r[2])}</td></tr>`).join('')}</tbody></table></div></div>`;
+  return `<div class="view">
+    <div class="vhead"><div class="eyebrow">Litigation screen · Aug 2026 · re-run quarterly</div>
+    <h1 class="vtitle">⚖️ Brands &amp; Audit</h1>
+    <p class="vsub">Every brand behind every bench, screened for active product litigation — plus the verdict on what is on your shelf right now.</p></div>
+    <div class="grouph"><span class="gt">🧾 Current Stack Audit</span><span class="gn">${aud.length}</span><span class="rule"></span></div>
+    ${audBody}
+    <div class="grouph"><span class="gt">⚖️ Litigation Screen — brand status</span><span class="gn">${lit.length}</span><span class="rule"></span></div>
+    ${litBody}
+    <div class="grouph"><span class="gt">⛔ Not on this list, on purpose</span><span class="gn">${exc.length}</span><span class="rule"></span></div>
+    <div class="cardlist">${exc.map(r=>`<div class="pcard open"><div class="r1"><div class="nm">${esc(r[0])}</div></div><div class="why" style="max-height:none;margin-top:6px">${esc(r[1])}</div></div>`).join('')}</div>
+    <div class="rulecard" style="margin-top:20px"><b>Cadence.</b> Re-run the litigation screen quarterly with the Marek draw — class actions in this industry move monthly. A product earns a permanent bench seat only after 8 weeks with no new pigment, no irritation, no flaking.</div>
+  </div>`;
+}
+
+/* ---------- home ---------- */
+function ring(pct,color,label,center){
+  const r=36,c=2*Math.PI*r,off=c*(1-pct);
+  return `<div class="ringcard"><div class="ring">
+    <svg width="86" height="86" viewBox="0 0 86 86">
+      <circle class="track" cx="43" cy="43" r="${r}" stroke-width="8"/>
+      <circle class="prog" cx="43" cy="43" r="${r}" stroke-width="8" stroke="${color}" stroke-dasharray="${c}" stroke-dashoffset="${off}"/>
+    </svg><div class="rc">${center}</div></div>
+    <div class="rlab">${label}</div></div>`;
+}
+function renderHome(){
+  const all=Object.values(BENCHES).flatMap(b=>b.rows);
+  const total=all.length+BONUS.length+SCENT.lanes.reduce((a,l)=>a+l.rows.length,0);
+  const c=counts(all);
+  const clearPct=c.g/all.length;
+  const leaders=all.filter(r=>r[2].includes('L')).length;
+  const currents=all.filter(r=>r[2].includes('C')).length;
+  const bg=BONUS.filter(r=>r[2]==='g').length;
+  const q=state.q.toLowerCase();
+  if(q){ // global search results
+    let hits=[];
+    const LIGHTPILL={g:'<span class="pill p-g"><span class="dot"></span>✅ Green</span>',y:'<span class="pill p-y"><span class="dot"></span>🟡 Amber</span>',r:'<span class="pill p-r"><span class="dot"></span>🔴 Red</span>'};
+    Object.entries(BENCHES).forEach(([k,B])=>B.rows.forEach(r=>{
+      if((r[0]+r[1]+r[4]+r[5]).toLowerCase().includes(q))hits.push({t:B.icon+' '+B.label,name:r[0],slot:r[1],why:r[5],pill:pill(SCREEN,r[3]),go:['bench',k]});
+    }));
+    BONUS.forEach(r=>{if((r[0]+r[1]+r[7]+r[8]).toLowerCase().includes(q))hits.push({t:'🫧 Bonus Shelf',name:r[0],slot:r[1],why:r[7],pill:LIGHTPILL[r[2]],go:['bonus']});});
+    return `<div class="view"><div class="vhead"><h1 class="vtitle">Search — “${esc(state.q)}”</h1><p class="vsub">${hits.length} matches across every bench.</p></div>
+    <div class="cardlist">${hits.slice(0,60).map(h=>`<div class="pcard open" data-go="${h.go.join(',')}" style="cursor:pointer">
+      <div class="r1"><div class="nm">${esc(h.name)}</div>${h.pill}</div>
+      <div class="meta"><span class="pill p-v"><span class="dot"></span>${h.t}</span><span class="loc">${esc(h.slot)}</span></div>
+      <div class="why" style="max-height:none;margin-top:8px">${esc(h.why)}</div></div>`).join('')||'<div class="empty">No matches anywhere on the bench.</div>'}</div></div>`;
+  }
+  return `<div class="view">
+    <div class="hero">
+      <div class="date">AESTHETIC PROTOCOL HQ · COMPILED AUG 26, 2026</div>
+      <h1>Everything on your bench is pre-screened. Just pick.</h1>
+      <p>${total} products across seven benches + the Bonus Shelf, already filtered for Fitzpatrick V–VI, fragrance-free above the jaw, evidence tier A/B, Sephora/Ulta stock, and the litigation screen. No thinking required at the shelf.</p>
+    </div>
+    <div class="rings">
+      ${ring(clearPct,'var(--teal)','Brands fully clear',`${Math.round(clearPct*100)}<small>%</small>`)}
+      ${ring(leaders/all.length,'var(--violet)','Slot leaders picked',`${leaders}<small>⭐</small>`)}
+      ${ring(bg/BONUS.length,'var(--amber)','Bonus greens',`${bg}<small>/${BONUS.length}</small>`)}
+    </div>
+    <div class="statstrip">
+      <div class="stat"><div class="k">Bench items</div><div class="v">${all.length}</div></div>
+      <div class="stat"><div class="k">🧺 Currently owned</div><div class="v">${currents}</div></div>
+      <div class="stat"><div class="k">🔴 To replace</div><div class="v">${all.filter(r=>r[3]==='r').length+1}<small> (Sun Bum lip)</small></div></div>
+      <div class="stat"><div class="k">Bonus cap</div><div class="v">$25<small>/qtr</small></div></div>
+    </div>
+    <section class="homesec"><h2>Jump in</h2><div class="secsub">Every bench is grouped by slot — shop a shelf at a time.</div>
+    <div class="homegrid">
+      ${Object.entries(BENCHES).map(([k,B])=>`<button class="qcard" data-go="bench,${k}"><span class="qi">${B.icon}</span><b>${B.label}</b><span>${B.tag}</span><span class="qn">${B.rows.length} items →</span></button>`).join('')}
+      <button class="qcard" data-go="scent"><span class="qi">🌫️</span><b>Scent Bench</b><span>Two lanes, zero mixing.</span><span class="qn">2 lanes →</span></button>
+      <button class="qcard" data-go="bonus"><span class="qi">🫧</span><b>Bonus Shelf</b><span>The "sure, why not" list — honest about what it does.</span><span class="qn">${BONUS.length} items →</span></button>
+      <button class="qcard" data-go="proc"><span class="qi">🔁</span><b>Procedure Swaps</b><span>Same job or better, three gates, zero exceptions.</span><span class="qn">3 slots →</span></button>
+      <button class="qcard" data-go="brands"><span class="qi">⚖️</span><b>Brands &amp; Audit</b><span>Litigation screen + your current shelf's verdict.</span><span class="qn">${LIT.length} brands →</span></button>
+    </div></section>
+    <section class="homesec"><h2>The operating rules</h2><div class="secsub">Same rules everywhere — they're why the bench can be trusted blind.</div>
+    <div class="rulegrid">
+      <div class="rulecard"><b>One swap at a time, 4+ weeks apart.</b> Same rule as procedures, same reason: a reaction has to be traceable.</div>
+      <div class="rulecard"><b>8 weeks to earn a seat.</b> A product goes permanent only after 8 weeks with no new pigment, no irritation, no flaking.</div>
+      <div class="rulecard"><b>Fragrance-free above the jaw.</b> Non-negotiable. On this tone, irritation is how pigment starts.</div>
+      <div class="rulecard"><b>Every day, whichever bottle:</b> cleanse without stripping → antioxidant AM → moisturizer → SPF + stick every 3-hour stop → actives PM only, buffered, never stacked with acids.</div>
+    </div></section>
+    <div class="sos"><h3>🎒 The "No Bag" plan — pouch forgotten or cooked on the dash</h3>
+      <ol>
+        <li><b>Priority when you have nothing:</b> 1) protect · 2) don't strip · 3) seal · 4) skip every active. Two days without actives costs nothing; improvised actives can cost 6–12 months of pigment.</li>
+        <li><b>Stop A — Ulta/Sephora on the route:</b> Round Lab Dokdo mini or Skinfix Foaming Oil mini · Birch Cream or Atobarrier mini · BOJ Relief Sun · Round Lab Sun Stick. Plus Black Girl Sunscreen, Aquaphor Lip Repair, EltaMD Lip SPF, Kitsch bonnet, Megababe stick.</li>
+        <li><b>Stop B — Target/Walmart/CVS:</b> Cetaphil cleanser · Vanicream or Eucerin · BOJ or Isntree sun (Target carries both) · Black Girl Sunscreen face + body · Aquaphor for lips · any satin bonnet · As I Am CoWash + Knot Today.</li>
+        <li><b>Stop C — truck stop only:</b> water-only rinse AM/PM · least-fragranced lotion on the shelf · any SPF 30+ beats no sunscreen for one day · hat + long sleeve on the left arm · petroleum jelly for lips.</li>
+        <li><b>The permanent fix:</b> a second sealed mini kit in the truck's insulated pouch — never on the dash. All ✅/⚪, ~$90 total, heat-tolerant for a week.</li>
+      </ol>
+      <div class="never"><b>Never improvised:</b> bar soap on the face · fragranced wipes as cleanser · scrubs or washcloth scrubbing · toothpaste/lemon on a spot · wrong-shade tinted SPF · 2-in-1 shampoo on 4b hair. Never "catch up" by stacking when the bag is back.</div>
+    </div>
+    <div class="foot">Compiled from <b>Aesthetic Protocol HQ</b> — Sephora &amp; Ulta Variety Bench · Procedure Swap Bench · The Bonus Shelf.<br>Litigation screen re-runs quarterly. Formulas drift: confirm “fragrance-free” on the label in your hand. The bench serves the protocols — the cut still outranks all of it.</div>
+  </div>`;
+}
+
+function renderMain(){
+  const v=state.view;
+  $('#main').innerHTML=
+    v==='home'?renderHome():
+    v==='bench'?renderBench(state.bench):
+    v==='scent'?renderScent():
+    v==='bonus'?renderBonus():
+    v==='proc'?renderProc():
+    renderBrands();
+  bindChips();
+  document.querySelectorAll('[data-card]').forEach(el=>el.onclick=()=>{
+    const id=el.dataset.card;state.open[id]=!state.open[id];el.classList.toggle('open');
+  });
+  document.querySelectorAll('[data-go]').forEach(el=>el.onclick=()=>{
+    const [v2,b]=el.dataset.go.split(',');go(v2,b);
+  });
+  renderNav();renderBottom();
+}
+
+/* ============================================================ INIT ============================================================ */
+const q1=$('#q1'),q2=$('#q2');
+function onSearch(v){state.q=v;q1.value=v;q2.value=v;
+  if(state.view!=='home'&&v===''){renderMain();return}
+  renderMain();
+}
+q1.addEventListener('input',e=>onSearch(e.target.value));
+q2.addEventListener('input',e=>onSearch(e.target.value));
+$('#mDesk').onclick=()=>{setMode('desktop');render()};
+$('#mPhone').onclick=()=>{setMode('phone');render()};
+let saved=null;try{saved=localStorage.getItem('sb-mode')}catch(e){}
+setMode(saved||(matchMedia('(max-width:759px)').matches?'phone':'desktop'),false);
+render();
+</script>
