@@ -1,0 +1,167 @@
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Public+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   SKIN BENCH — instrument-cluster palette.
+   Warm-neutral grounds, one cool signal accent, and a deliberately
+   desaturated semantic ramp so the accent is the only saturated thing
+   on the page. Squared corners throughout; only status pills go round.
+   ============================================================ */
+
+:root {
+  /* --- light: warm paper --- */
+  --ground: 40 24% 96%;
+  --panel: 40 30% 99%;
+  --raised: 40 16% 92%;
+  --hairline: 38 12% 84%;
+  --hairline-2: 38 12% 74%;
+  --ink: 30 12% 12%;
+  --dim: 32 8% 38%;
+  --faint: 32 7% 54%;
+
+  --signal: 191 62% 32%;
+  --signal-ink: 191 66% 26%;
+  --signal-wash: 191 48% 90%;
+
+  --clear: 98 32% 34%;
+  --clear-wash: 98 34% 89%;
+  --flag: 40 62% 34%;
+  --flag-wash: 42 66% 88%;
+  --closed: 218 8% 42%;
+  --closed-wash: 218 12% 89%;
+  --excluded: 2 52% 42%;
+  --excluded-wash: 4 60% 92%;
+  --contro: 26 62% 38%;
+  --contro-wash: 28 66% 90%;
+
+  /* shadcn bridge */
+  --background: var(--ground);
+  --foreground: var(--ink);
+  --card: var(--panel);
+  --card-foreground: var(--ink);
+  --popover: var(--panel);
+  --popover-foreground: var(--ink);
+  --primary: var(--signal);
+  --primary-foreground: 40 30% 99%;
+  --secondary: var(--raised);
+  --secondary-foreground: var(--ink);
+  --muted: var(--raised);
+  --muted-foreground: var(--dim);
+  --accent: var(--raised);
+  --accent-foreground: var(--ink);
+  --destructive: var(--excluded);
+  --destructive-foreground: 40 30% 99%;
+  --border: var(--hairline);
+  --input: var(--hairline);
+  --ring: var(--signal);
+  --radius: 3px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --ground: 216 16% 7%;
+    --panel: 218 16% 10%;
+    --raised: 218 15% 15%;
+    --hairline: 216 12% 20%;
+    --hairline-2: 216 11% 30%;
+    --ink: 210 16% 92%;
+    --dim: 214 10% 66%;
+    --faint: 216 9% 46%;
+
+    --signal: 189 58% 56%;
+    --signal-ink: 189 62% 68%;
+    --signal-wash: 191 40% 18%;
+
+    --clear: 96 34% 62%;
+    --clear-wash: 98 24% 16%;
+    --flag: 42 62% 62%;
+    --flag-wash: 42 34% 16%;
+    --closed: 216 10% 62%;
+    --closed-wash: 216 10% 18%;
+    --excluded: 4 62% 66%;
+    --excluded-wash: 4 32% 17%;
+    --contro: 28 66% 62%;
+    --contro-wash: 26 34% 16%;
+
+    --primary-foreground: 216 16% 7%;
+    --destructive-foreground: 216 16% 7%;
+  }
+}
+
+:root[data-theme='dark'] {
+  --ground: 216 16% 7%;
+  --panel: 218 16% 10%;
+  --raised: 218 15% 15%;
+  --hairline: 216 12% 20%;
+  --hairline-2: 216 11% 30%;
+  --ink: 210 16% 92%;
+  --dim: 214 10% 66%;
+  --faint: 216 9% 46%;
+
+  --signal: 189 58% 56%;
+  --signal-ink: 189 62% 68%;
+  --signal-wash: 191 40% 18%;
+
+  --clear: 96 34% 62%;
+  --clear-wash: 98 24% 16%;
+  --flag: 42 62% 62%;
+  --flag-wash: 42 34% 16%;
+  --closed: 216 10% 62%;
+  --closed-wash: 216 10% 18%;
+  --excluded: 4 62% 66%;
+  --excluded-wash: 4 32% 17%;
+  --contro: 28 66% 62%;
+  --contro-wash: 26 34% 16%;
+
+  --primary-foreground: 216 16% 7%;
+  --destructive-foreground: 216 16% 7%;
+}
+
+* { border-color: hsl(var(--hairline)); }
+
+html { background: hsl(var(--ground)); }
+
+body {
+  background: hsl(var(--ground));
+  color: hsl(var(--ink));
+  font-family: 'Public Sans', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  margin: 0;
+}
+
+::selection { background: hsl(var(--signal) / 0.28); }
+
+:focus-visible {
+  outline: 2px solid hsl(var(--signal));
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+
+/* thin scrollbars inside scroll regions */
+.thin-scroll { scrollbar-width: thin; scrollbar-color: hsl(var(--hairline-2)) transparent; }
+.thin-scroll::-webkit-scrollbar { width: 8px; height: 8px; }
+.thin-scroll::-webkit-scrollbar-thumb { background: hsl(var(--hairline-2)); border-radius: 8px; }
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+/* the one animated element: the live-refresh indicator */
+@keyframes ping-soft {
+  0%   { box-shadow: 0 0 0 0 hsl(var(--clear) / 0.55); }
+  70%  { box-shadow: 0 0 0 8px hsl(var(--clear) / 0); }
+  100% { box-shadow: 0 0 0 0 hsl(var(--clear) / 0); }
+}
+.live-dot { animation: ping-soft 2.8s ease-out infinite; }
+
+@keyframes view-in {
+  from { opacity: 0; transform: translateY(5px); }
+  to   { opacity: 1; transform: none; }
+}
+.view-in { animation: view-in .26s ease-out; }
