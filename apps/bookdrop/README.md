@@ -4,8 +4,10 @@ A drop-zone web app + Claude pipeline for studying books that are far too long f
 chat context. Live artifact: https://claude.ai/code/artifact/aa585aa1-8ccf-4540-9ba7-0dc2c68f3248
 
 - Notion destination: **📕 Book Synthesis Lab** (page `3ca86d86-e27b-81e2-a17a-fb618a8be4a7`, under Life HQ)
-- Pickup: an hourly Claude Routine bound to the session that built this checks the artifact
-  for queued books. The owner can also message Claude to process immediately.
+- Pickup: a self-rearming "Bookdrop fast poll" (send_later one-shot, every ~3 min, bound to the
+  building session) starts synthesis immediately when a queued book appears. An hourly
+  "Bookdrop watchdog" Routine revives the poll chain if it ever breaks. The owner can also
+  message Claude directly.
 
 ## How it works
 
@@ -24,11 +26,18 @@ chat context. Live artifact: https://claude.ai/code/artifact/aa585aa1-8ccf-4540-
 State shape: `{v, books: [{id, title, file, pages, chars, added, status, text?, notion?, note?}]}`,
 `status ∈ queued | processing | done | error`.
 
-Per queued book:
+Per queued book (start IMMEDIATELY — never wait for a schedule):
 
-1. Republish with `status: "processing"` (leave `text` intact) so the UI shows progress.
-2. Save the book text to a local file. Pass 1 — skim in ~25k-char chunks to build a structure
-   map (chapters, core thesis). Pass 2 — per chapter/section, synthesize; never quote-dump.
+1. Republish with `status: "processing"`, `startedAt` (ISO), `estMin`, and
+   `progress: {detail, pct}` (leave `text` intact). Open views live-reload on every publish,
+   so `progress` IS the user's live status feed — update it at each milestone (structure
+   mapped ~10%, sections read ~40-60%, guide assembled ~75%, writing to Notion ~90%).
+   Batch milestones; don't publish more than ~once a minute (rate limits).
+2. Save the book text to a local file. Small books (<150k chars): read directly in ~25k-char
+   chunks, two passes (structure map, then per-chapter synthesis). Large books: fan out
+   parallel subagents over ~2,000-line slices, each returning structure, Feynman teaching
+   notes, key numbers, recall candidates, and pitfalls; assemble from their reports.
+   Never quote-dump.
 3. Create a subpage of Book Synthesis Lab using this template (teaching, not summarizing):
    - **The core model** — one screen; the mental model the book hangs on.
    - **Chapter-by-chapter** — Feynman-style plain-language teaching, *why it matters for the
