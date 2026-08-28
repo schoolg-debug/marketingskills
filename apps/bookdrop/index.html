@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bookdrop</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<style id="styles">
+:root{
+  --bg:#F2F3F8; --card:#FFFFFF; --ink:#1A1F3D; --muted:#666D93; --line:#E2E5F1;
+  --brand:#2B36A5; --brand-ink:#FFFFFF; --brand-soft:#EDEFFB; --brand-text:#2B36A5;
+  --ok-text:#176441; --ok-soft:#E2F2E9;
+  --warn-text:#7A5200; --warn-soft:#F6EDD8;
+  --err-text:#A82F2F; --err-soft:#F9E6E6;
+  --shadow:0 1px 2px rgba(20,25,60,.05), 0 4px 14px rgba(20,25,60,.05);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1126; --card:#171B36; --ink:#E8EAF7; --muted:#9AA1C8; --line:#293054;
+    --brand:#5A67D8; --brand-ink:#FFFFFF; --brand-soft:#232A55; --brand-text:#A6AFF0;
+    --ok-text:#6CC79A; --ok-soft:#142E20;
+    --warn-text:#D9A84E; --warn-soft:#33280F;
+    --err-text:#E08A8A; --err-soft:#3A1A1A;
+    --shadow:none;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1126; --card:#171B36; --ink:#E8EAF7; --muted:#9AA1C8; --line:#293054;
+  --brand:#5A67D8; --brand-ink:#FFFFFF; --brand-soft:#232A55; --brand-text:#A6AFF0;
+  --ok-text:#6CC79A; --ok-soft:#142E20;
+  --warn-text:#D9A84E; --warn-soft:#33280F;
+  --err-text:#E08A8A; --err-soft:#3A1A1A;
+  --shadow:none;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--ink);font-family:'Instrument Sans',system-ui,-apple-system,'Segoe UI',sans-serif;font-size:15px;line-height:1.5}
+.wrap{max-width:640px;margin:0 auto;padding:26px 20px 64px;display:flex;flex-direction:column;gap:26px}
+:focus-visible{outline:2px solid var(--brand);outline-offset:2px;border-radius:4px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:11px}
+.mark{width:34px;height:34px;border-radius:9px;background:var(--brand);color:var(--brand-ink);display:grid;place-items:center;flex:none}
+.brand h1{font-size:17px;font-weight:600;letter-spacing:-.01em}
+.flow{font-family:'IBM Plex Mono',ui-monospace,Consolas,monospace;font-size:10.5px;font-weight:500;letter-spacing:.06em;color:var(--muted);white-space:nowrap}
+.banner{border-radius:10px;padding:10px 14px;font-size:13.5px;line-height:1.45}
+.banner.err{background:var(--err-soft);color:var(--err-text)}
+.banner.info{background:var(--brand-soft);color:var(--brand-text)}
+.drop{background:var(--card);border:1.5px dashed var(--line);border-radius:14px;padding:34px 24px;text-align:center;box-shadow:var(--shadow)}
+.drop.over{border-color:var(--brand);background:var(--brand-soft)}
+.drop .di{color:var(--muted);margin-bottom:10px}
+.drop h2{font-size:16px;font-weight:600;margin-bottom:4px}
+.drop p{font-size:13px;color:var(--muted);margin-bottom:16px}
+.btn{background:var(--brand);color:var(--brand-ink);border:none;border-radius:8px;padding:9px 18px;font:600 14px 'Instrument Sans',system-ui,sans-serif;cursor:pointer}
+.btn:hover{filter:brightness(1.08)}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.jobs,.savebox{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;display:flex;flex-direction:column;gap:14px;box-shadow:var(--shadow)}
+.job .jr{display:flex;justify-content:space-between;gap:12px;margin-bottom:6px}
+.job .jn{font-size:13.5px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.job .js{font-family:'IBM Plex Mono',ui-monospace,Consolas,monospace;font-size:11px;color:var(--muted);white-space:nowrap}
+.job .js.bad{color:var(--err-text)}
+.bar{height:4px;background:var(--line);border-radius:2px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--brand);border-radius:2px}
+.job .jerr{font-size:12.5px;color:var(--err-text);margin-top:6px;line-height:1.45}
+.savebox{text-align:center;color:var(--muted);font-size:13.5px}
+.label{font-family:'IBM Plex Mono',ui-monospace,Consolas,monospace;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.section{display:flex;flex-direction:column;gap:10px}
+.book{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:13px 16px;box-shadow:var(--shadow)}
+.book .row{display:flex;align-items:center;gap:12px}
+.book .info{flex:1;min-width:0}
+.book h3{font-size:14.5px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.meta{font-family:'IBM Plex Mono',ui-monospace,Consolas,monospace;font-size:11px;color:var(--muted);margin-top:3px;font-variant-numeric:tabular-nums}
+.pill{font-size:12px;font-weight:600;padding:4px 11px;border-radius:999px;white-space:nowrap;flex:none}
+.pill.queued{background:var(--brand-soft);color:var(--brand-text)}
+.pill.processing{background:var(--warn-soft);color:var(--warn-text)}
+a.pill.done{background:var(--ok-soft);color:var(--ok-text);text-decoration:none}
+.pill.error{background:var(--err-soft);color:var(--err-text)}
+.note{font-size:12.5px;color:var(--muted);margin-top:8px;line-height:1.5}
+.note.bad{color:var(--err-text)}
+.empty{border:1px dashed var(--line);border-radius:12px;padding:18px;text-align:center;font-size:13px;color:var(--muted)}
+.steps{display:flex;flex-direction:column;gap:13px}
+.step{display:flex;gap:12px}
+.n{width:22px;height:22px;border-radius:50%;background:var(--brand-soft);color:var(--brand-text);font-family:'IBM Plex Mono',ui-monospace,Consolas,monospace;font-size:11px;font-weight:600;display:grid;place-items:center;flex:none;margin-top:1px}
+.step p{font-size:13.5px;color:var(--muted);line-height:1.55}
+.step b{color:var(--ink);font-weight:600}
+.step a,.fine a{color:var(--brand-text)}
+.fine{font-size:12px;color:var(--muted);line-height:1.55;border-top:1px solid var(--line);padding-top:16px}
+@media (prefers-reduced-motion: no-preference){
+  .drop,.bar i{transition:background .15s ease,border-color .15s ease,width .2s ease}
+}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script id="state" type="application/json">{"v":1,"books":[]}</script>
+<script id="app">
+(function(){
+'use strict';
+
+var NOTION_HUB = 'https://app.notion.com/p/3ca86d86e27b81e2a17afb618a8be4a7';
+var PDFJS_WORKER = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+var MAX_DOC_BYTES = 14.5 * 1024 * 1024;
+
+var STATE = {v:1, books:[]};
+try { STATE = JSON.parse(document.getElementById('state').textContent); } catch(e){}
+if (!STATE || !Array.isArray(STATE.books)) STATE = {v:1, books:[]};
+
+var root = document.getElementById('root');
+var T = { jobs: [], saving: false, banner: null, busy: false };
+
+function esc(s){
+  return String(s).replace(/[&<>"']/g, function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+  });
+}
+function fmtChars(n){
+  if (n >= 1000000) return (n/1000000).toFixed(1) + 'M';
+  if (n >= 1000) return Math.round(n/1000) + 'k';
+  return String(n);
+}
+function fmtDate(iso){
+  try {
+    var d = new Date(iso);
+    return d.toLocaleDateString(undefined, {month:'short', day:'numeric'});
+  } catch(e){ return ''; }
+}
+function setBanner(kind, text){ T.banner = kind ? {kind:kind, text:text} : null; }
+
+/* ---------- rendering ---------- */
+
+function render(){
+  var h = '';
+  h += '<header class="top"><div class="brand"><span class="mark" aria-hidden="true">'
+    + '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>'
+    + '</span><h1>Bookdrop</h1></div><span class="flow">BOOK &rarr; CLAUDE &rarr; NOTION</span></header>';
+
+  if (T.banner) h += '<div class="banner ' + esc(T.banner.kind) + '" role="status">' + esc(T.banner.text) + '</div>';
+
+  if (T.saving) {
+    h += '<div class="savebox" role="status">Saving into this page&hellip; it will reload with your book queued for Claude&rsquo;s next check-in.</div>';
+  } else if (T.busy || T.jobs.length) {
+    h += '<div class="jobs">' + T.jobs.map(function(j){
+      return '<div class="job"><div class="jr"><span class="jn">' + esc(j.name) + '</span>'
+        + '<span class="js' + (j.error ? ' bad' : '') + '">' + esc(j.stage) + '</span></div>'
+        + '<div class="bar"><i style="width:' + (j.error ? 100 : j.pct) + '%' + (j.error ? ';background:var(--err-text)' : '') + '"></i></div>'
+        + (j.error ? '<div class="jerr">' + esc(j.error) + '</div>' : '')
+        + '</div>';
+    }).join('') + '</div>';
+  }
+
+  if (!T.saving && !T.busy) {
+    h += '<div class="drop" id="drop" role="region" aria-label="Drop books here">'
+      + '<div class="di"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg></div>'
+      + '<h2>Drop books here</h2>'
+      + '<p>PDF, EPUB, TXT or MD &mdash; any length. 600 pages is fine.</p>'
+      + '<button class="btn" id="browse" type="button">Choose files</button>'
+      + '<input class="vh" type="file" id="file" multiple accept=".pdf,.epub,.txt,.md,.markdown" aria-label="Choose book files">'
+      + '</div>';
+  }
+
+  h += '<section class="section"><span class="label">Library</span>';
+  var books = STATE.books.slice().reverse();
+  if (!books.length) {
+    h += '<div class="empty">No books yet. Drop the first one above.</div>';
+  } else {
+    h += books.map(function(b){
+      var pill;
+      if (b.status === 'done' && b.notion) pill = '<a class="pill done" href="' + esc(b.notion) + '" target="_blank" rel="noopener">Open in Notion &#8599;</a>';
+      else if (b.status === 'processing') pill = '<span class="pill processing">Synthesizing&hellip;</span>';
+      else if (b.status === 'error') pill = '<span class="pill error">Failed</span>';
+      else pill = '<span class="pill queued">Sent to Claude</span>';
+      var meta = (b.pages ? b.pages + ' pp &middot; ' : '') + fmtChars(b.chars || 0) + ' chars &middot; ' + fmtDate(b.added);
+      var note = '';
+      if (b.status === 'queued') note = '<div class="note">Queued &mdash; Claude&rsquo;s hourly check-in picks this up, reads it in chunks, and builds the study guide in your Book Synthesis Lab. Message Claude to start sooner.</div>';
+      if (b.status === 'error' && b.note) note = '<div class="note bad">' + esc(b.note) + '</div>';
+      if (b.status === 'done' && b.note) note = '<div class="note">' + esc(b.note) + '</div>';
+      return '<article class="book"><div class="row"><div class="info"><h3>' + esc(b.title) + '</h3>'
+        + '<div class="meta">' + meta + '</div></div>' + pill + '</div>' + note + '</article>';
+    }).join('');
+  }
+  h += '</section>';
+
+  h += '<section class="section"><span class="label">How this works</span><div class="steps">'
+    + '<div class="step"><span class="n">1</span><p><b>Drop a book.</b> The text is extracted right here in your browser and saved into this page. Nothing gets truncated.</p></div>'
+    + '<div class="step"><span class="n">2</span><p><b>Claude picks it up.</b> An hourly Claude check-in finds new books and reads them section by section &mdash; so no length limit ever applies. Message Claude if you want it to start right away.</p></div>'
+    + '<div class="step"><span class="n">3</span><p><b>A study guide lands in Notion.</b> Built to your self-teaching method &mdash; Feynman explanations, recall drills, Anki candidates &mdash; in the <a href="' + NOTION_HUB + '" target="_blank" rel="noopener">Book Synthesis Lab</a>.</p></div>'
+    + '</div></section>';
+
+  h += '<p class="fine">Scanned (image-only) PDFs have no text layer to extract &mdash; drop those directly into a Claude chat for OCR instead. Study guides: <a href="' + NOTION_HUB + '" target="_blank" rel="noopener">Book Synthesis Lab &#8599;</a></p>';
+
+  root.innerHTML = '<div class="wrap">' + h + '</div>';
+  wire();
+}
+
+function wire(){
+  var drop = document.getElementById('drop');
+  var input = document.getElementById('file');
+  var browse = document.getElementById('browse');
+  if (browse && input) {
+    browse.addEventListener('click', function(){ input.click(); });
+    input.addEventListener('change', function(){ if (input.files.length) handleFiles(input.files); });
+  }
+  if (drop) {
+    ['dragenter','dragover'].forEach(function(ev){
+      drop.addEventListener(ev, function(e){ e.preventDefault(); drop.classList.add('over'); });
+    });
+    ['dragleave','drop'].forEach(function(ev){
+      drop.addEventListener(ev, function(e){ e.preventDefault(); drop.classList.remove('over'); });
+    });
+    drop.addEventListener('drop', function(e){
+      if (e.dataTransfer && e.dataTransfer.files.length) handleFiles(e.dataTransfer.files);
+    });
+  }
+}
+window.addEventListener('dragover', function(e){ e.preventDefault(); });
+window.addEventListener('drop', function(e){ e.preventDefault(); });
+
+/* ---------- extraction ---------- */
+
+function extOf(name){ var m = /\.([a-z0-9]+)$/i.exec(name); return m ? m[1].toLowerCase() : ''; }
+
+function cleanText(t){
+  return t.replace(/\r\n?/g,'\n').replace(/[ \t]+\n/g,'\n').replace(/[ \t]{2,}/g,' ').replace(/\n{3,}/g,'\n\n').trim();
+}
+
+async function extractPdf(file, onProgress){
+  var lib = window.pdfjsLib || window['pdfjs-dist/build/pdf'];
+  if (!lib) throw new Error('The PDF engine failed to load. Check your connection and reload the page.');
+  lib.GlobalWorkerOptions.workerSrc = PDFJS_WORKER;
+  var buf = await file.arrayBuffer();
+  var doc = await lib.getDocument({data: buf, isEvalSupported: false, disableFontFace: true}).promise;
+  var pages = doc.numPages;
+  var out = [];
+  for (var p = 1; p <= pages; p++) {
+    var page = await doc.getPage(p);
+    var tc = await page.getTextContent();
+    var line = '';
+    for (var i = 0; i < tc.items.length; i++) {
+      var it = tc.items[i];
+      line += it.str;
+      line += it.hasEOL ? '\n' : ' ';
+    }
+    out.push(line);
+    if (p % 5 === 0 || p === pages) {
+      onProgress(p, pages, 'Page ' + p + '/' + pages);
+      await new Promise(function(r){ setTimeout(r, 0); });
+    }
+  }
+  try { doc.destroy(); } catch(e){}
+  return { text: out.join('\n\n'), pages: pages };
+}
+
+async function extractEpub(file, onProgress){
+  if (!window.JSZip) throw new Error('The EPUB engine failed to load. Check your connection and reload the page.');
+  var zip = await JSZip.loadAsync(file);
+  var htmlFiles = [];
+  try {
+    var containerFile = zip.file('META-INF/container.xml');
+    if (containerFile) {
+      var container = await containerFile.async('string');
+      var m = /full-path="([^"]+)"/.exec(container);
+      var opfPath = m && m[1];
+      var opfFile = opfPath && zip.file(opfPath);
+      if (opfFile) {
+        var opf = await opfFile.async('string');
+        var dom = new DOMParser().parseFromString(opf, 'application/xml');
+        var base = opfPath.indexOf('/') >= 0 ? opfPath.replace(/[^\/]+$/, '') : '';
+        var manifest = {};
+        var items = dom.getElementsByTagName('item');
+        for (var i = 0; i < items.length; i++) manifest[items[i].getAttribute('id')] = items[i].getAttribute('href');
+        var refs = dom.getElementsByTagName('itemref');
+        for (var j = 0; j < refs.length; j++) {
+          var href = manifest[refs[j].getAttribute('idref')];
+          if (href) htmlFiles.push(base + href);
+        }
+      }
+    }
+  } catch(e){}
+  if (!htmlFiles.length) {
+    zip.forEach(function(path){ if (/\.x?html?$/i.test(path)) htmlFiles.push(path); });
+    htmlFiles.sort();
+  }
+  var parts = [];
+  for (var k = 0; k < htmlFiles.length; k++) {
+    var f = zip.file(htmlFiles[k]) || zip.file(decodeURIComponent(htmlFiles[k]));
+    if (!f) continue;
+    var html = await f.async('string');
+    var docp = new DOMParser().parseFromString(html, 'text/html');
+    var junk = docp.querySelectorAll('script,style');
+    for (var q = 0; q < junk.length; q++) junk[q].parentNode.removeChild(junk[q]);
+    parts.push(docp.body ? docp.body.textContent : '');
+    onProgress(k + 1, htmlFiles.length, 'Section ' + (k + 1) + '/' + htmlFiles.length);
+  }
+  return { text: parts.join('\n\n'), pages: null };
+}
+
+async function extractFile(file, onProgress){
+  var ext = extOf(file.name);
+  if (ext === 'pdf') return extractPdf(file, onProgress);
+  if (ext === 'epub') return extractEpub(file, onProgress);
+  if (ext === 'txt' || ext === 'md' || ext === 'markdown') {
+    onProgress(1, 1, 'Reading');
+    return { text: await file.text(), pages: null };
+  }
+  throw new Error('Unsupported file type ".' + ext + '". Use PDF, EPUB, TXT or MD.');
+}
+
+function makeEntry(file, res, text){
+  var title = file.name.replace(/\.[^.]+$/, '').replace(/[_\-]+/g, ' ').replace(/\s+/g, ' ').trim() || file.name;
+  return {
+    id: 'b' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+    title: title,
+    file: file.name,
+    pages: res.pages,
+    chars: text.length,
+    added: new Date().toISOString(),
+    status: 'queued',
+    text: text
+  };
+}
+
+async function handleFiles(fileList){
+  if (T.busy || T.saving) return;
+  var files = [].slice.call(fileList);
+  T.busy = true;
+  setBanner(null);
+  T.jobs = files.map(function(f){ return { name: f.name, pct: 0, stage: 'Waiting', error: null }; });
+  render();
+
+  var added = [];
+  for (var i = 0; i < files.length; i++) {
+    var job = T.jobs[i];
+    try {
+      job.stage = 'Reading'; render();
+      var res = await extractFile(files[i], function(done, total, stageText){
+        job.pct = total ? Math.round(done / total * 100) : 0;
+        job.stage = stageText;
+        render();
+      });
+      var text = cleanText(res.text || '');
+      if (extOf(files[i].name) === 'pdf' && res.pages >= 3 && text.length < res.pages * 40) {
+        throw new Error('Almost no text found — this looks like a scanned book with no text layer. It needs OCR: drop the file directly into a Claude chat instead.');
+      }
+      if (text.length < 200) throw new Error('Could not find readable text in this file.');
+      added.push(makeEntry(files[i], res, text));
+      job.pct = 100; job.stage = 'Extracted'; render();
+    } catch (err) {
+      job.error = (err && err.message) ? err.message : 'Extraction failed.';
+      job.stage = 'Failed';
+      render();
+    }
+  }
+
+  T.busy = false;
+  if (added.length) {
+    var ok = await saveBooks(added);
+    if (ok) return; /* the page reloads to the new version */
+  }
+  T.jobs = T.jobs.filter(function(j){ return j.error; });
+  render();
+}
+
+/* ---------- persistence ---------- */
+
+function buildDocument(state){
+  var css = document.getElementById('styles').textContent;
+  var app = document.getElementById('app').textContent;
+  var json = JSON.stringify(state).replace(/</g, '\\u003c');
+  return '<!doctype html>\n<html lang="en">\n<head>\n'
+    + '<meta charset="utf-8">\n'
+    + '<meta name="viewport" content="width=device-width, initial-scale=1">\n'
+    + '<title>Bookdrop</title>\n'
+    + '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">\n'
+    + '<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"><\/script>\n'
+    + '<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js"><\/script>\n'
+    + '<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"><\/script>\n'
+    + '<style id="styles">' + css + '</style>\n</head>\n<body>\n<div id="root"></div>\n'
+    + '<script id="state" type="application/json">' + json + '<\/script>\n'
+    + '<script id="app">' + app + '<\/script>\n</body>\n</html>\n';
+}
+
+async function saveBooks(added){
+  T.saving = true; render();
+  var newState = { v: STATE.v || 1, books: STATE.books.concat(added) };
+  var html = buildDocument(newState);
+  if (html.length > MAX_DOC_BYTES) {
+    setBanner('err', 'This drop would push the page past its 16 MB storage limit. Add fewer books at once, and add the rest after these are done (finished books get slimmed down automatically).');
+    T.saving = false; return false;
+  }
+  var artifact = null;
+  try {
+    artifact = (window.claude && window.claude.use) ? await window.claude.use('artifact') : null;
+  } catch(e){}
+  if (!artifact) {
+    setBanner('err', 'Saving is not available in this view. Open this page from your own Claude artifacts list, then try again.');
+    T.saving = false; return false;
+  }
+  var attempt = 0;
+  while (true) {
+    try {
+      await artifact.publish(html);
+      return true; /* the shell reloads every view to the new version */
+    } catch (err) {
+      var code = err && err.code;
+      if (code === 'conflict') return true; /* a newer version won; the reload delivers it */
+      if (code === 'upstream_error' && attempt === 0) {
+        attempt++;
+        await new Promise(function(r){ setTimeout(r, 700 + Math.random() * 600); });
+        continue;
+      }
+      var msgs = {
+        not_writer: 'This view is read-only — only the owner can add books here.',
+        not_granted: 'This view is read-only — only the owner can add books here.',
+        not_declared: 'Saving is switched off on this version of the page.',
+        too_large: 'The page storage limit was hit. Add fewer books at once.',
+        rate_limited: 'Saving too fast — wait a few seconds and try again.',
+        invalid_content: 'The save failed while packaging the page. Reload and try again.'
+      };
+      setBanner('err', msgs[code] || ('The save failed (' + (code || 'unknown error') + '). Reload the page and try again.'));
+      T.saving = false;
+      return false;
+    }
+  }
+}
+
+render();
+})();
+</script>
+</body>
+</html>
