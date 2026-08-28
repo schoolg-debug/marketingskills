@@ -38,23 +38,28 @@
 *{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-text-size-adjust:100%}
 body{background:var(--bg);color:var(--ink);font-family:'Instrument Sans',system-ui,-apple-system,'Segoe UI',sans-serif;font-size:15px;line-height:1.5}
-.wrap{max-width:640px;margin:0 auto;padding:26px 20px 64px;display:flex;flex-direction:column;gap:26px}
+.wrap{max-width:640px;margin:0 auto;padding:26px 20px 64px;display:flex;flex-direction:column;gap:22px}
 :focus-visible{outline:2px solid var(--brand);outline-offset:2px;border-radius:4px}
+.mono{font-family:'IBM Plex Mono',ui-monospace,Consolas,monospace}
 .top{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .brand{display:flex;align-items:center;gap:11px}
 .mark{width:34px;height:34px;border-radius:9px;background:var(--brand);color:var(--brand-ink);display:grid;place-items:center;flex:none}
 .brand h1{font-size:17px;font-weight:600;letter-spacing:-.01em}
 .flow{font-family:'IBM Plex Mono',ui-monospace,Consolas,monospace;font-size:10.5px;font-weight:500;letter-spacing:.06em;color:var(--muted);white-space:nowrap}
+.strip{display:flex;align-items:center;gap:9px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:9px 13px;font-family:'IBM Plex Mono',ui-monospace,Consolas,monospace;font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}
+.strip .dot{width:7px;height:7px;border-radius:50%;background:var(--ok-text);flex:none}
+.strip b{color:var(--ink);font-weight:500}
 .banner{border-radius:10px;padding:10px 14px;font-size:13.5px;line-height:1.45}
 .banner.err{background:var(--err-soft);color:var(--err-text)}
 .banner.info{background:var(--brand-soft);color:var(--brand-text)}
-.drop{background:var(--card);border:1.5px dashed var(--line);border-radius:14px;padding:34px 24px;text-align:center;box-shadow:var(--shadow)}
+.drop{background:var(--card);border:1.5px dashed var(--line);border-radius:14px;padding:30px 24px;text-align:center;box-shadow:var(--shadow)}
 .drop.over{border-color:var(--brand);background:var(--brand-soft)}
 .drop .di{color:var(--muted);margin-bottom:10px}
 .drop h2{font-size:16px;font-weight:600;margin-bottom:4px}
 .drop p{font-size:13px;color:var(--muted);margin-bottom:16px}
 .btn{background:var(--brand);color:var(--brand-ink);border:none;border-radius:8px;padding:9px 18px;font:600 14px 'Instrument Sans',system-ui,sans-serif;cursor:pointer}
 .btn:hover{filter:brightness(1.08)}
+.btn[disabled]{opacity:.55;cursor:default}
 .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .jobs,.savebox{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;display:flex;flex-direction:column;gap:14px;box-shadow:var(--shadow)}
 .job .jr{display:flex;justify-content:space-between;gap:12px;margin-bottom:6px}
@@ -73,12 +78,24 @@ body{background:var(--bg);color:var(--ink);font-family:'Instrument Sans',system-
 .book h3{font-size:14.5px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .meta{font-family:'IBM Plex Mono',ui-monospace,Consolas,monospace;font-size:11px;color:var(--muted);margin-top:3px;font-variant-numeric:tabular-nums}
 .pill{font-size:12px;font-weight:600;padding:4px 11px;border-radius:999px;white-space:nowrap;flex:none}
+.pill.staged{background:var(--line);color:var(--muted)}
 .pill.queued{background:var(--brand-soft);color:var(--brand-text)}
 .pill.processing{background:var(--warn-soft);color:var(--warn-text)}
 a.pill.done{background:var(--ok-soft);color:var(--ok-text);text-decoration:none}
 .pill.error{background:var(--err-soft);color:var(--err-text)}
 .note{font-size:12.5px;color:var(--muted);margin-top:8px;line-height:1.5}
 .note.bad{color:var(--err-text)}
+.est{font-family:'IBM Plex Mono',ui-monospace,Consolas,monospace;font-size:11px;color:var(--muted);margin-top:7px;font-variant-numeric:tabular-nums}
+.est b{color:var(--ink);font-weight:500}
+.xbtn{border:none;background:none;color:var(--muted);cursor:pointer;padding:4px 6px;border-radius:6px;line-height:1;flex:none}
+.xbtn:hover{color:var(--err-text)}
+.sendbar{display:flex;align-items:center;justify-content:space-between;gap:14px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 16px;box-shadow:var(--shadow)}
+.sendbar p{font-size:12.5px;color:var(--muted);line-height:1.45}
+.log{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+.loghead{width:100%;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 14px;background:none;border:none;cursor:pointer;font:600 12.5px 'Instrument Sans',system-ui,sans-serif;color:var(--ink);text-align:left}
+.loghead .chev{color:var(--muted);flex:none}
+.logbody{border-top:1px solid var(--line);padding:10px 14px;max-height:190px;overflow-y:auto;display:flex;flex-direction:column;gap:4px}
+.logline{font-family:'IBM Plex Mono',ui-monospace,Consolas,monospace;font-size:10.5px;color:var(--muted);line-height:1.55;font-variant-numeric:tabular-nums}
 .empty{border:1px dashed var(--line);border-radius:12px;padding:18px;text-align:center;font-size:13px;color:var(--muted)}
 .steps{display:flex;flex-direction:column;gap:13px}
 .step{display:flex;gap:12px}
@@ -89,6 +106,7 @@ a.pill.done{background:var(--ok-soft);color:var(--ok-text);text-decoration:none}
 .fine{font-size:12px;color:var(--muted);line-height:1.55;border-top:1px solid var(--line);padding-top:16px}
 @media (prefers-reduced-motion: no-preference){
   .drop,.bar i{transition:background .15s ease,border-color .15s ease,width .2s ease}
+  .chev{transition:transform .15s ease}
 }
 </style>
 </head>
@@ -102,13 +120,14 @@ a.pill.done{background:var(--ok-soft);color:var(--ok-text);text-decoration:none}
 var NOTION_HUB = 'https://app.notion.com/p/3ca86d86e27b81e2a17afb618a8be4a7';
 var PDFJS_WORKER = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 var MAX_DOC_BYTES = 14.5 * 1024 * 1024;
+var CHECKIN_MINUTE = 46; /* the hourly Claude routine fires at :46 UTC — keep in sync with the trigger */
 
 var STATE = {v:1, books:[]};
 try { STATE = JSON.parse(document.getElementById('state').textContent); } catch(e){}
 if (!STATE || !Array.isArray(STATE.books)) STATE = {v:1, books:[]};
 
 var root = document.getElementById('root');
-var T = { jobs: [], saving: false, banner: null, busy: false };
+var T = { jobs: [], staged: [], log: [], logOpen: false, saving: false, banner: null, busy: false };
 
 function esc(s){
   return String(s).replace(/[&<>"']/g, function(c){
@@ -121,26 +140,80 @@ function fmtChars(n){
   return String(n);
 }
 function fmtDate(iso){
-  try {
-    var d = new Date(iso);
-    return d.toLocaleDateString(undefined, {month:'short', day:'numeric'});
-  } catch(e){ return ''; }
+  try { return new Date(iso).toLocaleDateString(undefined, {month:'short', day:'numeric'}); } catch(e){ return ''; }
+}
+function fmtTime(d){
+  try { return d.toLocaleTimeString(undefined, {hour:'numeric', minute:'2-digit'}); } catch(e){ return ''; }
 }
 function setBanner(kind, text){ T.banner = kind ? {kind:kind, text:text} : null; }
+
+/* ---------- timing ---------- */
+
+function nextCheckin(){
+  var now = new Date();
+  var n = new Date(now.getTime());
+  n.setUTCSeconds(0, 0);
+  if (now.getUTCMinutes() >= CHECKIN_MINUTE) n.setUTCHours(n.getUTCHours() + 1);
+  n.setUTCMinutes(CHECKIN_MINUTE);
+  return n;
+}
+function minsUntil(d){ return Math.max(1, Math.ceil((d.getTime() - Date.now()) / 60000)); }
+
+/* Realistic synthesis estimate: Claude reads ~25k-char chunks, two passes
+   (structure map + per-chapter teaching), plus Notion writing overhead. */
+function synthMinutes(chars){
+  var m = 8 + (chars / 100000) * 4;
+  return Math.max(10, Math.round(m / 5) * 5);
+}
+function queuedBacklogMinutes(){
+  return STATE.books.reduce(function(sum, b){
+    return sum + (b.status === 'queued' ? synthMinutes(b.chars || 0) : 0);
+  }, 0);
+}
+
+/* Patch every live clock without a full re-render (keeps drag state, log scroll). */
+function updateClocks(){
+  var nc = nextCheckin();
+  var el = document.getElementById('nextrun');
+  if (el) el.innerHTML = 'Claude check-in: hourly &middot; next at <b>' + esc(fmtTime(nc)) + '</b> &middot; in ' + minsUntil(nc) + ' min';
+  var etas = document.querySelectorAll('[data-eta-min]');
+  for (var i = 0; i < etas.length; i++) {
+    var add = parseInt(etas[i].getAttribute('data-eta-min'), 10) || 0;
+    etas[i].textContent = fmtTime(new Date(nc.getTime() + add * 60000));
+  }
+}
+setInterval(updateClocks, 15000);
+
+/* ---------- activity log ---------- */
+
+function log(msg){
+  T.log.push({ t: new Date(), msg: msg });
+  if (T.log.length > 80) T.log = T.log.slice(-80);
+  T.logOpen = true;
+  render();
+}
+function fmtLogTime(d){
+  function p(n){ return (n < 10 ? '0' : '') + n; }
+  return p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds());
+}
 
 /* ---------- rendering ---------- */
 
 function render(){
+  var nc = nextCheckin();
   var h = '';
   h += '<header class="top"><div class="brand"><span class="mark" aria-hidden="true">'
     + '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>'
     + '</span><h1>Bookdrop</h1></div><span class="flow">BOOK &rarr; CLAUDE &rarr; NOTION</span></header>';
 
+  h += '<div class="strip"><span class="dot" aria-hidden="true"></span><span id="nextrun">Claude check-in: hourly &middot; next at <b>'
+    + esc(fmtTime(nc)) + '</b> &middot; in ' + minsUntil(nc) + ' min</span></div>';
+
   if (T.banner) h += '<div class="banner ' + esc(T.banner.kind) + '" role="status">' + esc(T.banner.text) + '</div>';
 
   if (T.saving) {
-    h += '<div class="savebox" role="status">Saving into this page&hellip; it will reload with your book queued for Claude&rsquo;s next check-in.</div>';
-  } else if (T.busy || T.jobs.length) {
+    h += '<div class="savebox" role="status">Saving into this page&hellip; it will reload with your book queued for the ' + esc(fmtTime(nc)) + ' check-in.</div>';
+  } else if (T.busy) {
     h += '<div class="jobs">' + T.jobs.map(function(j){
       return '<div class="job"><div class="jr"><span class="jn">' + esc(j.name) + '</span>'
         + '<span class="js' + (j.error ? ' bad' : '') + '">' + esc(j.stage) + '</span></div>'
@@ -148,23 +221,64 @@ function render(){
         + (j.error ? '<div class="jerr">' + esc(j.error) + '</div>' : '')
         + '</div>';
     }).join('') + '</div>';
-  }
-
-  if (!T.saving && !T.busy) {
+  } else {
     h += '<div class="drop" id="drop" role="region" aria-label="Drop books here">'
       + '<div class="di"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg></div>'
       + '<h2>Drop books here</h2>'
-      + '<p>PDF, EPUB, TXT or MD &mdash; any length. 600 pages is fine.</p>'
+      + '<p>PDF, EPUB, TXT or MD &mdash; any length. Nothing is sent until you say so.</p>'
       + '<button class="btn" id="browse" type="button">Choose files</button>'
       + '<input class="vh" type="file" id="file" multiple accept=".pdf,.epub,.txt,.md,.markdown" aria-label="Choose book files">'
       + '</div>';
   }
 
+  /* staged books: extracted, estimated, waiting for the send button */
+  if (T.staged.length) {
+    var backlog = queuedBacklogMinutes();
+    var cum = backlog;
+    var totalMin = 0;
+    var rows = T.staged.map(function(b, idx){
+      var mins = synthMinutes(b.chars);
+      cum += mins; totalMin += mins;
+      var meta = (b.pages ? b.pages + ' pp &middot; ' : '') + fmtChars(b.chars) + ' chars';
+      return '<article class="book"><div class="row"><div class="info"><h3>' + esc(b.title) + '</h3>'
+        + '<div class="meta">' + meta + '</div></div>'
+        + '<span class="pill staged">Staged</span>'
+        + '<button class="xbtn" type="button" data-unstage="' + idx + '" aria-label="Remove ' + esc(b.title) + ' from staging">'
+        + '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>'
+        + '</button></div>'
+        + '<div class="est">&asymp; <b>' + mins + ' min</b> to synthesize &middot; send now &rarr; in Notion &asymp; <b><span data-eta-min="' + cum + '">' + esc(fmtTime(new Date(nc.getTime() + cum * 60000))) + '</span></b>'
+        + (backlog && idx === 0 ? ' <span>(incl. ' + backlog + ' min already queued)</span>' : '')
+        + '</div></article>';
+    }).join('');
+    h += '<section class="section"><span class="label">Staged &mdash; not sent yet</span>' + rows
+      + '<div class="sendbar"><p>Estimates assume pickup at the next check-in. Nothing leaves this page until you send.</p>'
+      + '<button class="btn" id="send" type="button"' + (T.saving ? ' disabled' : '') + '>Send ' + (T.staged.length > 1 ? T.staged.length + ' books' : 'to Claude') + '</button></div></section>';
+  }
+
+  /* activity log dropdown */
+  if (T.log.length) {
+    h += '<div class="log"><button class="loghead" id="logtoggle" type="button" aria-expanded="' + (T.logOpen ? 'true' : 'false') + '">'
+      + '<span>Activity</span><span class="chev" style="transform:rotate(' + (T.logOpen ? 180 : 0) + 'deg)" aria-hidden="true">'
+      + '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>'
+      + '</span></button>'
+      + (T.logOpen ? '<div class="logbody" id="logbody">' + T.log.map(function(l){
+          return '<div class="logline">' + fmtLogTime(l.t) + ' &middot; ' + esc(l.msg) + '</div>';
+        }).join('') + '</div>' : '')
+      + '</div>';
+  }
+
   h += '<section class="section"><span class="label">Library</span>';
   var books = STATE.books.slice().reverse();
-  if (!books.length) {
+  if (!books.length && !T.staged.length) {
     h += '<div class="empty">No books yet. Drop the first one above.</div>';
+  } else if (!books.length) {
+    h += '<div class="empty">Nothing sent yet.</div>';
   } else {
+    var qcum = 0;
+    var queuedEta = {};
+    STATE.books.forEach(function(b){
+      if (b.status === 'queued') { qcum += synthMinutes(b.chars || 0); queuedEta[b.id] = qcum; }
+    });
     h += books.map(function(b){
       var pill;
       if (b.status === 'done' && b.notion) pill = '<a class="pill done" href="' + esc(b.notion) + '" target="_blank" rel="noopener">Open in Notion &#8599;</a>';
@@ -173,7 +287,19 @@ function render(){
       else pill = '<span class="pill queued">Sent to Claude</span>';
       var meta = (b.pages ? b.pages + ' pp &middot; ' : '') + fmtChars(b.chars || 0) + ' chars &middot; ' + fmtDate(b.added);
       var note = '';
-      if (b.status === 'queued') note = '<div class="note">Queued &mdash; Claude&rsquo;s hourly check-in picks this up, reads it in chunks, and builds the study guide in your Book Synthesis Lab. Message Claude to start sooner.</div>';
+      if (b.status === 'queued') {
+        var add = queuedEta[b.id] || synthMinutes(b.chars || 0);
+        note = '<div class="est">Pickup <b>' + esc(fmtTime(nc)) + '</b> &middot; in Notion &asymp; <b><span data-eta-min="' + add + '">' + esc(fmtTime(new Date(nc.getTime() + add * 60000))) + '</span></b> &middot; message Claude to start sooner</div>';
+      }
+      if (b.status === 'processing') {
+        var est = b.estMin || synthMinutes(b.chars || 0);
+        if (b.startedAt) {
+          var doneBy = new Date(new Date(b.startedAt).getTime() + est * 60000);
+          note = '<div class="est">Started <b>' + esc(fmtTime(new Date(b.startedAt))) + '</b> &middot; in Notion &asymp; <b>' + esc(fmtTime(doneBy)) + '</b></div>';
+        } else {
+          note = '<div class="est">Claude is reading &middot; &asymp; <b>' + est + ' min</b> total</div>';
+        }
+      }
       if (b.status === 'error' && b.note) note = '<div class="note bad">' + esc(b.note) + '</div>';
       if (b.status === 'done' && b.note) note = '<div class="note">' + esc(b.note) + '</div>';
       return '<article class="book"><div class="row"><div class="info"><h3>' + esc(b.title) + '</h3>'
@@ -183,8 +309,8 @@ function render(){
   h += '</section>';
 
   h += '<section class="section"><span class="label">How this works</span><div class="steps">'
-    + '<div class="step"><span class="n">1</span><p><b>Drop a book.</b> The text is extracted right here in your browser and saved into this page. Nothing gets truncated.</p></div>'
-    + '<div class="step"><span class="n">2</span><p><b>Claude picks it up.</b> An hourly Claude check-in finds new books and reads them section by section &mdash; so no length limit ever applies. Message Claude if you want it to start right away.</p></div>'
+    + '<div class="step"><span class="n">1</span><p><b>Drop a book.</b> The text is extracted right here in your browser and staged &mdash; nothing is sent, nothing gets truncated. You see the size and a realistic time estimate first.</p></div>'
+    + '<div class="step"><span class="n">2</span><p><b>Press send when ready.</b> The book is saved into this page. Claude&rsquo;s hourly check-in (time shown at the top) picks it up and reads it section by section &mdash; so no length limit ever applies. Message Claude to start sooner.</p></div>'
     + '<div class="step"><span class="n">3</span><p><b>A study guide lands in Notion.</b> Built to your self-teaching method &mdash; Feynman explanations, recall drills, Anki candidates &mdash; in the <a href="' + NOTION_HUB + '" target="_blank" rel="noopener">Book Synthesis Lab</a>.</p></div>'
     + '</div></section>';
 
@@ -198,6 +324,9 @@ function wire(){
   var drop = document.getElementById('drop');
   var input = document.getElementById('file');
   var browse = document.getElementById('browse');
+  var send = document.getElementById('send');
+  var logtoggle = document.getElementById('logtoggle');
+  var logbody = document.getElementById('logbody');
   if (browse && input) {
     browse.addEventListener('click', function(){ input.click(); });
     input.addEventListener('change', function(){ if (input.files.length) handleFiles(input.files); });
@@ -211,6 +340,18 @@ function wire(){
     });
     drop.addEventListener('drop', function(e){
       if (e.dataTransfer && e.dataTransfer.files.length) handleFiles(e.dataTransfer.files);
+    });
+  }
+  if (send) send.addEventListener('click', sendStaged);
+  if (logtoggle) logtoggle.addEventListener('click', function(){ T.logOpen = !T.logOpen; render(); });
+  if (logbody) logbody.scrollTop = logbody.scrollHeight;
+  var unstage = document.querySelectorAll('[data-unstage]');
+  for (var i = 0; i < unstage.length; i++) {
+    unstage[i].addEventListener('click', function(){
+      var idx = parseInt(this.getAttribute('data-unstage'), 10);
+      var removed = T.staged.splice(idx, 1)[0];
+      if (removed) log('Removed from staging: ' + removed.title);
+      render();
     });
   }
 }
@@ -232,6 +373,7 @@ async function extractPdf(file, onProgress){
   var buf = await file.arrayBuffer();
   var doc = await lib.getDocument({data: buf, isEvalSupported: false, disableFontFace: true}).promise;
   var pages = doc.numPages;
+  log('Opened PDF: ' + file.name + ' (' + pages + ' pages)');
   var out = [];
   for (var p = 1; p <= pages; p++) {
     var page = await doc.getPage(p);
@@ -245,6 +387,7 @@ async function extractPdf(file, onProgress){
     out.push(line);
     if (p % 5 === 0 || p === pages) {
       onProgress(p, pages, 'Page ' + p + '/' + pages);
+      if (p % 50 === 0) log('Extracting ' + file.name + ': page ' + p + '/' + pages);
       await new Promise(function(r){ setTimeout(r, 0); });
     }
   }
@@ -282,6 +425,7 @@ async function extractEpub(file, onProgress){
     zip.forEach(function(path){ if (/\.x?html?$/i.test(path)) htmlFiles.push(path); });
     htmlFiles.sort();
   }
+  log('Opened EPUB: ' + file.name + ' (' + htmlFiles.length + ' sections)');
   var parts = [];
   for (var k = 0; k < htmlFiles.length; k++) {
     var f = zip.file(htmlFiles[k]) || zip.file(decodeURIComponent(htmlFiles[k]));
@@ -329,11 +473,11 @@ async function handleFiles(fileList){
   T.jobs = files.map(function(f){ return { name: f.name, pct: 0, stage: 'Waiting', error: null }; });
   render();
 
-  var added = [];
   for (var i = 0; i < files.length; i++) {
     var job = T.jobs[i];
     try {
       job.stage = 'Reading'; render();
+      log('Reading file: ' + files[i].name);
       var res = await extractFile(files[i], function(done, total, stageText){
         job.pct = total ? Math.round(done / total * 100) : 0;
         job.stage = stageText;
@@ -344,21 +488,21 @@ async function handleFiles(fileList){
         throw new Error('Almost no text found — this looks like a scanned book with no text layer. It needs OCR: drop the file directly into a Claude chat instead.');
       }
       if (text.length < 200) throw new Error('Could not find readable text in this file.');
-      added.push(makeEntry(files[i], res, text));
-      job.pct = 100; job.stage = 'Extracted'; render();
+      var entry = makeEntry(files[i], res, text);
+      T.staged.push(entry);
+      job.pct = 100; job.stage = 'Staged';
+      log('Staged: ' + entry.title + ' — ' + fmtChars(entry.chars) + ' chars, est. ' + synthMinutes(entry.chars) + ' min to synthesize');
+      render();
     } catch (err) {
       job.error = (err && err.message) ? err.message : 'Extraction failed.';
       job.stage = 'Failed';
+      log('Failed: ' + files[i].name + ' — ' + job.error);
       render();
     }
   }
 
   T.busy = false;
-  if (added.length) {
-    var ok = await saveBooks(added);
-    if (ok) return; /* the page reloads to the new version */
-  }
-  T.jobs = T.jobs.filter(function(j){ return j.error; });
+  T.jobs = [];
   render();
 }
 
@@ -381,51 +525,65 @@ function buildDocument(state){
     + '<script id="app">' + app + '<\/script>\n</body>\n</html>\n';
 }
 
-async function saveBooks(added){
-  T.saving = true; render();
-  var newState = { v: STATE.v || 1, books: STATE.books.concat(added) };
+async function sendStaged(){
+  if (!T.staged.length || T.saving) return;
+  T.saving = true;
+  setBanner(null);
+  log('Send pressed — packaging ' + T.staged.length + ' book' + (T.staged.length > 1 ? 's' : '') + ' into the page');
+  render();
+
+  var newState = { v: STATE.v || 1, books: STATE.books.concat(T.staged) };
   var html = buildDocument(newState);
   if (html.length > MAX_DOC_BYTES) {
-    setBanner('err', 'This drop would push the page past its 16 MB storage limit. Add fewer books at once, and add the rest after these are done (finished books get slimmed down automatically).');
-    T.saving = false; return false;
+    setBanner('err', 'This send would push the page past its 16 MB storage limit. Send fewer books at once, and send the rest after these are done (finished books get slimmed down automatically).');
+    log('Send blocked: page would exceed the storage limit');
+    T.saving = false; render(); return;
   }
+  log('Publishing new version (' + (html.length / 1024 / 1024).toFixed(1) + ' MB)…');
+  render();
+
   var artifact = null;
   try {
     artifact = (window.claude && window.claude.use) ? await window.claude.use('artifact') : null;
   } catch(e){}
   if (!artifact) {
-    setBanner('err', 'Saving is not available in this view. Open this page from your own Claude artifacts list, then try again.');
-    T.saving = false; return false;
+    setBanner('err', 'Saving is not available in this view. Open this page from your own Claude artifacts list, then try again. Your staged books are still here.');
+    log('Save unavailable in this view — staged books kept');
+    T.saving = false; render(); return;
   }
+
   var attempt = 0;
   while (true) {
     try {
       await artifact.publish(html);
-      return true; /* the shell reloads every view to the new version */
+      log('Published. Claude picks this up at ' + fmtTime(nextCheckin()) + '.');
+      return; /* the shell reloads every view to the new version */
     } catch (err) {
       var code = err && err.code;
-      if (code === 'conflict') return true; /* a newer version won; the reload delivers it */
+      if (code === 'conflict') { log('A newer version was published elsewhere — reloading to it'); return; }
       if (code === 'upstream_error' && attempt === 0) {
         attempt++;
+        log('Transient save error — retrying once…');
         await new Promise(function(r){ setTimeout(r, 700 + Math.random() * 600); });
         continue;
       }
       var msgs = {
-        not_writer: 'This view is read-only — only the owner can add books here.',
-        not_granted: 'This view is read-only — only the owner can add books here.',
+        not_writer: 'This view is read-only — only the owner can send books from here.',
+        not_granted: 'This view is read-only — only the owner can send books from here.',
         not_declared: 'Saving is switched off on this version of the page.',
-        too_large: 'The page storage limit was hit. Add fewer books at once.',
-        rate_limited: 'Saving too fast — wait a few seconds and try again.',
+        too_large: 'The page storage limit was hit. Send fewer books at once.',
+        rate_limited: 'Saving too fast — wait a few seconds and press send again.',
         invalid_content: 'The save failed while packaging the page. Reload and try again.'
       };
-      setBanner('err', msgs[code] || ('The save failed (' + (code || 'unknown error') + '). Reload the page and try again.'));
-      T.saving = false;
-      return false;
+      setBanner('err', (msgs[code] || ('The save failed (' + (code || 'unknown error') + '). Reload the page and try again.')) + ' Your staged books are still here.');
+      log('Save failed: ' + (code || 'unknown'));
+      T.saving = false; render(); return;
     }
   }
 }
 
 render();
+updateClocks();
 })();
 </script>
 </body>
