@@ -3,8 +3,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap">
 <style>
   :root{
-    /* crimson-western palette: ink black, burnt amber, deep crimson, dusk blue, parchment */
-    --bg:#120B0D; --bg2:#150C0F; --card:#1D1114; --card2:#241417; --inset:#170D10;
+    --bg:#120B0D; --bg2:#150C0F; --card:#1D1114; --inset:#170D10;
     --border:#341A1E; --border2:#4C2429;
     --text:#F5E9DC; --muted:#AE8F83; --faint:#7C5F58;
     --crimson:#E24A3B; --crimson-soft:rgba(226,74,59,.15);
@@ -15,7 +14,8 @@
     --red:#FF5C4D;    --red-soft:rgba(255,92,77,.15);
     --violet:#A98BD8; --violet-soft:rgba(169,139,216,.15);
     --rose:#E87C93;   --rose-soft:rgba(232,124,147,.16);
-    --r-lg:20px; --r-md:14px; --r-sm:9px;
+    --teal:#4FC3B8;   --teal-soft:rgba(79,195,184,.14);
+    --r-lg:22px; --r-md:14px;
     --font-ui:'Manrope',system-ui,-apple-system,'Segoe UI',sans-serif;
     --font-num:'Outfit','Manrope',system-ui,sans-serif;
   }
@@ -23,616 +23,589 @@
   html{scrollbar-color:#4C2429 var(--bg)}
   body{
     background:
-      radial-gradient(1100px 500px at 85% -140px, rgba(226,74,59,.10), transparent 60%),
-      radial-gradient(900px 420px at -160px 25%, rgba(109,135,216,.06), transparent 60%),
+      radial-gradient(900px 480px at 80% -160px, rgba(226,74,59,.12), transparent 60%),
+      radial-gradient(700px 400px at -120px 30%, rgba(109,135,216,.06), transparent 60%),
       var(--bg);
-    color:var(--text);
-    font-family:var(--font-ui); font-size:14px; line-height:1.5;
-    min-height:100vh; -webkit-font-smoothing:antialiased;
+    color:var(--text);font-family:var(--font-ui);font-size:14px;line-height:1.5;
+    min-height:100vh;-webkit-font-smoothing:antialiased;padding-bottom:118px;
   }
   ::selection{background:rgba(226,74,59,.4)}
-  /* film grain over everything, very quiet */
   .grain{position:fixed;inset:0;pointer-events:none;z-index:90;opacity:.08;
     background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="140" height="140"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch"/></filter><rect width="140" height="140" filter="url(%23n)" opacity="0.6"/></svg>')}
+  button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+  input{font:inherit;color:inherit}
 
-  .app{display:grid;grid-template-columns:236px 1fr;min-height:100vh}
+  .wrap{max-width:720px;margin:0 auto;padding:0 16px}
 
-  /* ── Sidebar ─────────────────────────────── */
-  .side{
-    background:linear-gradient(180deg,#181013,#130B0E 40%);
-    border-right:1px solid var(--border);
-    padding:18px 12px; position:sticky; top:0; height:100vh;
-    display:flex; flex-direction:column; gap:2px; overflow-y:auto;
-  }
-  .brand{display:flex;align-items:center;gap:10px;padding:6px 10px 16px;font-family:var(--font-num)}
-  .brand .gear{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;
-    background:linear-gradient(135deg,#E24A3B,#F0A840);font-size:15px;box-shadow:0 4px 16px rgba(226,74,59,.4)}
-  .brand b{font-size:15px;font-weight:700;letter-spacing:.2px}
-  .search{
-    display:flex;align-items:center;gap:8px;background:var(--inset);
-    border:1px solid var(--border); border-radius:10px; padding:7px 10px; margin:0 2px 14px;
-    color:var(--muted); cursor:text;
-  }
-  .search input{background:none;border:none;outline:none;color:var(--text);font:inherit;width:100%}
-  .search input::placeholder{color:var(--faint)}
-  .nav-item{
-    display:flex;align-items:center;gap:11px;padding:8px 12px;border-radius:10px;
-    color:var(--muted);font-weight:600;cursor:pointer;border:none;background:none;
-    font:inherit;width:100%;text-align:left;
-    transition:background .18s,color .18s;
-  }
-  .nav-item:hover{background:rgba(226,74,59,.08);color:var(--text)}
-  .nav-item.active{background:var(--crimson-soft);color:#FFB8A6;box-shadow:inset 2px 0 0 var(--crimson)}
-  .nav-item .ico{width:18px;text-align:center;font-size:14px;opacity:.95}
-  .nav-item .cnt{margin-left:auto;font-size:11px;color:var(--faint);font-variant-numeric:tabular-nums}
-  .nav-item.active .cnt{color:#E8907F}
-  .side .foot{margin-top:auto;padding-top:14px;border-top:1px solid var(--border)}
-  .readline{font-size:11px;color:var(--faint);padding:10px 12px 2px;line-height:1.45}
-  .readline b{color:var(--gold)}
+  /* ── Top bar (WHOOP-style) ─────────────── */
+  .topbar{position:sticky;top:0;z-index:30;padding:14px 0 10px;
+    background:linear-gradient(var(--bg) 78%,transparent)}
+  .topbar .row{display:flex;align-items:center;gap:10px}
+  .avatar{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-size:17px;flex:none;
+    background:linear-gradient(135deg,#E24A3B,#F0A840);box-shadow:0 4px 16px rgba(226,74,59,.4)}
+  .rangepill{flex:1;display:flex;align-items:center;justify-content:space-between;
+    background:var(--card);border:1px solid var(--border);border-radius:999px;padding:6px 8px;min-width:0}
+  .rangepill button{width:30px;height:30px;border-radius:50%;color:var(--muted);font-size:16px;display:grid;place-items:center;transition:background .15s}
+  .rangepill button:hover{background:rgba(226,74,59,.12);color:var(--text)}
+  .rangepill .lab{font-family:var(--font-num);font-weight:700;font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .pct{display:flex;align-items:center;gap:6px;flex:none;font-family:var(--font-num);font-weight:700;font-size:14px;color:var(--gold)}
+  .pct svg{width:30px;height:30px;transform:rotate(-90deg)}
+  .synced{width:7px;height:7px;border-radius:50%;background:var(--faint);flex:none}
+  .synced.on{background:var(--green);box-shadow:0 0 8px var(--green)}
+  .title{font-family:var(--font-num);font-weight:800;font-size:11px;letter-spacing:.32em;text-transform:uppercase;
+    color:var(--muted);text-align:center;margin-top:12px}
 
-  /* ── Main ────────────────────────────────── */
-  .main{padding:0 26px 60px;max-width:1240px;width:100%;margin:0 auto;min-width:0}
-  .grid>*{min-width:0}
-  .topbar{
-    display:flex;align-items:center;gap:14px;padding:18px 2px 16px;
-    position:sticky;top:0;z-index:20;background:linear-gradient(#120B0D 82%,transparent);
-  }
-  .topbar h1{font-family:var(--font-num);font-size:17px;font-weight:700;letter-spacing:.2px}
-  .topbar .crumb{color:var(--faint);font-size:12.5px;font-weight:600}
-  .phasepill{
-    margin-left:auto;display:flex;align-items:center;gap:8px;background:var(--card);
-    border:1px solid var(--border);border-radius:999px;padding:6px 14px;font-size:12px;
-    font-weight:700;color:var(--muted)
-  }
-  .phasepill .dot{width:7px;height:7px;border-radius:50%;background:var(--crimson);box-shadow:0 0 9px var(--crimson)}
+  /* ── Tabs ──────────────────────────────── */
+  .tabbar{position:fixed;left:0;right:0;bottom:16px;z-index:40;display:flex;justify-content:center;gap:10px;padding:0 14px;pointer-events:none}
+  .tabs{pointer-events:auto;display:flex;align-items:stretch;gap:2px;background:rgba(29,17,20,.82);
+    backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+    border:1px solid var(--border2);border-radius:999px;padding:6px;box-shadow:0 14px 40px rgba(0,0,0,.55)}
+  .tab{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 18px;border-radius:999px;
+    color:var(--faint);font-size:10.5px;font-weight:800;letter-spacing:.06em;transition:all .18s;min-width:74px}
+  .tab .ic{font-size:19px;filter:grayscale(1) opacity(.65);transition:filter .18s}
+  .tab.on{color:var(--text);background:rgba(226,74,59,.14)}
+  .tab.on .ic{filter:none}
+  .fab{pointer-events:auto;width:60px;height:60px;border-radius:50%;display:grid;place-items:center;font-size:24px;
+    background:linear-gradient(135deg,#E24A3B,#F0A840);border:2px solid rgba(255,255,255,.12);
+    box-shadow:0 12px 34px rgba(226,74,59,.5);transition:transform .15s}
+  .fab:active{transform:scale(.94)}
 
-  .view{display:none;animation:vin .35s cubic-bezier(.22,.8,.3,1)}
+  .view{display:none;animation:vin .32s cubic-bezier(.22,.8,.3,1)}
   .view.on{display:block}
   @keyframes vin{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  .sub{display:none}.sub.on{display:block;animation:vin .25s ease}
 
-  /* ── Scene banners (original painted-sky art) ── */
-  .scene{position:relative;border-radius:var(--r-lg);overflow:hidden;margin-bottom:16px;
-    border:1px solid var(--border);isolation:isolate}
-  .scene svg{display:block;width:100%;height:110px}
-  .scene.tall svg{height:170px}
-  .scene .cap{
-    position:absolute;left:20px;bottom:14px;z-index:2;
-    font-size:10.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
-    color:rgba(245,233,220,.85);text-shadow:0 1px 8px rgba(0,0,0,.6)
-  }
-  .scene .cap b{display:block;font-family:var(--font-num);font-size:15px;font-weight:700;
-    letter-spacing:.02em;text-transform:none;margin-top:2px;color:#F5E9DC}
-  .scene:after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
-    background:linear-gradient(180deg,transparent 55%,rgba(10,5,6,.55))}
-  .scene.paper:after{background:none}
+  /* segmented control */
+  .seg{display:flex;background:var(--inset);border:1px solid var(--border);border-radius:999px;padding:4px;margin:4px 0 14px}
+  .seg button{flex:1;padding:8px 6px;border-radius:999px;font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);transition:all .18s}
+  .seg button.on{background:var(--card);color:var(--text);box-shadow:0 2px 10px rgba(0,0,0,.35);border:1px solid var(--border2)}
 
-  /* ── Cards ───────────────────────────────── */
-  .grid{display:grid;gap:16px}
-  .g-dash{grid-template-columns:1.55fr 1fr}
-  .card{
-    background:linear-gradient(180deg,#201216,#1B1013);
-    border:1px solid var(--border);border-radius:var(--r-lg);
-    padding:18px 20px;transition:transform .2s,border-color .2s;
-  }
-  .card.hoverable:hover{transform:translateY(-2px);border-color:var(--border2)}
-  .card-h{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:12px}
-  .card-h .t{font-size:12px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
-  .card-h a,.linky{font-size:11.5px;font-weight:800;letter-spacing:.06em;color:var(--gold);
-    text-transform:uppercase;text-decoration:none;cursor:pointer;background:none;border:none;font-family:inherit}
+  /* cards */
+  .card{background:linear-gradient(180deg,#201216,#1B1013);border:1px solid var(--border);border-radius:var(--r-lg);
+    padding:18px 18px;margin-bottom:12px}
+  .card-h{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:12px;gap:10px}
+  .card-h .t{font-size:11.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+  .linky{font-size:11px;font-weight:800;letter-spacing:.06em;color:var(--gold);text-transform:uppercase;white-space:nowrap}
   .linky:hover{color:#FFC670}
   .big{font-family:var(--font-num);font-variant-numeric:tabular-nums;font-weight:700}
+  .num{font-family:var(--font-num);font-variant-numeric:tabular-nums;font-weight:700}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media (min-width:720px){.wide2{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start}.wide2>.card{margin-bottom:0}.wide2{margin-bottom:12px}}
 
   /* pills */
-  .pill{
-    display:inline-flex;align-items:center;gap:5px;border-radius:999px;
-    padding:2.5px 9px;font-size:10.5px;font-weight:800;letter-spacing:.05em;
-    text-transform:uppercase;white-space:nowrap;
-  }
+  .pill{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:2.5px 9px;font-size:10px;font-weight:800;
+    letter-spacing:.05em;text-transform:uppercase;white-space:nowrap}
   .pill .em{font-size:11px;letter-spacing:0}
-  .p-green{background:var(--green-soft);color:var(--green)}
-  .p-amber{background:var(--gold-soft);color:var(--gold)}
-  .p-orange{background:var(--ember-soft);color:var(--ember)}
-  .p-red{background:var(--red-soft);color:var(--red)}
-  .p-blue{background:var(--dusk-soft);color:var(--dusk)}
-  .p-purple{background:var(--violet-soft);color:var(--violet)}
-  .p-pink{background:var(--rose-soft);color:var(--rose)}
-  .p-teal{background:var(--ember-soft);color:var(--ember)}
+  .p-green{background:var(--green-soft);color:var(--green)}.p-amber{background:var(--gold-soft);color:var(--gold)}
+  .p-orange{background:var(--ember-soft);color:var(--ember)}.p-red{background:var(--red-soft);color:var(--red)}
+  .p-blue{background:var(--dusk-soft);color:var(--dusk)}.p-purple{background:var(--violet-soft);color:var(--violet)}
+  .p-pink{background:var(--rose-soft);color:var(--rose)}.p-teal{background:var(--teal-soft);color:var(--teal)}
   .p-gray{background:rgba(174,143,131,.14);color:var(--muted)}
+  .chipnote{display:inline-flex;align-items:center;gap:6px;border-radius:8px;padding:4px 10px;font-size:11.5px;font-weight:800;
+    background:var(--green-soft);color:var(--green)}
+  .chipnote.warn{background:var(--gold-soft);color:var(--gold)}.chipnote.bad{background:var(--red-soft);color:var(--red)}
 
-  /* hero chart card */
-  .hero-num{font-size:34px;letter-spacing:-.5px}
-  .hero-sub{color:var(--muted);font-weight:600;font-size:13px;margin-top:2px}
-  .hero-sub b{color:var(--gold)}
-  .chartwrap{position:relative;margin-top:10px}
+  /* ── HOME: rings row (WHOOP) ───────────── */
+  .ringrow{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:6px 0 4px}
+  .bigring{display:flex;flex-direction:column;align-items:center;gap:8px}
+  .bigring .viz{position:relative;width:104px;height:104px}
+  .bigring svg{transform:rotate(-90deg)}
+  .bigring .ctr{position:absolute;inset:0;display:grid;place-items:center;text-align:center}
+  .bigring .ctr .v{font-family:var(--font-num);font-weight:700;font-size:23px;letter-spacing:-.5px;line-height:1}
+  .bigring .ctr .u{font-size:9.5px;font-weight:800;letter-spacing:.1em;color:var(--faint);text-transform:uppercase;margin-top:3px}
+  .bigring .lb{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+  .monitor{background:var(--inset);border:1px solid var(--border);border-radius:var(--r-md);padding:13px 14px;min-width:0}
+  .monitor .t{font-size:10.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between}
+  .monitor .v{display:flex;align-items:center;gap:9px;margin-top:9px}
+  .monitor .sq{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;font-family:var(--font-num);font-weight:700;font-size:13px;flex:none}
+  .monitor .lbl{font-weight:800;font-size:12.5px;line-height:1.25}
+  .monitor .lbl small{display:block;color:var(--faint);font-weight:700;font-size:11px}
+  .h2{font-family:var(--font-num);font-weight:700;font-size:22px;margin:10px 0 10px;display:flex;align-items:center;justify-content:space-between}
+
+  /* ── BODY: hero blob (WHOOP Health) ─────── */
+  .blobwrap{position:relative;width:260px;height:260px;margin:6px auto 4px}
+  .blobwrap svg{position:absolute;inset:0;width:100%;height:100%}
+  .blobwrap .ctr{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+  .blobwrap .w{font-family:var(--font-num);font-weight:800;font-size:56px;letter-spacing:-1.5px;line-height:1}
+  .blobwrap .w small{font-size:20px;color:var(--muted);letter-spacing:0;margin-left:4px}
+  .blobwrap .cap{font-size:12px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:var(--text);margin-top:6px}
+  .blobwrap .togo{font-family:var(--font-num);font-weight:700;font-size:18px;color:#F6C98A;margin-top:4px}
+  .blobwrap .src{font-size:10.5px;color:var(--faint);font-weight:700;margin-top:6px}
+  @keyframes drift{0%{transform:rotate(0) scale(1)}50%{transform:rotate(3deg) scale(1.02)}100%{transform:rotate(0) scale(1)}}
+  .blob{animation:drift 9s ease-in-out infinite;transform-origin:center}
+  .tapedit{display:block;margin:6px auto 0;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);
+    background:var(--gold-soft);border-radius:999px;padding:7px 16px}
+
+  /* pace slider (WHOOP pace of aging) */
+  .pace{margin-top:6px}
+  .pace .ends{display:flex;justify-content:space-between;font-size:12.5px;font-weight:700;color:var(--muted);margin-bottom:4px}
+  .pace .val{font-family:var(--font-num);font-weight:800;font-size:28px;text-align:center;margin:-4px 0 6px}
+  .ticks{position:relative;height:56px;display:flex;align-items:flex-end;gap:2.6px}
+  .ticks i{flex:1;height:38px;background:#3A2226;border-radius:2px;transition:background .3s,height .3s}
+  .ticks i.band{background:#5C3230;height:44px}
+  .ticks i.hot{background:#F5E9DC;height:54px;box-shadow:0 0 10px rgba(245,233,220,.5)}
+  .ticks i.near{background:#B8968E;height:46px}
+  .ticks .marker{position:absolute;top:0;width:3px;height:56px;background:#fff;border-radius:2px;transform:translateX(-50%);box-shadow:0 0 12px #fff}
+  .pace .scale{display:flex;justify-content:space-between;font-size:11px;font-weight:700;color:var(--faint);margin-top:4px;font-variant-numeric:tabular-nums}
+  .bigbtn{display:block;width:100%;text-align:center;background:rgba(245,233,220,.08);border:1px solid var(--border2);border-radius:14px;
+    padding:14px;font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;margin-top:14px;transition:background .15s}
+  .bigbtn:hover{background:rgba(245,233,220,.14)}
+
+  /* chart */
+  .chartwrap{position:relative;margin-top:6px}
   .chartwrap svg{display:block;width:100%;height:auto}
-  .badge{
-    position:absolute;transform:translate(-50%,-130%);
-    background:var(--crimson);color:#FFF3E8;font-family:var(--font-num);
-    font-weight:700;font-size:12.5px;padding:4px 10px;border-radius:9px;white-space:nowrap;
-    box-shadow:0 6px 20px rgba(226,74,59,.45);
-  }
-  .badge:after{content:"";position:absolute;left:50%;bottom:-4px;transform:translateX(-50%) rotate(45deg);
-    width:8px;height:8px;background:inherit;border-radius:2px}
-  .ranges{display:flex;gap:6px;margin-top:14px}
-  .ranges button{
-    background:none;border:none;color:var(--faint);font:inherit;font-size:11px;font-weight:800;
-    letter-spacing:.08em;padding:5px 11px;border-radius:8px;cursor:pointer;transition:all .15s
-  }
-  .ranges button.on{background:var(--crimson-soft);color:#FFB29F}
-  .ranges button:hover{color:var(--muted)}
+  .badge{position:absolute;transform:translate(-50%,-135%);background:var(--crimson);color:#FFF3E8;font-family:var(--font-num);
+    font-weight:700;font-size:12.5px;padding:4px 10px;border-radius:9px;white-space:nowrap;box-shadow:0 6px 20px rgba(226,74,59,.45)}
+  .badge:after{content:"";position:absolute;left:50%;bottom:-4px;transform:translateX(-50%) rotate(45deg);width:8px;height:8px;background:inherit;border-radius:2px}
 
-  /* status card */
-  .duo{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:6px}
-  .duo .lab{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
-    display:flex;align-items:center;gap:6px;margin-bottom:4px}
-  .duo .lab i{width:7px;height:7px;border-radius:50%;font-style:normal}
-  .duo .val{font-size:27px}
-  .duo .delta{font-size:12px;font-weight:700;margin-top:1px}
-  .meterline{height:10px;border-radius:999px;background:var(--inset);overflow:hidden;display:flex;margin:14px 0 6px}
-  .meterline span{height:100%;border-radius:999px}
-  .axis{display:flex;justify-content:space-between;font-size:10.5px;color:var(--faint);
-    font-weight:700;font-variant-numeric:tabular-nums}
-  .limiter{
-    margin-top:14px;background:var(--red-soft);border:1px solid rgba(255,92,77,.3);
-    border-radius:var(--r-md);padding:10px 13px;font-size:12.5px;color:#FFBAAE;font-weight:600;line-height:1.45
-  }
-  .limiter b{color:var(--red);letter-spacing:.04em}
+  /* calendar strip */
+  .cal{display:grid;grid-template-columns:repeat(14,1fr);gap:4px;margin-top:6px}
+  .cal .d{display:flex;flex-direction:column;align-items:center;gap:5px;font-size:9.5px;font-weight:800;color:var(--faint);letter-spacing:.04em}
+  .cal .dot{width:100%;aspect-ratio:1;border-radius:50%;display:grid;place-items:center;background:var(--inset);border:1px solid var(--border);
+    font-family:var(--font-num);font-size:10.5px;font-weight:700;color:var(--faint);transition:all .2s;cursor:pointer}
+  .cal .dot.has{background:linear-gradient(135deg,#E24A3B,#F0A840);color:#2A1508;border-color:transparent;box-shadow:0 4px 12px rgba(226,74,59,.35)}
+  .cal .dot.today{border-color:var(--gold)}
 
-  /* review list */
-  .rev{display:flex;flex-direction:column}
-  .rev .day{font-size:11px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;
-    color:var(--faint);padding:10px 2px 6px}
-  .rowitem{
-    display:flex;align-items:center;gap:11px;padding:9px 8px;border-radius:12px;
-    cursor:pointer;transition:background .15s;
-  }
-  .rowitem:hover{background:rgba(226,74,59,.07)}
-  .cbox{
-    width:17px;height:17px;border-radius:6px;border:1.5px solid var(--border2);flex:none;
-    display:grid;place-items:center;color:transparent;font-size:11px;transition:all .18s;background:var(--inset)
-  }
-  .rowitem.done .cbox{background:var(--gold);border-color:var(--gold);color:#2A1508}
-  .rowitem .nm{font-weight:700;font-size:13.5px;flex:1;min-width:0;overflow:hidden;
-    text-overflow:ellipsis;white-space:nowrap}
-  .rowitem.done .nm{color:var(--faint);text-decoration:line-through}
-  .rowitem .amt{font-family:var(--font-num);font-variant-numeric:tabular-nums;font-weight:600;
-    color:var(--muted);font-size:12.5px;white-space:nowrap}
-  .markall{
-    margin-top:10px;width:100%;background:none;border:none;color:var(--gold);font:inherit;
-    font-weight:800;font-size:12.5px;letter-spacing:.03em;padding:11px;border-radius:12px;cursor:pointer;
-    transition:background .15s;display:flex;align-items:center;justify-content:center;gap:8px
-  }
-  .markall:hover{background:var(--gold-soft)}
-
-  /* ranked bars */
-  .bars{display:flex;flex-direction:column;gap:4px}
-  .bar-row{display:grid;grid-template-columns:20px 1fr 64px 120px;gap:10px;align-items:center;
-    padding:6px 6px;border-radius:10px;cursor:pointer;transition:background .15s}
-  .bar-row:hover{background:rgba(226,74,59,.07)}
-  .bar-row .rk{font-size:10.5px;color:var(--faint);font-weight:800;font-variant-numeric:tabular-nums}
-  .bar-row .nm{display:flex;align-items:center;gap:8px;font-weight:700;font-size:13px;min-width:0}
-  .bar-row .nm span.txt{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .bar-row .nm .em{font-size:13px}
-  .bar-row .v{font-family:var(--font-num);font-weight:600;text-align:right;font-variant-numeric:tabular-nums;font-size:13px}
-  .track{height:9px;border-radius:999px;background:var(--inset);overflow:hidden}
+  /* progression bars (Freepik) */
+  .prog{display:flex;flex-direction:column;gap:9px}
+  .prog .r{display:grid;grid-template-columns:96px 1fr 60px;align-items:center;gap:10px}
+  .prog .r .n{font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .prog .r .v{font-family:var(--font-num);font-weight:700;font-size:12.5px;text-align:right;font-variant-numeric:tabular-nums}
+  .track{height:10px;border-radius:999px;background:var(--inset);overflow:hidden;border:1px solid var(--border)}
   .track i{display:block;height:100%;border-radius:999px;width:0;transition:width 1s cubic-bezier(.22,.8,.3,1)}
 
-  /* rings */
-  .rings{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;padding:6px 0 2px}
-  .ring{display:flex;flex-direction:column;align-items:center;gap:9px;cursor:pointer;
-    padding:10px 4px;border-radius:14px;transition:background .15s}
-  .ring:hover{background:rgba(226,74,59,.06)}
-  .ringviz{position:relative;width:76px;height:76px}
-  .ringviz svg{transform:rotate(-90deg)}
-  .ringviz .em{position:absolute;inset:0;display:grid;place-items:center;font-size:26px}
-  .ring .rv{font-family:var(--font-num);font-weight:700;font-size:14px;font-variant-numeric:tabular-nums}
-  .ring .rl{font-size:11px;color:var(--muted);font-weight:700;margin-top:-7px}
+  /* weight log list */
+  .log{display:flex;flex-direction:column}
+  .logrow{display:flex;align-items:center;gap:10px;padding:9px 4px;border-bottom:1px solid var(--border)}
+  .logrow:last-child{border-bottom:none}
+  .logrow .dt{font-size:11.5px;font-weight:800;color:var(--muted);width:78px;flex:none;letter-spacing:.03em}
+  .logrow .w{font-family:var(--font-num);font-weight:700;font-size:16px;flex:1}
+  .logrow .dl{font-family:var(--font-num);font-weight:700;font-size:12px;font-variant-numeric:tabular-nums}
+  .logrow .x{color:var(--faint);width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:14px}
+  .logrow .x:hover{background:var(--red-soft);color:var(--red)}
 
-  /* upcoming */
-  .uplist{display:flex;flex-direction:column}
-  .uprow{display:flex;align-items:center;gap:10px;padding:8.5px 6px;border-radius:10px;transition:background .15s}
-  .uprow:hover{background:rgba(226,74,59,.06)}
-  .uprow .dt{font-size:11px;font-weight:800;color:var(--ember);width:52px;flex:none;
-    font-variant-numeric:tabular-nums;letter-spacing:.03em}
-  .uprow .em{font-size:14px;width:20px;text-align:center}
-  .uprow .nm{font-weight:700;font-size:13px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .uprow .tag{font-size:11px;color:var(--faint);font-weight:700}
-  .uprow .amt{font-family:var(--font-num);font-weight:600;color:var(--muted);font-size:12.5px;font-variant-numeric:tabular-nums}
+  /* gauge */
+  .gauge{position:relative;width:200px;margin:0 auto}
+  .gauge svg{display:block;width:100%;height:auto}
+  .gauge .ctr{position:absolute;left:0;right:0;bottom:6px;text-align:center}
+  .gauge .ctr .v{font-family:var(--font-num);font-weight:800;font-size:30px;line-height:1}
+  .gauge .ctr .u{font-size:10px;font-weight:800;letter-spacing:.14em;color:var(--faint);text-transform:uppercase}
+  .duo{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
+  .duo .lab{font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;display:flex;align-items:center;gap:6px;margin-bottom:2px}
+  .duo .lab i{width:7px;height:7px;border-radius:50%}
+  .duo .val{font-size:24px}
+  .duo .delta{font-size:11.5px;font-weight:700}
+  .limiter{margin-top:12px;background:var(--red-soft);border:1px solid rgba(255,92,77,.3);border-radius:var(--r-md);padding:10px 13px;font-size:12.5px;color:#FFBAAE;font-weight:600;line-height:1.45}
+  .limiter b{color:var(--red);letter-spacing:.04em}
 
-  /* macros card */
-  .macros .big{font-size:26px}
-  .macros .sub{color:var(--muted);font-size:12.5px;font-weight:700}
-  .macros .sub b{color:var(--gold)}
-  .stack{margin-top:14px}
-  .stack .lbl{display:flex;gap:16px;font-size:11.5px;color:var(--muted);font-weight:700;margin-top:9px}
-  .stack .lbl i{font-style:normal;display:flex;align-items:center;gap:6px}
-  .stack .lbl b{color:var(--text);font-variant-numeric:tabular-nums}
-  .swatch{width:8px;height:8px;border-radius:3px;display:inline-block}
+  /* stat tiles (Freepik) */
+  .tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+  .tile{background:linear-gradient(180deg,#201216,#1B1013);border:1px solid var(--border);border-radius:16px;padding:12px 8px;text-align:center}
+  .tile .ic{font-size:18px}
+  .tile .v{font-family:var(--font-num);font-weight:800;font-size:17px;margin-top:4px;letter-spacing:-.3px;font-variant-numeric:tabular-nums}
+  .tile .u{font-size:9.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin-top:1px}
+  .tile.ok{border-color:rgba(91,199,126,.35)}.tile .v.ok{color:var(--green)}.tile .v.warn{color:var(--gold)}
 
-  /* ── Generic list views ─────────────────── */
-  .tools{display:flex;gap:8px;flex-wrap:wrap;margin:2px 0 16px}
-  .chip{
-    background:var(--card);border:1px solid var(--border);border-radius:999px;color:var(--muted);
-    font:inherit;font-size:12px;font-weight:700;padding:6px 13px;cursor:pointer;transition:all .15s
-  }
-  .chip:hover{border-color:var(--border2);color:var(--text)}
+  /* donut + radar + legend */
+  .legend{display:flex;flex-direction:column;gap:7px;font-size:12px;font-weight:700;color:var(--muted)}
+  .legend i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:8px;vertical-align:middle}
+  .legend b{color:var(--text);font-family:var(--font-num);font-variant-numeric:tabular-nums}
+  .viz2{display:grid;grid-template-columns:150px 1fr;gap:16px;align-items:center}
+
+  /* achievements hex badges (Freepik) */
+  .hexes{display:grid;grid-template-columns:repeat(3,1fr);gap:14px 10px;padding:4px 0}
+  .hex{display:flex;flex-direction:column;align-items:center;gap:7px;text-align:center}
+  .hex svg{width:72px;height:72px}
+  .hex .n{font-size:11px;font-weight:800;letter-spacing:.04em;color:var(--text);line-height:1.2}
+  .hex .s{font-size:10px;font-weight:700;color:var(--faint)}
+  .hex.locked .n{color:var(--faint)}
+
+  /* lists (existing views) */
+  .tools{display:flex;gap:7px;flex-wrap:nowrap;overflow-x:auto;margin:2px 0 14px;padding-bottom:4px;scrollbar-width:none}
+  .tools::-webkit-scrollbar{display:none}
+  .chip{background:var(--card);border:1px solid var(--border);border-radius:999px;color:var(--muted);font-size:12px;font-weight:700;padding:6px 13px;white-space:nowrap;transition:all .15s}
   .chip.on{background:var(--crimson-soft);border-color:rgba(226,74,59,.45);color:#FFB29F}
-  .sect{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
-    color:var(--faint);padding:18px 4px 8px}
-  .lrow{
-    background:linear-gradient(180deg,#201216,#1B1013);
-    border:1px solid var(--border);border-radius:var(--r-md);
-    padding:13px 16px;margin-bottom:8px;cursor:pointer;transition:border-color .18s,transform .18s;
-  }
-  .lrow:hover{border-color:var(--border2);transform:translateY(-1px)}
+  .sect{font-size:10.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);padding:14px 4px 8px}
+  .lrow{background:linear-gradient(180deg,#201216,#1B1013);border:1px solid var(--border);border-radius:var(--r-md);padding:12px 14px;margin-bottom:8px;cursor:pointer;transition:border-color .18s}
+  .lrow:hover{border-color:var(--border2)}
   .lrow .top{display:flex;align-items:center;gap:10px}
   .lrow .em{font-size:16px;width:22px;text-align:center;flex:none}
-  .lrow .nm{font-weight:800;font-size:14px;flex:1;min-width:0}
-  .lrow .meta{display:flex;align-items:center;gap:7px;flex:none;flex-wrap:wrap;justify-content:flex-end}
+  .lrow .nm{font-weight:800;font-size:13.5px;flex:1;min-width:0}
+  .lrow .st{flex:none}
+  .lrow .meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:7px 0 0 32px}
   .lrow .sub{color:var(--muted);font-size:12.5px;margin:6px 0 0 32px;font-weight:600;line-height:1.5}
-  .lrow .detail{
-    display:none;margin:10px 0 2px 32px;padding:11px 14px;background:var(--inset);
-    border-radius:11px;font-size:12.5px;color:#D8C0AE;line-height:1.6;border:1px solid var(--border)
-  }
+  .lrow .detail{display:none;margin:10px 0 2px 32px;padding:11px 14px;background:var(--inset);border-radius:11px;font-size:12.5px;color:#D8C0AE;line-height:1.6;border:1px solid var(--border)}
   .lrow.open .detail{display:block;animation:vin .25s ease}
   .detail b{color:var(--text);font-weight:800}
   .detail .dl{margin-top:8px;padding-top:8px;border-top:1px solid var(--border)}
-  .kv{color:var(--faint);font-weight:800;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;
-    display:block;margin-bottom:2px}
-  .num{font-family:var(--font-num);font-variant-numeric:tabular-nums;font-weight:700}
-  .ratebar{width:88px;flex:none}
-  .empty{color:var(--faint);text-align:center;padding:40px 0;font-weight:600}
-
-  /* goals timeline */
-  .seq{display:flex;align-items:center;justify-content:center;width:26px;height:26px;flex:none;
-    border-radius:9px;background:var(--inset);border:1px solid var(--border);
+  .kv{color:var(--faint);font-weight:800;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:2px}
+  .empty{color:var(--faint);text-align:center;padding:30px 0;font-weight:600}
+  .seq{display:flex;align-items:center;justify-content:center;width:26px;height:26px;flex:none;border-radius:9px;background:var(--inset);border:1px solid var(--border);
     font-family:var(--font-num);font-weight:800;font-size:11.5px;color:var(--muted)}
   .seq.done{background:var(--gold-soft);border-color:rgba(240,168,64,.4);color:var(--gold)}
+  .rowitem{display:flex;align-items:center;gap:11px;padding:9px 6px;border-radius:12px;cursor:pointer;transition:background .15s}
+  .rowitem:hover{background:rgba(226,74,59,.07)}
+  .cbox{width:18px;height:18px;border-radius:6px;border:1.5px solid var(--border2);flex:none;display:grid;place-items:center;color:transparent;font-size:11px;transition:all .18s;background:var(--inset)}
+  .rowitem.done .cbox{background:var(--gold);border-color:var(--gold);color:#2A1508}
+  .rowitem .nm{font-weight:700;font-size:13.5px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .rowitem.done .nm{color:var(--faint);text-decoration:line-through}
+  .rowitem .amt{font-family:var(--font-num);font-weight:600;color:var(--muted);font-size:12px;white-space:nowrap}
+  .day{font-size:10.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);padding:8px 2px 4px}
+  .markall{width:100%;color:var(--gold);font-weight:800;font-size:12.5px;padding:11px;border-radius:12px;margin-top:6px;transition:background .15s}
+  .markall:hover{background:var(--gold-soft)}
+  .uprow{display:flex;align-items:center;gap:10px;padding:8px 4px;border-radius:10px}
+  .uprow .dt{font-size:11px;font-weight:800;color:var(--ember);width:50px;flex:none;letter-spacing:.03em}
+  .uprow .em{font-size:14px;width:20px;text-align:center}
+  .uprow .nm{font-weight:700;font-size:13px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .uprow .amt{font-family:var(--font-num);font-weight:600;color:var(--muted);font-size:12px}
+  .bar-row{display:grid;grid-template-columns:18px 1fr 52px 90px;gap:10px;align-items:center;padding:6px 4px;border-radius:10px;cursor:pointer}
+  .bar-row:hover{background:rgba(226,74,59,.07)}
+  .bar-row .rk{font-size:10.5px;color:var(--faint);font-weight:800}
+  .bar-row .nm{display:flex;align-items:center;gap:8px;font-weight:700;font-size:13px;min-width:0}
+  .bar-row .nm .txt{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .bar-row .v{font-family:var(--font-num);font-weight:600;text-align:right;font-size:12.5px}
+  .search{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:10px 14px;color:var(--muted);margin-bottom:12px}
+  .search input{background:none;border:none;outline:none;width:100%}
+  .search input::placeholder{color:var(--faint)}
 
-  footer.credits{margin-top:34px;color:var(--faint);font-size:11.5px;font-weight:600;text-align:center}
-  footer.credits b{color:var(--muted)}
+  /* scenes (kept, slimmer) */
+  .scene{position:relative;border-radius:var(--r-lg);overflow:hidden;margin-bottom:12px;border:1px solid var(--border);isolation:isolate}
+  .scene svg{display:block;width:100%;height:96px}
+  .scene.tall svg{height:150px}
+  .scene .cap{position:absolute;left:18px;bottom:12px;z-index:2;font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:rgba(245,233,220,.85);text-shadow:0 1px 8px rgba(0,0,0,.6)}
+  .scene .cap b{display:block;font-family:var(--font-num);font-size:14px;font-weight:700;letter-spacing:.02em;text-transform:none;margin-top:2px;color:#F5E9DC}
+  .scene:after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,transparent 55%,rgba(10,5,6,.55))}
 
-  /* responsive */
-  @media (max-width:980px){
-    .app{grid-template-columns:1fr}
-    .side{position:static;height:auto;flex-direction:row;align-items:center;overflow-x:auto;
-      padding:10px 12px;gap:4px;border-right:none;border-bottom:1px solid var(--border)}
-    .brand{padding:0 8px 0 0}.brand b{display:none}
-    .search,.side .foot,.readline,.nav-item .cnt{display:none}
-    .nav-item{white-space:nowrap;padding:7px 12px;border-radius:999px}
-    .nav-item.active{box-shadow:none}
-    .g-dash{grid-template-columns:1fr}
-    .rings{grid-template-columns:repeat(3,1fr)}
-    .main{padding:0 14px 50px}
-    .bar-row{grid-template-columns:20px 1fr 54px 70px}
-    .scene svg{height:88px}.scene.tall svg{height:130px}
-  }
-  @media (max-width:640px){
-    .topbar .crumb,.phasepill,.ratebar{display:none}
-    .lrow .sub,.lrow .detail{margin-left:0}
-  }
-  @media (prefers-reduced-motion:reduce){
-    *,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}
-  }
+  /* sheet */
+  .sheetbg{position:fixed;inset:0;background:rgba(6,3,4,.6);backdrop-filter:blur(4px);z-index:60;display:none;align-items:flex-end;justify-content:center}
+  .sheetbg.on{display:flex}
+  .sheet{width:100%;max-width:560px;background:linear-gradient(180deg,#241417,#1A0F12);border:1px solid var(--border2);border-bottom:none;
+    border-radius:26px 26px 0 0;padding:14px 20px 28px;animation:up .3s cubic-bezier(.22,.8,.3,1)}
+  @keyframes up{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+  .grab{width:42px;height:5px;border-radius:999px;background:var(--border2);margin:0 auto 14px}
+  .sheet h3{font-family:var(--font-num);font-weight:700;font-size:18px;text-align:center}
+  .sheet .sub{display:block;text-align:center;color:var(--muted);font-size:12px;font-weight:700;margin-top:2px}
+  .stepper{display:flex;align-items:center;justify-content:center;gap:16px;margin:18px 0 8px}
+  .stepper button{width:54px;height:54px;border-radius:50%;background:var(--inset);border:1px solid var(--border2);font-size:26px;font-weight:700;color:var(--gold);transition:background .15s}
+  .stepper button:active{background:var(--crimson-soft)}
+  .stepper input{width:150px;text-align:center;font-family:var(--font-num);font-weight:800;font-size:46px;letter-spacing:-1px;background:none;border:none;outline:none;
+    border-bottom:2px solid var(--border2);padding:4px 0;-moz-appearance:textfield}
+  .stepper input::-webkit-outer-spin-button,.stepper input::-webkit-inner-spin-button{-webkit-appearance:none}
+  .stepper input:focus{border-color:var(--gold)}
+  .unit{text-align:center;font-size:11px;font-weight:800;letter-spacing:.2em;color:var(--faint)}
+  .daterow{display:flex;align-items:center;justify-content:center;gap:8px;margin:14px 0 6px}
+  .daterow input{background:var(--inset);border:1px solid var(--border);border-radius:10px;padding:8px 12px;color:var(--text);font-weight:700;color-scheme:dark}
+  .quick{display:flex;gap:6px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+  .quick button{padding:6px 12px;border-radius:999px;background:var(--inset);border:1px solid var(--border);font-size:11.5px;font-weight:800;color:var(--muted)}
+  .savebtn{display:block;width:100%;margin-top:16px;padding:15px;border-radius:14px;background:linear-gradient(135deg,#E24A3B,#F0A840);color:#2A1508;
+    font-weight:800;font-size:13px;letter-spacing:.14em;text-transform:uppercase;box-shadow:0 10px 26px rgba(226,74,59,.4)}
+  .cancel{display:block;width:100%;margin-top:8px;padding:10px;color:var(--muted);font-weight:800;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+  .toast{position:fixed;left:50%;bottom:100px;transform:translateX(-50%) translateY(20px);background:#F5E9DC;color:#2A1508;font-weight:800;font-size:12.5px;
+    padding:10px 16px;border-radius:999px;opacity:0;transition:all .25s;z-index:70;pointer-events:none;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+  .toast.on{opacity:1;transform:translateX(-50%)}
+  footer.credits{margin:26px 0 8px;color:var(--faint);font-size:11px;font-weight:600;text-align:center}
+
+  @media (max-width:420px){.tab{padding:8px 13px;min-width:62px}.tiles{gap:6px}.tile .v{font-size:15px}}
+  @media (prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 </style>
 
 <div class="grain" aria-hidden="true"></div>
-<div class="app">
-  <aside class="side">
-    <div class="brand" title="Optimization Overdrive"><span class="gear">⚙️</span><b>Overdrive</b></div>
-    <label class="search">🔍<input id="q" type="search" placeholder="Search the system" autocomplete="off"></label>
-    <button class="nav-item active" data-view="dashboard"><span class="ico">🏠</span>Dashboard</button>
-    <button class="nav-item" data-view="protocols"><span class="ico">📋</span>Protocols<span class="cnt" id="c-protocols"></span></button>
-    <button class="nav-item" data-view="supplements"><span class="ico">💊</span>Supplements<span class="cnt" id="c-supplements"></span></button>
-    <button class="nav-item" data-view="labs"><span class="ico">🩸</span>Labs<span class="cnt" id="c-labs"></span></button>
-    <button class="nav-item" data-view="goals"><span class="ico">🎯</span>Goals<span class="cnt" id="c-goals"></span></button>
-    <button class="nav-item" data-view="questions"><span class="ico">❓</span>Questions<span class="cnt" id="c-questions"></span></button>
-    <button class="nav-item" data-view="decisions"><span class="ico">🗳️</span>Decisions<span class="cnt" id="c-decisions"></span></button>
-    <div class="foot">
-      <div class="readline"><b>READ</b> — the build is done.<br>The reveal is not.</div>
+<div class="wrap">
+  <header class="topbar">
+    <div class="row">
+      <div class="avatar" title="Optimization Overdrive">⚙️</div>
+      <div class="rangepill">
+        <button id="rprev" aria-label="Previous range">‹</button>
+        <span class="lab" id="rlab">Aug 22 → Oct 31</span>
+        <button id="rnext" aria-label="Next range">›</button>
+      </div>
+      <div class="pct" title="Phase-2 cut progress"><svg viewBox="0 0 30 30"><circle cx="15" cy="15" r="12" fill="none" stroke="#2E181C" stroke-width="3.5"/><circle id="pctarc" cx="15" cy="15" r="12" fill="none" stroke="#F0A840" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="75.4" stroke-dashoffset="75.4"/></svg><span id="pctv">0%</span></div>
+      <span class="synced" id="synced" title="Weight log: this device only"></span>
     </div>
-  </aside>
+    <div class="title" id="vtitle">Overdrive</div>
+  </header>
 
-  <div class="main">
-    <div class="topbar">
-      <h1 id="viewtitle">Dashboard</h1>
-      <span class="crumb" id="viewcrumb">Phase 2 of 3 · cut in progress</span>
-      <span class="phasepill"><span class="dot"></span>Limiter: sleep apnea device — not started</span>
+  <!-- ═══ HOME ═══ -->
+  <section class="view on" id="view-home">
+    <div class="card">
+      <div class="ringrow">
+        <div class="bigring" data-go="body"><div class="viz"><svg width="104" height="104" viewBox="0 0 104 104"><circle cx="52" cy="52" r="44" fill="none" stroke="#2E181C" stroke-width="8"/><circle class="arc" id="r-cut" cx="52" cy="52" r="44" fill="none" stroke="#F0A840" stroke-width="8" stroke-linecap="round" stroke-dasharray="276.5" stroke-dashoffset="276.5"/></svg><div class="ctr"><div class="v" id="r-cut-v">—</div><div class="u">to 180</div></div></div><div class="lb">Cut ›</div></div>
+        <div class="bigring" data-go="plan"><div class="viz"><svg width="104" height="104" viewBox="0 0 104 104"><circle cx="52" cy="52" r="44" fill="none" stroke="#2E181C" stroke-width="8"/><circle class="arc" cx="52" cy="52" r="44" fill="none" stroke="#5BC77E" stroke-width="8" stroke-linecap="round" stroke-dasharray="276.5" stroke-dashoffset="276.5" data-off="0"/></svg><div class="ctr"><div class="v">184<span style="font-size:13px;color:var(--muted)">g</span></div><div class="u">protein</div></div></div><div class="lb">Fuel ›</div></div>
+        <div class="bigring" data-go="more:questions"><div class="viz"><svg width="104" height="104" viewBox="0 0 104 104"><circle cx="52" cy="52" r="44" fill="none" stroke="#2E181C" stroke-width="8"/><circle class="arc" cx="52" cy="52" r="44" fill="none" stroke="#FF5C4D" stroke-width="8" stroke-linecap="round" stroke-dasharray="276.5" stroke-dashoffset="276.5" data-off="270"/></svg><div class="ctr"><div class="v" style="color:var(--red)">—</div><div class="u">apnea gate</div></div></div><div class="lb">Limiter ›</div></div>
+      </div>
     </div>
 
-    <!-- ══ DASHBOARD ══ -->
-    <section class="view on" id="view-dashboard">
+    <div class="two">
+      <div class="monitor" data-go="body:labs"><div class="t">Limiter <span>›</span></div><div class="v"><span class="sq" style="background:var(--red-soft);color:var(--red)">—</span><span class="lbl">Apnea device<small>Not started · gates all</small></span></div></div>
+      <div class="monitor" data-go="body:labs"><div class="t">Next retest <span>›</span></div><div class="v"><span class="sq" style="background:var(--dusk-soft);color:var(--dusk)">15</span><span class="lbl">Sept 15, 8am<small>SHBG · insulin · E2 · D</small></span></div></div>
+    </div>
 
-      <!-- hero: desert dawn, long road, red kite -->
-      <div class="scene tall" role="img" aria-label="Painted desert dawn with a long road and a red kite">
-        <svg viewBox="0 0 1200 170" preserveAspectRatio="xMidYMax slice">
+    <div class="scene tall" style="margin-top:12px" role="img" aria-label="Painted desert dawn with a long road and a red kite">
+      <svg viewBox="0 0 1200 170" preserveAspectRatio="xMidYMax slice">
+        <defs>
+          <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2A1215"/><stop offset=".38" stop-color="#7A3327"/><stop offset=".7" stop-color="#D9803F"/><stop offset="1" stop-color="#F2BC6E"/></linearGradient>
+          <radialGradient id="sun" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#FFE9B8" stop-opacity=".95"/><stop offset=".5" stop-color="#F5B45C" stop-opacity=".55"/><stop offset="1" stop-color="#F5B45C" stop-opacity="0"/></radialGradient>
+          <filter id="soft"><feGaussianBlur stdDeviation="1.1"/></filter>
+        </defs>
+        <rect width="1200" height="170" fill="url(#sky)"/><circle cx="820" cy="120" r="120" fill="url(#sun)"/>
+        <g fill="#5C2620" opacity=".35" filter="url(#soft)"><ellipse cx="220" cy="38" rx="170" ry="10"/><ellipse cx="540" cy="22" rx="120" ry="7"/><ellipse cx="980" cy="46" rx="150" ry="9"/></g>
+        <g fill="#F2BC6E" opacity=".28" filter="url(#soft)"><ellipse cx="700" cy="78" rx="130" ry="6"/><ellipse cx="1050" cy="92" rx="100" ry="5"/></g>
+        <path d="M0 128 L70 128 88 104 150 104 166 128 320 128 320 170 0 170Z" fill="#341015" opacity=".85"/>
+        <path d="M880 132 L950 132 968 100 1050 100 1068 132 1200 132 1200 170 880 170Z" fill="#341015" opacity=".7"/>
+        <path d="M520 170 L610 170 598 128 578 128Z" fill="#241014"/>
+        <g stroke="#F2BC6E" stroke-width="2.4" opacity=".8"><line x1="589" y1="166" x2="589" y2="156"/><line x1="588.6" y1="148" x2="588.6" y2="140"/><line x1="588.2" y1="134" x2="588.2" y2="130"/></g>
+        <g><path d="M330 34 L352 58 L330 84 L308 58 Z" fill="#D8402F" stroke="#8C2318" stroke-width="1.4"/><line x1="330" y1="34" x2="330" y2="84" stroke="#8C2318" stroke-width="1"/><line x1="308" y1="58" x2="352" y2="58" stroke="#8C2318" stroke-width="1"/><path d="M330 84 C 322 102 344 108 334 124 C 328 134 314 132 312 142" fill="none" stroke="#D8402F" stroke-width="2" opacity=".85"/><path d="M330 84 C 350 120 300 140 316 168" fill="none" stroke="#3A1712" stroke-width="1.1" opacity=".6"/></g>
+        <g fill="#FFE2AC"><circle cx="140" cy="96" r="1.4" opacity=".7"/><circle cx="420" cy="112" r="1.1" opacity=".5"/><circle cx="660" cy="60" r="1.3" opacity=".6"/><circle cx="1120" cy="70" r="1.2" opacity=".55"/></g>
+      </svg>
+      <span class="cap">Phase 2 · the long road<b>The build is done. The reveal is not.</b></span>
+    </div>
+
+    <div class="h2">My Day <button class="fab" style="width:40px;height:40px;font-size:18px;box-shadow:none" data-log>＋</button></div>
+    <div class="wide2">
+      <div class="card">
+        <div class="card-h"><span class="t">To review</span><button class="linky" data-go="more:questions">View all ›</button></div>
+        <div id="revlist"></div>
+        <button class="markall" id="markall">✓ Mark as reviewed</button>
+      </div>
+      <div class="card">
+        <div class="card-h"><span class="t">Coming up</span><button class="linky" data-go="more:goals">View all ›</button></div>
+        <div id="uplist"></div>
+      </div>
+    </div>
+
+    <div class="wide2">
+      <div class="card">
+        <div class="card-h"><span class="t">Fuel today</span><button class="linky" data-go="plan:protocols">Nutrition ›</button></div>
+        <div class="big" style="font-size:24px;color:var(--gold)">184 g protein</div>
+        <div style="color:var(--muted);font-size:12.5px;font-weight:700">↗ floor <b style="color:var(--gold)">160–176 g</b> · calories are a ceiling</div>
+        <div class="track" style="margin:12px 0 6px;display:flex"><span style="display:block;height:100%;background:var(--gold);width:56%"></span><span style="display:block;height:100%;background:var(--ember);width:44%;margin-left:2px"></span></div>
+        <div style="display:flex;gap:14px;font-size:11.5px;color:var(--muted);font-weight:700"><span><i style="display:inline-block;width:8px;height:8px;border-radius:3px;background:var(--gold);margin-right:5px"></i>Smoothie <b style="color:var(--text)">915 kcal · 107P</b></span><span><i style="display:inline-block;width:8px;height:8px;border-radius:3px;background:var(--ember);margin-right:5px"></i>Dinner <b style="color:var(--text)">~900 · 77P</b></span></div>
+      </div>
+      <div class="card">
+        <div class="card-h"><span class="t">Top supplements</span><button class="linky" data-go="plan:supplements">View all ›</button></div>
+        <div id="topsupp"></div>
+      </div>
+    </div>
+    <footer class="credits">Synced from the ⚙️ Optimization System hub in Notion · 6 live boards</footer>
+  </section>
+
+  <!-- ═══ BODY ═══ -->
+  <section class="view" id="view-body">
+    <div class="seg" data-seg="body"><button class="on" data-sub="weight">Weight</button><button data-sub="composition">Composition</button><button data-sub="labs">Labs</button></div>
+
+    <div class="sub on" id="body-weight">
+      <div class="blobwrap">
+        <svg viewBox="0 0 260 260" aria-hidden="true">
           <defs>
-            <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#2A1215"/><stop offset=".38" stop-color="#7A3327"/>
-              <stop offset=".7" stop-color="#D9803F"/><stop offset="1" stop-color="#F2BC6E"/>
-            </linearGradient>
-            <radialGradient id="sun" cx=".5" cy=".5" r=".5">
-              <stop offset="0" stop-color="#FFE9B8" stop-opacity=".95"/>
-              <stop offset=".5" stop-color="#F5B45C" stop-opacity=".55"/>
-              <stop offset="1" stop-color="#F5B45C" stop-opacity="0"/>
-            </radialGradient>
-            <filter id="soft"><feGaussianBlur stdDeviation="1.1"/></filter>
+            <radialGradient id="bg1" cx=".5" cy=".55" r=".55"><stop offset="0" stop-color="#0E0608"/><stop offset=".55" stop-color="#1A0C10"/><stop offset=".8" stop-color="#5A2A2A"/><stop offset="1" stop-color="#C9843C" stop-opacity=".9"/></radialGradient>
+            <filter id="bglow"><feGaussianBlur stdDeviation="6"/></filter>
           </defs>
-          <rect width="1200" height="170" fill="url(#sky)"/>
-          <circle cx="820" cy="120" r="120" fill="url(#sun)"/>
-          <!-- drifting cloud strokes -->
-          <g fill="#5C2620" opacity=".35" filter="url(#soft)">
-            <ellipse cx="220" cy="38" rx="170" ry="10"/><ellipse cx="540" cy="22" rx="120" ry="7"/>
-            <ellipse cx="980" cy="46" rx="150" ry="9"/><ellipse cx="380" cy="64" rx="90" ry="6"/>
-          </g>
-          <g fill="#F2BC6E" opacity=".28" filter="url(#soft)">
-            <ellipse cx="700" cy="78" rx="130" ry="6"/><ellipse cx="1050" cy="92" rx="100" ry="5"/>
-          </g>
-          <!-- mesas -->
-          <path d="M0 128 L70 128 88 104 150 104 166 128 320 128 320 170 0 170Z" fill="#341015" opacity=".85"/>
-          <path d="M880 132 L950 132 968 100 1050 100 1068 132 1200 132 1200 170 880 170Z" fill="#341015" opacity=".7"/>
-          <!-- road with center dashes -->
-          <path d="M520 170 L610 170 598 128 578 128Z" fill="#241014"/>
-          <g stroke="#F2BC6E" stroke-width="2.4" opacity=".8">
-            <line x1="589" y1="166" x2="589" y2="156"/><line x1="588.6" y1="148" x2="588.6" y2="140"/><line x1="588.2" y1="134" x2="588.2" y2="130"/>
-          </g>
-          <!-- red diamond kite with looping tail -->
-          <g>
-            <path d="M330 34 L352 58 L330 84 L308 58 Z" fill="#D8402F" stroke="#8C2318" stroke-width="1.4"/>
-            <line x1="330" y1="34" x2="330" y2="84" stroke="#8C2318" stroke-width="1"/>
-            <line x1="308" y1="58" x2="352" y2="58" stroke="#8C2318" stroke-width="1"/>
-            <path d="M330 84 C 322 102 344 108 334 124 C 328 134 314 132 312 142" fill="none" stroke="#D8402F" stroke-width="2" opacity=".85"/>
-            <path d="M330 84 C 350 120 300 140 316 168" fill="none" stroke="#3A1712" stroke-width="1.1" opacity=".6"/>
-          </g>
-          <!-- dust motes -->
-          <g fill="#FFE2AC">
-            <circle cx="140" cy="96" r="1.4" opacity=".7"/><circle cx="420" cy="112" r="1.1" opacity=".5"/>
-            <circle cx="660" cy="60" r="1.3" opacity=".6"/><circle cx="1120" cy="70" r="1.2" opacity=".55"/>
-            <circle cx="905" cy="58" r="1" opacity=".5"/><circle cx="250" cy="60" r="1" opacity=".45"/>
-          </g>
+          <path class="blob" d="M130 18 C 170 10 214 34 232 74 C 250 112 240 160 216 196 C 192 232 146 248 104 236 C 60 224 26 186 22 140 C 18 96 46 46 88 28 C 102 22 116 20 130 18 Z" fill="#E24A3B" opacity=".35" filter="url(#bglow)"/>
+          <path class="blob" d="M130 18 C 170 10 214 34 232 74 C 250 112 240 160 216 196 C 192 232 146 248 104 236 C 60 224 26 186 22 140 C 18 96 46 46 88 28 C 102 22 116 20 130 18 Z" fill="url(#bg1)" stroke="rgba(245,233,220,.18)" stroke-width="1"/>
+          <g id="stars" fill="#FFE2AC"></g>
         </svg>
-        <span class="cap">Phase 2 · the long road<b>The build is done. The reveal is not.</b></span>
-      </div>
-
-      <div class="grid g-dash">
-        <div class="card hoverable">
-          <div class="card-h"><span class="t">Cut progress</span><button class="linky" data-go="goals">Trajectory ›</button></div>
-          <div class="big hero-num" id="heroWeight">204.8 lb</div>
-          <div class="hero-sub">of a <b>180 lb</b> Phase-2 target · mid-late Oct</div>
-          <div class="chartwrap" id="chart"></div>
-          <div class="ranges" id="ranges">
-            <button data-r="p1">P1</button><button class="on" data-r="p2">P2</button><button data-r="all">ALL</button>
-          </div>
-        </div>
-
-        <div class="card hoverable">
-          <div class="card-h"><span class="t">Composition</span><button class="linky" data-go="labs">Labs ›</button></div>
-          <div class="duo">
-            <div>
-              <div class="lab" style="color:var(--gold)"><i style="background:var(--gold)"></i>FFMI (norm.)</div>
-              <div class="big val">23.8</div>
-              <div class="delta" style="color:var(--gold)">↗ 95th pct natural</div>
-            </div>
-            <div>
-              <div class="lab" style="color:var(--ember)"><i style="background:var(--ember)"></i>Body fat</div>
-              <div class="big val">20.0<span style="font-size:16px;color:var(--muted)">%</span></div>
-              <div class="delta" style="color:var(--ember)">BIA ±3–6 pts</div>
-            </div>
-          </div>
-          <div class="meterline" title="FFMI 23.8 of ~25 natural ceiling">
-            <span id="ffmibar" style="background:linear-gradient(90deg,#F0A840,#E24A3B);width:0"></span>
-          </div>
-          <div class="axis"><span>18</span><span>FFMI · ceiling ≈ 25</span><span>25</span></div>
-          <div class="limiter"><b>RED · GATING</b> — Sleep apnea device not started. It gates GH/IGF-1, testosterone, insulin sensitivity and recovery. Nothing on this board ranks above it.</div>
-        </div>
-
-        <div class="card hoverable">
-          <div class="card-h"><span class="t">To review</span><button class="linky" data-go="questions">View all ›</button></div>
-          <div class="rev" id="revlist"></div>
-          <button class="markall" id="markall">✓ Mark 4 as reviewed</button>
-        </div>
-
-        <div class="card hoverable">
-          <div class="card-h"><span class="t">Top supplements</span><button class="linky" data-go="supplements">View all ›</button></div>
-          <div class="bars" id="topsupp"></div>
-        </div>
-
-        <div class="card hoverable" style="grid-column:1/-1">
-          <div class="card-h"><span class="t">Leverage — the three things that matter (+2 gates)</span><button class="linky" data-go="protocols">Protocols ›</button></div>
-          <div class="rings" id="rings"></div>
-        </div>
-
-        <div class="card hoverable macros">
-          <div class="card-h"><span class="t">Fuel today</span><button class="linky" data-go="protocols">Nutrition ›</button></div>
-          <div class="big" style="font-size:26px;color:var(--gold)">184 g protein</div>
-          <div class="sub">↗ floor <b>160–176 g</b> · calories are a ceiling</div>
-          <div class="stack">
-            <div class="meterline" style="margin:12px 0 4px">
-              <span style="background:var(--gold);width:56%" title="Smoothie 915 kcal"></span>
-              <span style="background:var(--ember);width:44%;margin-left:2px" title="Dinner ~900 kcal"></span>
-            </div>
-            <div class="lbl">
-              <i><span class="swatch" style="background:var(--gold)"></span>AM smoothie <b>915 kcal · 107P</b></i>
-              <i><span class="swatch" style="background:var(--ember)"></span>Dinner <b>~900 kcal · 77P</b></i>
-            </div>
-            <div class="lbl" style="color:var(--faint)"><i>Ceiling <b style="color:var(--muted)">1,815–1,920 kcal</b> · two meals, three components, no exceptions</i></div>
-          </div>
-        </div>
-
-        <div class="card hoverable">
-          <div class="card-h"><span class="t">Coming up</span><button class="linky" data-go="goals">View all ›</button></div>
-          <div class="uplist" id="uplist"></div>
+        <div class="ctr">
+          <div class="w" id="hw">—<small>lb</small></div>
+          <div class="cap">Current weight</div>
+          <div class="togo" id="htogo">—</div>
+          <div class="src" id="hsrc"></div>
         </div>
       </div>
-      <footer class="credits">Synced from the <b>⚙️ Optimization System</b> hub in Notion · 6 live boards · built 2026-08-22</footer>
-    </section>
+      <button class="tapedit" data-log>⚖️ Log today's weight</button>
 
-    <!-- ══ LIST VIEWS ══ -->
-    <section class="view" id="view-protocols">
-      <div class="scene" role="img" aria-label="Desert dawn with mesas">
-        <svg viewBox="0 0 1200 110" preserveAspectRatio="xMidYMax slice">
-          <defs><linearGradient id="pSky" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="#3A1518"/><stop offset=".55" stop-color="#9C452C"/><stop offset="1" stop-color="#E8A353"/>
-          </linearGradient></defs>
-          <rect width="1200" height="110" fill="url(#pSky)"/>
-          <circle cx="960" cy="86" r="70" fill="#FFDD9A" opacity=".35"/>
-          <g fill="#5C2620" opacity=".4"><ellipse cx="300" cy="26" rx="180" ry="7"/><ellipse cx="760" cy="40" rx="140" ry="6"/></g>
-          <path d="M0 84 L90 84 112 56 190 56 210 84 420 84 420 110 0 110Z" fill="#2C0F13" opacity=".9"/>
-          <path d="M760 90 L860 90 884 62 980 62 1000 90 1200 90 1200 110 760 110Z" fill="#2C0F13" opacity=".75"/>
-          <g fill="#FFE2AC"><circle cx="520" cy="50" r="1.2" opacity=".6"/><circle cx="640" cy="72" r="1" opacity=".5"/><circle cx="180" cy="42" r="1.1" opacity=".5"/></g>
-        </svg>
-        <span class="cap">Daily operating system<b>22 live protocols · road &amp; home</b></span>
+      <div class="card" style="margin-top:14px">
+        <div class="card-h"><span class="t">Pace of cut</span><span class="chipnote" id="pacechip">—</span></div>
+        <div class="pace">
+          <div class="ends"><span>○ Slow</span><span>Fast ⬢</span></div>
+          <div class="val" id="paceval">—</div>
+          <div class="ticks" id="ticks"></div>
+          <div class="scale"><span>0 lb/wk</span><span>1.0</span><span>2.0</span><span>3.0 lb/wk</span></div>
+          <div style="text-align:center;font-size:11.5px;color:var(--faint);font-weight:700;margin-top:6px" id="pacenote">Target band 1.0–2.0 lb/wk (0.5–1% bodyweight)</div>
+        </div>
+        <button class="bigbtn" data-go="more:goals">Go to trajectory</button>
       </div>
-      <div class="tools" id="f-protocols"></div><div id="l-protocols"></div>
-    </section>
 
-    <section class="view" id="view-supplements">
-      <div class="scene" role="img" aria-label="Dark field with rising embers">
-        <svg viewBox="0 0 1200 110" preserveAspectRatio="xMidYMax slice">
-          <defs><linearGradient id="sBg" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="#150A0E"/><stop offset=".7" stop-color="#3A1013"/><stop offset="1" stop-color="#6E2117"/>
-          </linearGradient>
-          <radialGradient id="glowE" cx=".5" cy="1" r="1">
-            <stop offset="0" stop-color="#E8763C" stop-opacity=".35"/><stop offset="1" stop-color="#E8763C" stop-opacity="0"/>
-          </radialGradient></defs>
-          <rect width="1200" height="110" fill="url(#sBg)"/>
-          <rect width="1200" height="110" fill="url(#glowE)"/>
-          <g fill="#F0A840"><circle cx="120" cy="82" r="1.6" opacity=".8"/><circle cx="185" cy="52" r="1.1" opacity=".55"/>
-            <circle cx="340" cy="70" r="1.9" opacity=".85"/><circle cx="410" cy="34" r="1" opacity=".45"/>
-            <circle cx="565" cy="60" r="1.5" opacity=".7"/><circle cx="640" cy="24" r="1" opacity=".4"/>
-            <circle cx="820" cy="76" r="2" opacity=".9"/><circle cx="905" cy="44" r="1.2" opacity=".55"/>
-            <circle cx="1060" cy="64" r="1.6" opacity=".75"/><circle cx="1130" cy="30" r="1" opacity=".45"/></g>
-          <g fill="#E24A3B"><circle cx="255" cy="88" r="1.7" opacity=".8"/><circle cx="500" cy="92" r="2" opacity=".85"/>
-            <circle cx="730" cy="86" r="1.5" opacity=".7"/><circle cx="980" cy="90" r="1.8" opacity=".8"/>
-            <circle cx="80" cy="40" r="1" opacity=".4"/><circle cx="1170" cy="80" r="1.3" opacity=".6"/></g>
-          <g stroke="#E8763C" stroke-width="1" opacity=".35">
-            <path d="M120 82 C 116 70 124 62 120 50"/><path d="M340 70 C 336 58 344 50 340 38"/>
-            <path d="M820 76 C 816 64 824 56 820 44"/><path d="M1060 64 C 1056 52 1064 44 1060 32"/>
-          </g>
-        </svg>
-        <span class="cap">The stack<b>27 compounds · rated 1–40, evidence-tiered</b></span>
+      <div class="card">
+        <div class="card-h"><span class="t">Weight trend</span><span class="linky" id="rlab2">Aug 22 → Oct 31</span></div>
+        <div class="chartwrap" id="chart"></div>
       </div>
-      <div class="tools" id="f-supplements"></div><div id="l-supplements"></div>
-    </section>
 
-    <section class="view" id="view-labs">
+      <div class="card">
+        <div class="card-h"><span class="t">Last 14 days</span><span class="linky" id="calcount">0 logged</span></div>
+        <div class="cal" id="cal"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-h"><span class="t">Progression</span><button class="linky" data-go="more:goals">Milestones ›</button></div>
+        <div class="prog" id="prog"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-h"><span class="t">Weight log</span><button class="linky" data-log>＋ Add entry</button></div>
+        <div class="log" id="log"></div>
+      </div>
+    </div>
+
+    <div class="sub" id="body-composition">
+      <div class="card">
+        <div class="card-h"><span class="t">Normalized FFMI</span><span class="chipnote warn">95th pct natural</span></div>
+        <div class="gauge" id="gauge"></div>
+        <div class="duo">
+          <div><div class="lab" style="color:var(--gold)"><i style="background:var(--gold)"></i>Body fat (BIA)</div><div class="big val">20.0<span style="font-size:14px;color:var(--muted)">%</span></div><div class="delta" style="color:var(--gold)">±3–6 pts</div></div>
+          <div><div class="lab" style="color:var(--ember)"><i style="background:var(--ember)"></i>Skeletal muscle</div><div class="big val">94.1<span style="font-size:14px;color:var(--muted)"> lb</span></div><div class="delta" style="color:var(--muted)">FFM 163.8 lb</div></div>
+        </div>
+        <div class="limiter"><b>DEXA UNBOOKED</b> — InBody's 20% may be 3–6 points optimistic. One scan settles whether 180 lb lands at 10% or 15% BF. Book it on a home rotation.</div>
+      </div>
+      <div class="card">
+        <div class="card-h"><span class="t">Trajectory</span></div>
+        <div class="prog">
+          <div class="r"><span class="n">Phase 1</span><span class="track"><i style="width:100%;background:var(--green)"></i></span><span class="v">197 lb ✓</span></div>
+          <div class="r"><span class="n">Phase 2</span><span class="track"><i id="p2bar" style="width:0;background:linear-gradient(90deg,#F0A840,#E24A3B)"></i></span><span class="v">180 lb</span></div>
+          <div class="r"><span class="n">End state</span><span class="track"><i style="width:4%;background:var(--faint)"></i></span><span class="v">172 lb</span></div>
+        </div>
+        <div style="margin-top:10px;font-size:12px;color:var(--muted);font-weight:600;line-height:1.5">Natural FFMI ceiling ≈ 25 (Kouri 1995). At 23.8 the project is no longer <i>build more</i> — it is maintain elite muscularity while stripping fat.</div>
+      </div>
+    </div>
+
+    <div class="sub" id="body-labs">
       <div class="scene" role="img" aria-label="Dusk city skyline with a red signal beam">
         <svg viewBox="0 0 1200 110" preserveAspectRatio="xMidYMax slice">
-          <defs><linearGradient id="lSky" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="#1B2C5A"/><stop offset=".55" stop-color="#4A2A52"/><stop offset="1" stop-color="#8C3236"/>
-          </linearGradient></defs>
+          <defs><linearGradient id="lSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1B2C5A"/><stop offset=".55" stop-color="#4A2A52"/><stop offset="1" stop-color="#8C3236"/></linearGradient></defs>
           <rect width="1200" height="110" fill="url(#lSky)"/>
-          <!-- red beam -->
-          <path d="M708 0 L742 0 700 110 678 110 Z" fill="#E24A3B" opacity=".8"/>
-          <path d="M712 0 L724 0 694 110 688 110 Z" fill="#FF8A6E" opacity=".5"/>
-          <!-- skyline -->
-          <g fill="#10070B">
-            <rect x="0" y="58" width="90" height="52"/><rect x="96" y="40" width="60" height="70"/>
-            <rect x="170" y="66" width="110" height="44"/><rect x="292" y="34" width="52" height="76"/>
-            <rect x="356" y="58" width="88" height="52"/><rect x="460" y="46" width="66" height="64"/>
-            <rect x="540" y="68" width="120" height="42"/><rect x="760" y="42" width="58" height="68"/>
-            <rect x="830" y="62" width="96" height="48"/><rect x="940" y="30" width="54" height="80"/>
-            <rect x="1006" y="56" width="80" height="54"/><rect x="1100" y="44" width="100" height="66"/>
-          </g>
-          <!-- lit windows -->
-          <g fill="#F2BC6E" opacity=".5">
-            <rect x="108" y="52" width="5" height="6"/><rect x="124" y="64" width="5" height="6"/>
-            <rect x="304" y="46" width="5" height="6"/><rect x="320" y="60" width="5" height="6"/>
-            <rect x="952" y="42" width="5" height="6"/><rect x="968" y="58" width="5" height="6"/>
-            <rect x="1120" y="58" width="5" height="6"/><rect x="1140" y="72" width="5" height="6"/>
-          </g>
-          <!-- splatter -->
-          <g fill="#E24A3B"><circle cx="240" cy="26" r="1.4" opacity=".7"/><circle cx="420" cy="18" r="1" opacity=".5"/>
-            <circle cx="880" cy="22" r="1.3" opacity=".6"/><circle cx="1050" cy="14" r="1" opacity=".5"/>
-            <circle cx="620" cy="30" r="1.2" opacity=".6"/></g>
+          <path d="M708 0 L742 0 700 110 678 110 Z" fill="#E24A3B" opacity=".8"/><path d="M712 0 L724 0 694 110 688 110 Z" fill="#FF8A6E" opacity=".5"/>
+          <g fill="#10070B"><rect x="0" y="58" width="90" height="52"/><rect x="96" y="40" width="60" height="70"/><rect x="170" y="66" width="110" height="44"/><rect x="292" y="34" width="52" height="76"/><rect x="356" y="58" width="88" height="52"/><rect x="460" y="46" width="66" height="64"/><rect x="540" y="68" width="120" height="42"/><rect x="760" y="42" width="58" height="68"/><rect x="830" y="62" width="96" height="48"/><rect x="940" y="30" width="54" height="80"/><rect x="1006" y="56" width="80" height="54"/><rect x="1100" y="44" width="100" height="66"/></g>
+          <g fill="#F2BC6E" opacity=".5"><rect x="108" y="52" width="5" height="6"/><rect x="124" y="64" width="5" height="6"/><rect x="304" y="46" width="5" height="6"/><rect x="952" y="42" width="5" height="6"/><rect x="1120" y="58" width="5" height="6"/></g>
         </svg>
         <span class="cap">The signal panel<b>17 markers · retests Sept 15</b></span>
       </div>
       <div class="tools" id="f-labs"></div><div id="l-labs"></div>
-    </section>
+    </div>
+  </section>
 
-    <section class="view" id="view-goals">
+  <!-- ═══ PLAN ═══ -->
+  <section class="view" id="view-plan">
+    <div class="tiles">
+      <div class="tile"><div class="ic">🔥</div><div class="v">1,815</div><div class="u">kcal ceiling</div></div>
+      <div class="tile ok"><div class="ic">🥩</div><div class="v ok">184</div><div class="u">g protein</div></div>
+      <div class="tile"><div class="ic">💧</div><div class="v">1 gal</div><div class="u">water</div></div>
+      <div class="tile"><div class="ic">🧂</div><div class="v warn">3–5 g</div><div class="u">sodium</div></div>
+    </div>
+    <div class="wide2">
+      <div class="card">
+        <div class="card-h"><span class="t">Two-meal split</span></div>
+        <div class="viz2"><div id="donut"></div>
+          <div class="legend"><div><i style="background:var(--gold)"></i>AM smoothie <b>915 kcal · 107P</b></div><div><i style="background:var(--ember)"></i>Dinner <b>900 kcal · 77P</b></div><div><i style="background:var(--faint)"></i>Total <b>~1,815 · 184P</b></div><div style="font-size:11px;color:var(--faint)">Protein is a floor, calories are a ceiling.</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-h"><span class="t">System radar</span><span class="linky">Active ÷ total</span></div>
+        <div class="viz2"><div id="radar"></div>
+          <div class="legend" id="radarleg"></div>
+        </div>
+      </div>
+    </div>
+    <div class="seg" data-seg="plan"><button class="on" data-sub="protocols">Protocols</button><button data-sub="supplements">Supplements</button></div>
+    <div class="sub on" id="plan-protocols">
+      <div class="scene" role="img" aria-label="Desert dawn with mesas">
+        <svg viewBox="0 0 1200 110" preserveAspectRatio="xMidYMax slice">
+          <defs><linearGradient id="pSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3A1518"/><stop offset=".55" stop-color="#9C452C"/><stop offset="1" stop-color="#E8A353"/></linearGradient></defs>
+          <rect width="1200" height="110" fill="url(#pSky)"/><circle cx="960" cy="86" r="70" fill="#FFDD9A" opacity=".35"/>
+          <g fill="#5C2620" opacity=".4"><ellipse cx="300" cy="26" rx="180" ry="7"/><ellipse cx="760" cy="40" rx="140" ry="6"/></g>
+          <path d="M0 84 L90 84 112 56 190 56 210 84 420 84 420 110 0 110Z" fill="#2C0F13" opacity=".9"/><path d="M760 90 L860 90 884 62 980 62 1000 90 1200 90 1200 110 760 110Z" fill="#2C0F13" opacity=".75"/>
+        </svg>
+        <span class="cap">Daily operating system<b>22 live protocols · road &amp; home</b></span>
+      </div>
+      <div class="tools" id="f-protocols"></div><div id="l-protocols"></div>
+    </div>
+    <div class="sub" id="plan-supplements">
+      <div class="scene" role="img" aria-label="Dark field with rising embers">
+        <svg viewBox="0 0 1200 110" preserveAspectRatio="xMidYMax slice">
+          <defs><linearGradient id="sBg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#150A0E"/><stop offset=".7" stop-color="#3A1013"/><stop offset="1" stop-color="#6E2117"/></linearGradient><radialGradient id="glowE" cx=".5" cy="1" r="1"><stop offset="0" stop-color="#E8763C" stop-opacity=".35"/><stop offset="1" stop-color="#E8763C" stop-opacity="0"/></radialGradient></defs>
+          <rect width="1200" height="110" fill="url(#sBg)"/><rect width="1200" height="110" fill="url(#glowE)"/>
+          <g fill="#F0A840"><circle cx="120" cy="82" r="1.6" opacity=".8"/><circle cx="340" cy="70" r="1.9" opacity=".85"/><circle cx="565" cy="60" r="1.5" opacity=".7"/><circle cx="820" cy="76" r="2" opacity=".9"/><circle cx="1060" cy="64" r="1.6" opacity=".75"/><circle cx="185" cy="52" r="1.1" opacity=".55"/><circle cx="905" cy="44" r="1.2" opacity=".55"/></g>
+          <g fill="#E24A3B"><circle cx="255" cy="88" r="1.7" opacity=".8"/><circle cx="500" cy="92" r="2" opacity=".85"/><circle cx="730" cy="86" r="1.5" opacity=".7"/><circle cx="980" cy="90" r="1.8" opacity=".8"/></g>
+        </svg>
+        <span class="cap">The stack<b>27 compounds · rated 1–40, evidence-tiered</b></span>
+      </div>
+      <div class="tools" id="f-supplements"></div><div id="l-supplements"></div>
+    </div>
+  </section>
+
+  <!-- ═══ MORE ═══ -->
+  <section class="view" id="view-more">
+    <label class="search">🔍<input id="q" type="search" placeholder="Search protocols, labs, goals, decisions…" autocomplete="off"></label>
+    <div class="card">
+      <div class="card-h"><span class="t">Milestones</span><span class="linky" id="hexcount"></span></div>
+      <div class="hexes" id="hexes"></div>
+    </div>
+    <div class="seg" data-seg="more"><button class="on" data-sub="goals">Goals</button><button data-sub="questions">Questions</button><button data-sub="decisions">Decisions</button></div>
+    <div class="sub on" id="more-goals">
       <div class="scene" role="img" aria-label="Road to the horizon at golden hour">
         <svg viewBox="0 0 1200 110" preserveAspectRatio="xMidYMax slice">
-          <defs><linearGradient id="gSky" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="#43181B"/><stop offset=".6" stop-color="#B85C33"/><stop offset="1" stop-color="#F2BC6E"/>
-          </linearGradient>
-          <radialGradient id="gSun" cx=".5" cy=".5" r=".5">
-            <stop offset="0" stop-color="#FFE9B8" stop-opacity=".9"/><stop offset="1" stop-color="#FFE9B8" stop-opacity="0"/>
-          </radialGradient></defs>
-          <rect width="1200" height="110" fill="url(#gSky)"/>
-          <circle cx="600" cy="74" r="80" fill="url(#gSun)"/>
-          <rect x="0" y="74" width="1200" height="36" fill="#2C0F13" opacity=".85"/>
-          <path d="M480 110 L720 110 612 74 588 74Z" fill="#180A0E"/>
-          <g stroke="#F2BC6E" stroke-width="2.2" opacity=".85">
-            <line x1="600" y1="106" x2="600" y2="98"/><line x1="600" y1="92" x2="600" y2="87"/><line x1="600" y1="83" x2="600" y2="80"/>
-          </g>
-          <g fill="#FFE2AC"><circle cx="200" cy="40" r="1.2" opacity=".6"/><circle cx="1000" cy="34" r="1.2" opacity=".6"/><circle cx="820" cy="52" r="1" opacity=".5"/></g>
+          <defs><linearGradient id="gSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#43181B"/><stop offset=".6" stop-color="#B85C33"/><stop offset="1" stop-color="#F2BC6E"/></linearGradient><radialGradient id="gSun" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#FFE9B8" stop-opacity=".9"/><stop offset="1" stop-color="#FFE9B8" stop-opacity="0"/></radialGradient></defs>
+          <rect width="1200" height="110" fill="url(#gSky)"/><circle cx="600" cy="74" r="80" fill="url(#gSun)"/>
+          <rect x="0" y="74" width="1200" height="36" fill="#2C0F13" opacity=".85"/><path d="M480 110 L720 110 612 74 588 74Z" fill="#180A0E"/>
+          <g stroke="#F2BC6E" stroke-width="2.2" opacity=".85"><line x1="600" y1="106" x2="600" y2="98"/><line x1="600" y1="92" x2="600" y2="87"/><line x1="600" y1="83" x2="600" y2="80"/></g>
         </svg>
-        <span class="cap">The 13-goal road<b>Debt cleared · Thailand ~Feb 2030 · running ahead of pace</b></span>
+        <span class="cap">The 13-goal road<b>Debt cleared · Thailand ~Feb 2030 · ahead of pace</b></span>
       </div>
       <div class="tools" id="f-goals"></div><div id="l-goals"></div>
-    </section>
-
-    <section class="view" id="view-questions">
+    </div>
+    <div class="sub" id="more-questions">
       <div class="scene" role="img" aria-label="A lone cloaked figure facing a wall of red fog">
         <svg viewBox="0 0 1200 110" preserveAspectRatio="xMidYMax slice">
-          <defs>
-            <radialGradient id="qGlow" cx=".62" cy=".2" r="1">
-              <stop offset="0" stop-color="#C4372B"/><stop offset=".45" stop-color="#6E1B18"/><stop offset="1" stop-color="#1A0B0E"/>
-            </radialGradient>
-            <filter id="qSoft"><feGaussianBlur stdDeviation="2"/></filter>
-          </defs>
+          <defs><radialGradient id="qGlow" cx=".62" cy=".2" r="1"><stop offset="0" stop-color="#C4372B"/><stop offset=".45" stop-color="#6E1B18"/><stop offset="1" stop-color="#1A0B0E"/></radialGradient><filter id="qSoft"><feGaussianBlur stdDeviation="2"/></filter></defs>
           <rect width="1200" height="110" fill="url(#qGlow)"/>
-          <g fill="#E24A3B" opacity=".5" filter="url(#qSoft)">
-            <ellipse cx="740" cy="26" rx="200" ry="16"/><ellipse cx="560" cy="52" rx="150" ry="12"/>
-            <ellipse cx="900" cy="60" rx="130" ry="10"/>
-          </g>
-          <g fill="#3A0F12" opacity=".7" filter="url(#qSoft)">
-            <ellipse cx="220" cy="70" rx="220" ry="20"/><ellipse cx="1080" cy="80" rx="180" ry="16"/>
-          </g>
-          <!-- lit ground + lone figure -->
+          <g fill="#E24A3B" opacity=".5" filter="url(#qSoft)"><ellipse cx="740" cy="26" rx="200" ry="16"/><ellipse cx="560" cy="52" rx="150" ry="12"/></g>
           <path d="M0 96 Q 600 84 1200 98 L1200 110 L0 110Z" fill="#E8C58C" opacity=".28"/>
-          <g fill="#0E0609">
-            <path d="M330 66 C 327 60 333 58 333 54 C 333 50 327 50 327 46 C 327 42 336 41 337 46 C 338 50 334 51 334 54 C 340 58 342 64 341 72 L 343 96 L 337 96 L 335 78 L 331 96 L 325 96 L 328 74 Z"/>
-            <path d="M328 60 C 320 68 318 84 320 94 L 326 92 C 324 82 326 70 331 64 Z" opacity=".9"/>
-          </g>
-          <g fill="#FFD9A0"><circle cx="480" cy="30" r="1" opacity=".6"/><circle cx="1020" cy="24" r="1.1" opacity=".55"/><circle cx="150" cy="34" r="1" opacity=".5"/></g>
+          <g fill="#0E0609"><path d="M330 66 C 327 60 333 58 333 54 C 333 50 327 50 327 46 C 327 42 336 41 337 46 C 338 50 334 51 334 54 C 340 58 342 64 341 72 L 343 96 L 337 96 L 335 78 L 331 96 L 325 96 L 328 74 Z"/><path d="M328 60 C 320 68 318 84 320 94 L 326 92 C 324 82 326 70 331 64 Z" opacity=".9"/></g>
         </svg>
         <span class="cap">What stands unanswered<b>16 open questions · 3 critical</b></span>
       </div>
       <div class="tools" id="f-questions"></div><div id="l-questions"></div>
-    </section>
-
-    <section class="view" id="view-decisions">
-      <div class="scene paper" role="img" aria-label="Ink brush strokes on parchment">
+    </div>
+    <div class="sub" id="more-decisions">
+      <div class="scene" role="img" aria-label="Ink brush strokes on parchment">
         <svg viewBox="0 0 1200 110" preserveAspectRatio="xMidYMax slice">
-          <defs>
-            <pattern id="hatch" width="7" height="7" patternTransform="rotate(38)" patternUnits="userSpaceOnUse">
-              <rect width="7" height="7" fill="none"/><line x1="0" y1="0" x2="0" y2="7" stroke="#241A14" stroke-width="1.1"/>
-            </pattern>
-            <pattern id="hatch2" width="9" height="9" patternTransform="rotate(-24)" patternUnits="userSpaceOnUse">
-              <rect width="9" height="9" fill="none"/><line x1="0" y1="0" x2="0" y2="9" stroke="#241A14" stroke-width="0.9"/>
-            </pattern>
-          </defs>
-          <rect width="1200" height="110" fill="#EDE0C8"/>
-          <rect width="1200" height="110" fill="url(#hatch)" opacity=".14"/>
-          <rect x="640" width="560" height="110" fill="url(#hatch2)" opacity=".12"/>
-          <!-- ink brush strokes -->
+          <defs><pattern id="hatch" width="7" height="7" patternTransform="rotate(38)" patternUnits="userSpaceOnUse"><line x1="0" y1="0" x2="0" y2="7" stroke="#241A14" stroke-width="1.1"/></pattern></defs>
+          <rect width="1200" height="110" fill="#EDE0C8"/><rect width="1200" height="110" fill="url(#hatch)" opacity=".14"/>
           <path d="M-20 84 C 220 60 420 96 660 74 C 860 56 1040 88 1220 70 L1220 110 L-20 110 Z" fill="#171009" opacity=".92"/>
-          <path d="M-20 96 C 260 82 520 104 800 90 C 980 82 1120 96 1220 88 L1220 110 L-20 110Z" fill="#2E2114" opacity=".6"/>
-          <path d="M60 30 C 180 22 300 38 430 28" stroke="#171009" stroke-width="7" fill="none" stroke-linecap="round" opacity=".85"/>
-          <path d="M760 24 C 880 34 990 18 1130 30" stroke="#171009" stroke-width="5" fill="none" stroke-linecap="round" opacity=".7"/>
-          <!-- ink flecks -->
-          <g fill="#171009"><circle cx="470" cy="40" r="2.2"/><circle cx="500" cy="26" r="1.4"/><circle cx="1150" cy="42" r="1.8"/>
-            <circle cx="700" cy="36" r="1.2"/><circle cx="240" cy="48" r="1.5"/></g>
+          <path d="M60 30 C 180 22 300 38 430 28" stroke="#171009" stroke-width="7" fill="none" stroke-linecap="round" opacity=".85"/><path d="M760 24 C 880 34 990 18 1130 30" stroke="#171009" stroke-width="5" fill="none" stroke-linecap="round" opacity=".7"/>
+          <g fill="#171009"><circle cx="470" cy="40" r="2.2"/><circle cx="500" cy="26" r="1.4"/><circle cx="1150" cy="42" r="1.8"/></g>
         </svg>
         <span class="cap">Verdicts, in ink<b>21 rulings · each with its reversal condition</b></span>
       </div>
       <div class="tools" id="f-decisions"></div><div id="l-decisions"></div>
-    </section>
+    </div>
+  </section>
+</div>
+
+<!-- bottom tabs -->
+<nav class="tabbar">
+  <div class="tabs" role="tablist">
+    <button class="tab on" data-tab="home"><span class="ic">🏠</span>Home</button>
+    <button class="tab" data-tab="body"><span class="ic">❤️‍🔥</span>Body</button>
+    <button class="tab" data-tab="plan"><span class="ic">📋</span>Plan</button>
+    <button class="tab" data-tab="more"><span class="ic">☰</span>More</button>
+  </div>
+  <button class="fab" data-log aria-label="Log weight">⚖️</button>
+</nav>
+
+<!-- log sheet -->
+<div class="sheetbg" id="sheetbg">
+  <div class="sheet" role="dialog" aria-label="Log weight">
+    <div class="grab"></div>
+    <h3>Log weight</h3><span class="sub" id="sheetsub">Morning, after bathroom, before food.</span>
+    <div class="stepper"><button id="minus">−</button><input id="win" type="number" step="0.1" inputmode="decimal" min="100" max="400"><button id="plus">+</button></div>
+    <div class="unit">POUNDS</div>
+    <div class="daterow"><span style="font-size:11px;font-weight:800;letter-spacing:.14em;color:var(--faint)">DATE</span><input id="wdate" type="date"></div>
+    <div class="quick" id="quick"></div>
+    <button class="savebtn" id="save">Save weight</button>
+    <button class="cancel" id="cancel">Cancel</button>
   </div>
 </div>
+<div class="toast" id="toast"></div>
 
 <script>
 /* ═══ DATA — synced from the Notion Optimization System ═══ */
@@ -642,15 +615,9 @@ const PANEL_EMOJI={"Hormonal":"⚗️","Metabolic":"🔥","Lipids":"🫀","Vitam
 const TRACK_EMOJI={"Financial":"💰","Physique":"💪","Aesthetic":"✨","Health":"🩺","Life Transition":"🏡"};
 const QDOM_EMOJI={"Health":"🩺","Physique":"💪","Aesthetic":"✨","Equipment":"🧰","Financial":"💰","Partner Health":"💞","Life Planning":"🏡"};
 const DDOM_EMOJI={"Supplements":"💊","Pharmacology":"⚕️","Nutrition":"🥩","Training":"🏋️","Skincare":"🧴","Tracking":"📊","Equipment":"🧰","Life Planning":"🏡"};
-
-const STATUS_PILL={
-  "Active":"p-green","Planned":"p-blue","Gated":"p-amber","Paused":"p-orange","Retired":"p-gray",
-  "Ruled Out":"p-red","Reduce/Cut if stacking":"p-orange",
-  "Optimal":"p-green","Suboptimal":"p-amber","Deficient/Flag":"p-red","Watch":"p-orange","Not yet tested":"p-gray",
-  "Complete":"p-green","In Progress":"p-blue","Queued":"p-gray","Blocked":"p-red",
-  "Adopted":"p-green","Deferred":"p-amber","Reversed":"p-orange",
-  "Critical":"p-red","High":"p-orange","Medium":"p-amber","Low":"p-gray","Standard":"p-gray"
-};
+const STATUS_PILL={"Active":"p-green","Planned":"p-blue","Gated":"p-amber","Paused":"p-orange","Retired":"p-gray","Ruled Out":"p-red","Reduce/Cut if stacking":"p-orange",
+  "Optimal":"p-green","Suboptimal":"p-amber","Deficient/Flag":"p-red","Watch":"p-orange","Not yet tested":"p-gray","Complete":"p-green","In Progress":"p-blue","Queued":"p-gray","Blocked":"p-red",
+  "Adopted":"p-green","Deferred":"p-amber","Reversed":"p-orange","Critical":"p-red","High":"p-orange","Medium":"p-amber","Low":"p-gray","Standard":"p-gray"};
 const TIER_PILL={"A":"p-green","B":"p-blue","C":"p-amber","N/A":"p-gray"};
 
 const PROTOCOLS=[
@@ -678,7 +645,6 @@ const PROTOCOLS=[
  {n:"Progress Photography",d:"Tracking",s:"Planned",c:"Home",f:"Weekly lips/beard, monthly physique",spec:"Same spot, same indirect daylight (not the cab), same angle and distance, no flash.",rule:"Fixed conditions or the photos are worthless — aesthetic change moves too slowly to perceive day-to-day."},
  {n:"Apple Health Sync",d:"Tracking",s:"Planned",c:"Both",f:"One-time setup",spec:"WHOOP → Settings → Integrations → Apple Health; same in Cronometer. Enables direct read of HRV, resting HR, sleep, weight, nutrition.",rule:"Free, five minutes, and the largest single upgrade to how well this system can be coached."}
 ];
-
 const SUPPS=[
  {n:"Creatine monohydrate",s:"Active",dose:"5 g daily",cat:["Foundational","Cognition"],tier:"A",timing:"Anytime",r:34,why:"Best-evidenced muscle-retention aid in a deficit. Brain saturates over 4-6 weeks.",cau:"Adds ~2 lb water weight — don't let it confuse the scale trend."},
  {n:"Whey isolate",s:"Active",dose:"3 scoops (90g) AM",cat:["Foundational"],tier:"A",timing:"With smoothie",r:33,why:"Core protein bolus; no upper limit on single-dose utilization (Trommelen 2023).",cau:"Keep cool — cab heat degrades. ~2 tubs/month."},
@@ -708,7 +674,6 @@ const SUPPS=[
  {n:"Repatha / RYR / Bergamot",s:"Ruled Out",dose:"—",cat:["Vascular"],tier:"A",timing:"N/A",r:8,why:"Lipid-lowering agents.",cau:"Contraindicated — lipids already floor-level (TC 77, LDL 30, ApoB 35), possibly familial."},
  {n:"Yohimbine / Triple X",s:"Ruled Out",dose:"—",cat:["Vascular"],tier:"C",timing:"N/A",r:7,why:"Marketed enhancer: nine actives in a honey base.",cau:"Yohimbe raises BP/HR with documented hospitalizations; unstandardized, no COA, dose unknowable. Opposes the entire vasodilator stack."}
 ];
-
 const LABS=[
  {n:"Sleep apnea (AHI)",p:"Metabolic",s:"Deficient/Flag",pr:"Critical",v:"Mild OSA confirmed",t:"AHI <5 on therapy",src:"Sleep Study",note:"GATES EVERYTHING. Untreated OSA suppresses GH/IGF-1, testosterone and insulin sensitivity. Device ordered, NOT started — the single highest-ROI action in the system."},
  {n:"Body fat % (DEXA)",p:"Body Composition",s:"Not yet tested",pr:"Critical",v:"Not yet measured",t:"Ground truth vs InBody's 20%",src:"DEXA",note:"BIGGEST INFORMATION GAP. One ~$100-150 scan settles true BF/FFMI and whether 180 lb lands at 10% or 15%. Book during a home rotation."},
@@ -728,7 +693,6 @@ const LABS=[
  {n:"ApoB",p:"Lipids",s:"Watch",pr:"Standard",v:"35 mg/dL",t:"Leave alone",src:"Marek/Quest",note:"Confirms genuinely low atherogenic particle count, not an artifact."},
  {n:"IGF-1",p:"Hormonal",s:"Not yet tested",pr:"Standard",v:"Not yet tested",t:"Age-appropriate",src:"Marek/Quest",note:"Baseline needed before any Tesamorelin start."}
 ];
-
 const GOALS=[
  {n:"Start sleep apnea device",tr:"Health",s:"In Progress",seq:null,tgt:null,det:"Device ordered, not started.",gate:"NONE — nothing blocks this. The gate for Tesamorelin and the single highest-ROI action available."},
  {n:"Reach 180 lb",tr:"Physique",s:"In Progress",seq:null,tgt:"Oct 31 '26",det:"From ~205 lb at ~18-20% BF. Calories drop to ~1,900/1,650 around 195 lb. Rate 0.5-1% bodyweight/week.",gate:"Deficit adherence + 160-176g protein daily."},
@@ -752,7 +716,6 @@ const GOALS=[
  {n:"Home ownership / homestead",tr:"Life Transition",s:"Queued",seq:null,tgt:"2030",det:"Abundant land; precedes the multi-animal household.",gate:"Trucking exit + financial milestones."},
  {n:"Multi-animal household",tr:"Life Transition",s:"Queued",seq:null,tgt:"2036",det:"Lab (F) → Aussie (M) → GSD (M) → Russian Blue → Sphynx, staggered 18-24 months.",gate:"First dog no sooner than ~6 months AFTER permanently home-based. Gate on presence, not the calendar."}
 ];
-
 const QUESTIONS=[
  {n:"When does the sleep apnea device actually start?",d:"Health",pr:"Critical",why:"Gates Tesamorelin; restores GH/IGF-1, testosterone, insulin sensitivity; fixes mouth-breathing lip dryness. The only item where the bottleneck is purely execution.",act:"Start it. Tonight if it has arrived.",blk:"Nothing. Device is ordered."},
  {n:"What is the true body fat percentage?",d:"Physique",pr:"Critical",why:"InBody said 20% but BIA carries ±3-6 pts. True value probably 22-25%. Decides whether 180 lb lands at 10% or 15% BF.",act:"Book a DEXA (~$100-150) during the next home window.",blk:"Needs a home rotation."},
@@ -771,7 +734,6 @@ const QUESTIONS=[
  {n:"Should Tesamorelin be run at all?",d:"Health",pr:"Medium",why:"All efficacy data is from lipodystrophy patients with substantial visceral fat; at 20% BF expected benefit is marginal.",act:"Revisit only after OSA is treated and post-treatment labs are in.",blk:"Apnea device must be in consistent use."},
  {n:"Should the supplement stack be trimmed?",d:"Financial",pr:"Low",why:"Quarterly bulk runs $293-450; three low-evidence items carry cost without weight.",act:"Drop candidates at next reorder: boron, maca, colostrum (~$40-60/quarter saved).",blk:"Nothing."}
 ];
-
 const DECISIONS=[
  {n:"Two meals per day (vs 3-4)",d:"Nutrition",v:"Adopted",when:"Aug 22",rea:"Fully adequate for maximum lean mass — the anabolic response to a large protein bolus shows no detectable upper limit (Trommelen 2023), and distribution meta-analyses find no effect when total protein is equated.",rev:"Only if mid-drive focus dips at hours 6-8: move eggs + avocado to a midday mini-meal."},
  {n:"No animal acquisition while OTR",d:"Life Planning",v:"Adopted",when:"Aug 22",rea:"Canine socialization window ~3-14 weeks, feline ~2-7 — both need near-daily presence; a 2-3 week absence pattern forfeits it. Earliest defensible first-dog date: ~6 months after permanently home-based.",rev:"A cat (not a dog) earlier IF the partner is genuinely the committed full-time caregiver."},
@@ -800,246 +762,335 @@ const DECISIONS=[
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const pill=(txt,cls,em)=>`<span class="pill ${cls}">${em?`<span class="em">${em}</span>`:""}${esc(txt)}</span>`;
-const sPill=(s,em)=>pill(s,STATUS_PILL[s]||"p-gray",em);
-let store={};try{store=JSON.parse(localStorage.getItem("opt-sys")||"{}")}catch(e){store={}}
-const save=()=>{try{localStorage.setItem("opt-sys",JSON.stringify(store))}catch(e){}};
+const sPill=s=>pill(s,STATUS_PILL[s]||"p-gray");
+const reduced=matchMedia("(prefers-reduced-motion: reduce)").matches;
+const todayISO=()=>{const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")};
+const parseISO=s=>{const [y,m,d]=s.split("-").map(Number);return new Date(y,m-1,d)};
+const fmtD=s=>parseISO(s).toLocaleDateString(undefined,{month:"short",day:"numeric"});
+const daysBetween=(a,b)=>Math.round((parseISO(b)-parseISO(a))/864e5);
+let toastT;function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("on");clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove("on"),2200)}
+
+/* ═══ state + persistence (artifact db → cross-device; localStorage fallback) ═══ */
+const GOAL=180, END=172, PHASE_START="2026-08-22", PHASE_END="2026-10-31";
+const BASELINE={date:"2026-08-22",lb:204.8,src:"InBody"};
+let entries={}, reviewDone={};
+try{const s=JSON.parse(localStorage.getItem("ovd-state")||"{}");entries=s.entries||{};reviewDone=s.review||{}}catch(e){}
+const persistLocal=()=>{try{localStorage.setItem("ovd-state",JSON.stringify({entries,review:reviewDone}))}catch(e){}};
+let db=null,weightRef=null,reviewRef=null;
+(async()=>{
+  try{ if(window.claude&&typeof window.claude.use==="function") db=await window.claude.use("db") }catch(e){db=null}
+  if(!db) return;
+  try{
+    weightRef=db.doc("weight/log"); reviewRef=db.doc("state/review");
+    weightRef.onSnapshot(s=>{ if(s.exists){entries=Object.assign({},s.data().entries||{});persistLocal();renderWeight()} },()=>{});
+    reviewRef.onSnapshot(s=>{ if(s.exists){reviewDone=Object.assign({},s.data().done||{});persistLocal();renderReview();renderHexes()} },()=>{});
+    $("#synced").classList.add("on"); $("#synced").title="Weight log syncs across your devices";
+  }catch(e){db=null}
+})();
+async function saveEntries(){
+  persistLocal(); renderWeight();
+  if(weightRef){ try{ await weightRef.set({entries,updatedAt:new Date().toISOString()}) }catch(e){ toast("Saved on this device only") } }
+}
+async function saveReview(){
+  persistLocal(); renderReview(); renderHexes();
+  if(reviewRef){ try{ await reviewRef.set({done:reviewDone,updatedAt:new Date().toISOString()}) }catch(e){} }
+}
 
 /* ═══ navigation ═══ */
-const TITLES={dashboard:["Dashboard","Phase 2 of 3 · cut in progress"],protocols:["Protocols","22 live · road + home"],
- supplements:["Supplements","Ranked 1–40 · evidence-tiered"],labs:["Labs & Biomarkers","June 2026 panel · retests Sept 15"],
- goals:["Goals & Milestones","13-goal financial timeline + phases"],questions:["Open Questions","Priority-ordered"],
- decisions:["Decisions Log","Every verdict, with its reversal condition"]};
-function go(view){
-  $$(".nav-item").forEach(b=>b.classList.toggle("active",b.dataset.view===view));
+const TITLES={home:"Overdrive",body:"Body",plan:"Plan",more:"More"};
+const subState={body:"weight",plan:"protocols",more:"goals"};
+function go(target){
+  const [tab,sub]=target.split(":");
+  $$(".tab").forEach(b=>b.classList.toggle("on",b.dataset.tab===tab));
   $$(".view").forEach(v=>v.classList.remove("on"));
-  const el=$("#view-"+view); el.classList.remove("on"); void el.offsetWidth; el.classList.add("on");
-  $("#viewtitle").textContent=TITLES[view][0]; $("#viewcrumb").textContent=TITLES[view][1];
-  window.scrollTo({top:0,behavior:"smooth"});
+  const el=$("#view-"+tab); void el.offsetWidth; el.classList.add("on");
+  $("#vtitle").textContent=TITLES[tab];
+  if(sub) setSub(tab,sub);
+  window.scrollTo({top:0,behavior:reduced?"auto":"smooth"});
 }
-$$(".nav-item").forEach(b=>b.addEventListener("click",()=>go(b.dataset.view)));
+function setSub(tab,sub){
+  subState[tab]=sub;
+  $$(`[data-seg="${tab}"] button`).forEach(b=>b.classList.toggle("on",b.dataset.sub===sub));
+  $$(`#view-${tab} .sub`).forEach(s=>s.classList.toggle("on",s.id===tab+"-"+sub));
+}
+$$(".tab").forEach(b=>b.addEventListener("click",()=>go(b.dataset.tab)));
+$$(".seg").forEach(seg=>seg.addEventListener("click",e=>{const b=e.target.closest("button");if(b)setSub(seg.dataset.seg,b.dataset.sub)}));
 document.addEventListener("click",e=>{const g=e.target.closest("[data-go]");if(g)go(g.dataset.go)});
 
-/* ═══ hero chart ═══ */
-const CHART_SETS={
-  p1:{pts:[[0,213],[.2,210],[.45,207],[.7,203],[.85,199],[1,197]],cur:1,lab:"197 lb",yr:[190,215],cap:["May","Jun","Jul","Aug 22"],goal:196,done:true},
-  p2:{pts:[[0,204.8],[.08,204.1],[.16,203.4],[.24,202.2],[.30,202.8],[.38,201.3]],proj:[[.38,201.3],[1,180]],cur:.38,lab:"204.8 → 201 lb",yr:[176,208],cap:["Aug 22","Sep","Oct","Oct 31"],goal:180},
-  all:{pts:[[0,213],[.18,205],[.30,197],[.36,204.8],[.44,201.3]],proj:[[.44,201.3],[.66,180],[1,172]],cur:.44,lab:"201 lb",yr:[168,216],cap:["P1","P2","End state","2027"],goal:172}
-};
-function drawChart(key){
-  const c=CHART_SETS[key],W=560,H=190,P=8;
-  const X=t=>P+t*(W-2*P), Y=v=>P+ (1-(v-c.yr[0])/(c.yr[1]-c.yr[0]))*(H-2*P-24);
-  const path=pts=>pts.map((p,i)=>(i?"L":"M")+X(p[0]).toFixed(1)+" "+Y(p[1]).toFixed(1)).join(" ");
-  const last=c.pts[c.pts.length-1];
-  let svg=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Weight trajectory chart">
-    <defs>
-      <linearGradient id="lg${key}" x1="0" y1="0" x2="1" y2="0">
-        <stop offset="0" stop-color="#F0A840"/><stop offset=".6" stop-color="#E8763C"/><stop offset="1" stop-color="#E24A3B"/>
-      </linearGradient>
-      <linearGradient id="fg${key}" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stop-color="rgba(232,118,60,.18)"/><stop offset="1" stop-color="rgba(232,118,60,0)"/>
-      </linearGradient>
-    </defs>
-    <line x1="${P}" y1="${Y(c.goal)}" x2="${W-P}" y2="${Y(c.goal)}" stroke="#4C2429" stroke-dasharray="3 5" stroke-width="1.5"/>
-    <text x="${W-P}" y="${Y(c.goal)-6}" text-anchor="end" fill="#7C5F58" font-size="10" font-weight="700" font-family="Outfit,sans-serif">${c.goal} lb ${c.done?"· done":"target"}</text>`;
-  if(c.proj) svg+=`<path d="${path(c.proj)}" fill="none" stroke="#5C3034" stroke-width="2.5" stroke-dasharray="1 7" stroke-linecap="round"/>`;
-  svg+=`<path d="${path(c.pts)} L ${X(last[0])} ${H-P} L ${X(c.pts[0][0])} ${H-P} Z" fill="url(#fg${key})" stroke="none"/>
-    <path class="mainline" d="${path(c.pts)}" fill="none" stroke="url(#lg${key})" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
-    <circle cx="${X(last[0])}" cy="${Y(last[1])}" r="5" fill="#E24A3B" stroke="#120B0D" stroke-width="2.5"/>
-    <g font-family="Outfit,sans-serif" font-size="10" font-weight="700" fill="#7C5F58">
-      ${c.cap.map((t,i)=>`<text x="${X(i/(c.cap.length-1))}" y="${H-2}" text-anchor="${i==0?"start":i==c.cap.length-1?"end":"middle"}">${t}</text>`).join("")}
-    </g></svg>
-    <div class="badge" style="left:${(X(last[0])/W*100).toFixed(1)}%;top:${(Y(last[1])/H*100).toFixed(1)}%">${c.lab}</div>`;
+/* ═══ range pill ═══ */
+const RANGES=[{k:"p1",lab:"May → Aug 22"},{k:"p2",lab:"Aug 22 → Oct 31"},{k:"all",lab:"P1 → 2027"}];
+let ri=1;
+function setRange(i){ri=(i+RANGES.length)%RANGES.length;$("#rlab").textContent=RANGES[ri].lab;$("#rlab2").textContent=RANGES[ri].lab;drawChart()}
+$("#rprev").addEventListener("click",()=>setRange(ri-1));$("#rnext").addEventListener("click",()=>setRange(ri+1));
+
+/* ═══ weight math ═══ */
+function series(){
+  const arr=Object.entries(entries).map(([date,lb])=>({date,lb:+lb})).sort((a,b)=>a.date<b.date?-1:1);
+  return arr;
+}
+function current(){const s=series();return s.length?{...s[s.length-1],src:"logged"}:{...BASELINE}}
+function pace(){ // lb/week over the last ~14 days (falls back to baseline)
+  const s=series(); if(!s.length) return null;
+  const last=s[s.length-1]; let ref=null;
+  for(let i=s.length-2;i>=0;i--){ if(daysBetween(s[i].date,last.date)>=6){ref=s[i];break} }
+  if(!ref){ if(daysBetween(BASELINE.date,last.date)>=6) ref=BASELINE; else return null }
+  const days=daysBetween(ref.date,last.date); return (ref.lb-last.lb)/days*7;
+}
+function renderWeight(){
+  const cur=current(), s=series(), togo=cur.lb-GOAL;
+  $("#hw").innerHTML=cur.lb.toFixed(1)+"<small>lb</small>";
+  $("#htogo").textContent=togo>0?togo.toFixed(1)+" lb to go":"Target reached ✓";
+  $("#hsrc").textContent=cur.src==="logged"?"Logged "+fmtD(cur.date)+(cur.date===todayISO()?" · today":""):"InBody baseline · Aug 22 — log today's weight";
+  // stars in blob
+  if(!$("#stars").childElementCount){let h="";for(let i=0;i<70;i++){const a=Math.random()*Math.PI*2,r=40+Math.random()*78,x=130+Math.cos(a)*r,y=132+Math.sin(a)*r;h+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${(Math.random()*1.6+.4).toFixed(1)}" opacity="${(Math.random()*.7+.2).toFixed(2)}"/>`}$("#stars").innerHTML=h}
+  // cut progress %
+  const total=BASELINE.lb-GOAL, done=Math.max(0,Math.min(total,BASELINE.lb-cur.lb)), pct=Math.round(done/total*100);
+  $("#pctv").textContent=pct+"%"; $("#pctarc").style.transition="stroke-dashoffset 1s ease"; $("#pctarc").style.strokeDashoffset=(75.4*(1-pct/100)).toFixed(1);
+  $("#r-cut-v").textContent=togo>0?togo.toFixed(1):"✓"; const rc=$("#r-cut"); rc.style.transition="stroke-dashoffset 1.2s cubic-bezier(.22,.8,.3,1)"; rc.style.strokeDashoffset=(276.5*(1-Math.max(pct/100,.02))).toFixed(1);
+  $("#p2bar").style.width=pct+"%";
+  // pace
+  const p=pace(), chip=$("#pacechip");
+  if(p===null){$("#paceval").textContent="—";chip.textContent="Need 2 entries ≥6 days apart";chip.className="chipnote warn";$("#pacenote").textContent="Log a few mornings and the pace of cut will compute here."}
+  else{
+    const pct2=p/cur.lb*100; $("#paceval").textContent=(p>=0?"−":"+")+Math.abs(p).toFixed(1)+" lb/wk";
+    const eta=p>0?Math.ceil(togo/p):null;
+    const inBand=pct2>=.5&&pct2<=1.0;
+    chip.textContent=inBand?"● on pace · "+pct2.toFixed(2)+"%/wk":pct2<.5?"▼ slow · "+pct2.toFixed(2)+"%/wk":"▲ fast · "+pct2.toFixed(2)+"%/wk";
+    chip.className="chipnote"+(inBand?"":pct2<.5?" warn":" bad");
+    $("#pacenote").textContent=eta?`At this pace, 180 lb lands in ~${eta} week${eta===1?"":"s"} (${new Date(Date.now()+eta*7*864e5).toLocaleDateString(undefined,{month:"short",day:"numeric"})}). Target: mid-late Oct.`:"Not losing at the moment — check the deficit and protein floor.";
+  }
+  // ticks: 0..3 lb/wk across 60 ticks; band 1.0–2.0
+  const T=60,pos=p===null?null:Math.max(0,Math.min(1,p/3));
+  let th="";for(let i=0;i<T;i++){const f=i/(T-1);const band=f>=1/3&&f<=2/3;let cls=band?"band":"";if(pos!==null){const d=Math.abs(f-pos);if(d<.012)cls="hot";else if(d<.05)cls="near"}th+=`<i class="${cls}"></i>`}
+  if(pos!==null)th+=`<div class="marker" style="left:${(pos*100).toFixed(1)}%"></div>`;
+  $("#ticks").innerHTML=th;
+  // calendar strip
+  const today=todayISO();let ch="",cnt=0;
+  for(let i=13;i>=0;i--){const d=new Date(Date.now()-i*864e5);const iso=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");const has=entries[iso]!=null;if(has)cnt++;
+    ch+=`<div class="d"><span>${"SMTWTFS"[d.getDay()]}</span><span class="dot ${has?"has":""} ${iso===today?"today":""}" data-day="${iso}" title="${iso}${has?" · "+entries[iso]+" lb":""}">${d.getDate()}</span></div>`}
+  $("#cal").innerHTML=ch;$("#calcount").textContent=cnt+" of 14 logged";
+  // progression bars
+  const vd=23,vdT=40, ffmi=23.8;
+  $("#prog").innerHTML=[
+    ["Weight",pct,`${cur.lb.toFixed(1)} → ${GOAL}`,"linear-gradient(90deg,#F0A840,#E24A3B)"],
+    ["Protein",100,"184 / 176 g","var(--green)"],
+    ["FFMI",Math.round((ffmi-18)/(25-18)*100),"23.8 / 25","var(--gold)"],
+    ["Vitamin D",Math.round(vd/vdT*100),"23 → 40 ng/mL","var(--ember)"],
+    ["Apnea",reviewDone.apnea?100:0,reviewDone.apnea?"started ✓":"not started","var(--red)"]
+  ].map(([n,v,t,c])=>`<div class="r"><span class="n">${n}</span><span class="track"><i data-w="${v}" style="background:${c}"></i></span><span class="v">${t}</span></div>`).join("");
+  requestAnimationFrame(()=>setTimeout(()=>$$("#prog .track i").forEach(el=>el.style.width=el.dataset.w+"%"),60));
+  // log list
+  const rows=[...s].reverse();
+  $("#log").innerHTML=rows.length?rows.map((e,i)=>{const prev=rows[i+1]||BASELINE;const dl=e.lb-prev.lb;
+    return `<div class="logrow"><span class="dt">${fmtD(e.date)}</span><span class="w">${e.lb.toFixed(1)} <small style="font-size:11px;color:var(--faint)">lb</small></span><span class="dl" style="color:${dl<0?"var(--green)":dl>0?"var(--red)":"var(--faint)"}">${dl>0?"+":""}${dl.toFixed(1)}</span><button class="x" data-del="${e.date}" title="Delete">✕</button></div>`}).join("")
+    :`<div class="empty">No entries yet — tap ⚖️ to log this morning's weight.<br><span style="font-size:11px">Baseline: 204.8 lb (InBody, Aug 22)</span></div>`;
+  drawChart(); renderHexes();
+}
+$("#log").addEventListener("click",e=>{const b=e.target.closest("[data-del]");if(!b)return;delete entries[b.dataset.del];saveEntries();toast("Entry removed")});
+$("#cal").addEventListener("click",e=>{const d=e.target.closest("[data-day]");if(d)openSheet(d.dataset.day)});
+
+/* ═══ chart ═══ */
+function drawChart(){
+  const W=560,H=200,P=10,PB=22, key=RANGES[ri].k, s=series();
+  let pts=[], proj=[], x0, x1, yr, caps;
+  const toT=(d,a,b)=>daysBetween(a,d)/daysBetween(a,b);
+  if(key==="p1"){pts=[[0,213],[.2,210],[.45,207],[.7,203],[.85,199],[1,197]];yr=[190,216];caps=["May","Jun","Jul","Aug 22"];x0=null}
+  else{
+    const a=key==="p2"?PHASE_START:"2026-05-01", b=key==="p2"?PHASE_END:"2027-06-30";
+    const all=[BASELINE,...s].filter(e=>e.date>=a&&e.date<=b);
+    pts=all.map(e=>[toT(e.date,a,b),e.lb]);
+    if(key==="all"){pts=[[0,213],[toT("2026-07-15",a,b),203],...pts]}
+    const cur=current(); const last=pts[pts.length-1];
+    // projection: dashed from last point to goal at phase end (and to END in ALL)
+    proj=key==="p2"?[last,[1,GOAL]]:[last,[toT(PHASE_END,a,b),GOAL],[1,END]];
+    const lows=pts.map(p=>p[1]).concat([GOAL,key==="all"?END:GOAL]); yr=[Math.min(...lows)-4,Math.max(...pts.map(p=>p[1]))+4];
+    caps=key==="p2"?["Aug 22","Sep","Oct","Oct 31"]:["May","Oct 31","2027",""];
+  }
+  const X=t=>P+t*(W-2*P), Y=v=>P+(1-(v-yr[0])/(yr[1]-yr[0]))*(H-P-PB);
+  const path=a=>a.map((p,i)=>(i?"L":"M")+X(p[0]).toFixed(1)+" "+Y(p[1]).toFixed(1)).join(" ");
+  const last=pts[pts.length-1], goalV=key==="all"?END:GOAL;
+  const grid=[0,.25,.5,.75,1].map(f=>`<line x1="${P}" x2="${W-P}" y1="${(P+f*(H-P-PB)).toFixed(1)}" y2="${(P+f*(H-P-PB)).toFixed(1)}" stroke="#2B171B" stroke-width="1"/>`).join("")
+    +[0,.25,.5,.75,1].map(f=>`<line y1="${P}" y2="${H-PB}" x1="${X(f).toFixed(1)}" x2="${X(f).toFixed(1)}" stroke="#2B171B" stroke-width="1"/>`).join("");
+  let svg=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Weight trend">
+    <defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#F0A840"/><stop offset=".6" stop-color="#E8763C"/><stop offset="1" stop-color="#E24A3B"/></linearGradient>
+    <linearGradient id="fg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="rgba(232,118,60,.28)"/><stop offset="1" stop-color="rgba(232,118,60,0)"/></linearGradient></defs>
+    ${grid}
+    <line x1="${P}" y1="${Y(goalV)}" x2="${W-P}" y2="${Y(goalV)}" stroke="#5C3034" stroke-dasharray="3 5" stroke-width="1.5"/>
+    <text x="${W-P}" y="${Y(goalV)-6}" text-anchor="end" fill="#7C5F58" font-size="10" font-weight="700" font-family="Outfit,sans-serif">${goalV} lb ${key==="p1"?"":"target"}</text>`;
+  if(proj.length) svg+=`<path d="${path(proj)}" fill="none" stroke="#7C4A4E" stroke-width="2.5" stroke-dasharray="1 7" stroke-linecap="round"/>`;
+  svg+=`<path d="${path(pts)} L ${X(last[0])} ${H-PB} L ${X(pts[0][0])} ${H-PB} Z" fill="url(#fg)"/>
+    <path class="mainline" d="${path(pts)}" fill="none" stroke="url(#lg)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+    ${pts.length<40?pts.map(p=>`<circle cx="${X(p[0])}" cy="${Y(p[1])}" r="3" fill="#120B0D" stroke="#F0A840" stroke-width="2"/>`).join(""):""}
+    <circle cx="${X(last[0])}" cy="${Y(last[1])}" r="5.5" fill="#E24A3B" stroke="#120B0D" stroke-width="2.5"/>
+    <g font-family="Outfit,sans-serif" font-size="10" font-weight="700" fill="#7C5F58">${caps.map((t,i)=>`<text x="${X(i/(caps.length-1))}" y="${H-3}" text-anchor="${i==0?"start":i==caps.length-1?"end":"middle"}">${t}</text>`).join("")}</g>
+    </svg><div class="badge" style="left:${(X(last[0])/W*100).toFixed(1)}%;top:${(Y(last[1])/H*100).toFixed(1)}%">${last[1].toFixed(1)} lb</div>`;
   $("#chart").innerHTML=svg;
   const line=$("#chart .mainline");
-  if(line&&!matchMedia("(prefers-reduced-motion: reduce)").matches){
-    const len=line.getTotalLength();
-    line.style.strokeDasharray=len; line.style.strokeDashoffset=len;
-    line.animate([{strokeDashoffset:len},{strokeDashoffset:0}],{duration:1100,easing:"cubic-bezier(.3,.7,.3,1)",fill:"forwards"});
-  }
+  if(line&&!reduced){const len=line.getTotalLength();line.style.strokeDasharray=len;line.style.strokeDashoffset=len;line.animate([{strokeDashoffset:len},{strokeDashoffset:0}],{duration:1000,easing:"cubic-bezier(.3,.7,.3,1)",fill:"forwards"})}
 }
-$("#ranges").addEventListener("click",e=>{
-  const b=e.target.closest("button"); if(!b)return;
-  $$("#ranges button").forEach(x=>x.classList.toggle("on",x===b)); drawChart(b.dataset.r);
-});
-drawChart("p2");
-requestAnimationFrame(()=>setTimeout(()=>{$("#ffmibar").style.transition="width 1.1s cubic-bezier(.22,.8,.3,1)";$("#ffmibar").style.width=((23.8-18)/(25-18)*100)+"%"},80));
 
-/* ═══ dashboard: to review ═══ */
+/* ═══ log sheet ═══ */
+function openSheet(date){
+  const cur=current(); $("#wdate").value=date||todayISO(); $("#wdate").max=todayISO();
+  $("#win").value=(entries[$("#wdate").value]??cur.lb).toFixed(1);
+  $("#quick").innerHTML=[-1,-.5,-.2,+.2,+.5,+1].map(d=>`<button data-q="${d}">${d>0?"+":""}${d}</button>`).join("");
+  $("#sheetsub").textContent=entries[$("#wdate").value]!=null?"Editing "+fmtD($("#wdate").value):"Morning, after bathroom, before food.";
+  $("#sheetbg").classList.add("on"); setTimeout(()=>{$("#win").focus();$("#win").select()},80);
+}
+const closeSheet=()=>$("#sheetbg").classList.remove("on");
+document.addEventListener("click",e=>{if(e.target.closest("[data-log]"))openSheet()});
+$("#cancel").addEventListener("click",closeSheet);$("#sheetbg").addEventListener("click",e=>{if(e.target.id==="sheetbg")closeSheet()});
+$("#minus").addEventListener("click",()=>{$("#win").value=(parseFloat($("#win").value||0)-.1).toFixed(1)});
+$("#plus").addEventListener("click",()=>{$("#win").value=(parseFloat($("#win").value||0)+.1).toFixed(1)});
+$("#quick").addEventListener("click",e=>{const b=e.target.closest("[data-q]");if(b)$("#win").value=(parseFloat($("#win").value||0)+parseFloat(b.dataset.q)).toFixed(1)});
+$("#wdate").addEventListener("change",()=>{const v=entries[$("#wdate").value];if(v!=null){$("#win").value=(+v).toFixed(1);$("#sheetsub").textContent="Editing "+fmtD($("#wdate").value)}});
+$("#save").addEventListener("click",()=>{
+  const v=parseFloat($("#win").value), d=$("#wdate").value;
+  if(!(v>=100&&v<=400)||!d){toast("Enter a weight between 100 and 400 lb");return}
+  entries[d]=Math.round(v*10)/10; saveEntries(); closeSheet();
+  toast(`Logged ${entries[d].toFixed(1)} lb · ${fmtD(d)}`); go("body:weight");
+});
+$("#win").addEventListener("keydown",e=>{if(e.key==="Enter")$("#save").click()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeSheet()});
+
+/* ═══ home: review + upcoming + top supps ═══ */
 const REVIEW=[
-  {id:"apnea",day:"Blocking",n:"Start the sleep apnea device",tag:"🩺 HEALTH · CRITICAL",amt:"gates all"},
-  {id:"dexa",day:"Blocking",n:"Book the DEXA scan",tag:"💪 PHYSIQUE · CRITICAL",amt:"~$100–150"},
-  {id:"derm",day:"Blocking",n:"Dermatology — lip spots (safety gate)",tag:"✨ AESTHETIC · CRITICAL",amt:"home rotation"},
-  {id:"zinc",day:"Quick wins",n:"Zinc → daily, not 3-4×/week",tag:"💊 SUPPLEMENTS",amt:"today"},
-  {id:"sync",day:"Quick wins",n:"Enable Apple Health sync (WHOOP + Cronometer)",tag:"📊 TRACKING",amt:"5 min"}
+  {id:"apnea",day:"Blocking",n:"Start the sleep apnea device",amt:"gates all"},
+  {id:"dexa",day:"Blocking",n:"Book the DEXA scan",amt:"~$100–150"},
+  {id:"derm",day:"Blocking",n:"Dermatology — lip spots (safety gate)",amt:"home rotation"},
+  {id:"zinc",day:"Quick wins",n:"Zinc → daily, not 3-4×/week",amt:"today"},
+  {id:"sync",day:"Quick wins",n:"Enable Apple Health sync (WHOOP + Cronometer)",amt:"5 min"}
 ];
 function renderReview(){
-  let html="",lastDay="";
-  REVIEW.forEach(r=>{
-    if(r.day!==lastDay){html+=`<div class="day">${r.day}</div>`;lastDay=r.day}
-    const done=!!store["rev-"+r.id];
-    html+=`<div class="rowitem ${done?"done":""}" data-rev="${r.id}">
-      <span class="cbox">✓</span><span class="nm">${esc(r.n)}</span><span class="amt">${esc(r.amt)}</span></div>`;
-  });
+  let html="",last="";
+  REVIEW.forEach(r=>{if(r.day!==last){html+=`<div class="day">${r.day}</div>`;last=r.day}
+    html+=`<div class="rowitem ${reviewDone[r.id]?"done":""}" data-rev="${r.id}"><span class="cbox">✓</span><span class="nm">${esc(r.n)}</span><span class="amt">${esc(r.amt)}</span></div>`});
   $("#revlist").innerHTML=html;
-  const left=REVIEW.filter(r=>!store["rev-"+r.id]).length;
-  $("#markall").innerHTML=left?`✓ Mark ${left} as reviewed`:"All reviewed — nice.";
+  const left=REVIEW.filter(r=>!reviewDone[r.id]).length; $("#markall").textContent=left?`✓ Mark ${left} as reviewed`:"All reviewed — nice.";
+  // apnea ring on home
+  const ap=!!reviewDone.apnea, ring=$$("#view-home .bigring")[2];
+  ring.querySelector(".ctr .v").textContent=ap?"ON":"OFF"; ring.querySelector(".ctr .v").style.color=ap?"var(--green)":"var(--red)";
+  const arc=ring.querySelector(".arc"); arc.style.stroke=ap?"var(--green)":"var(--red)"; arc.style.transition="stroke-dashoffset 1s ease"; arc.style.strokeDashoffset=ap?"0":"265";
+  const mon=$$("#view-home .monitor")[0]; mon.querySelector(".sq").textContent=ap?"✓":"—"; mon.querySelector(".sq").style.background=ap?"var(--green-soft)":"var(--red-soft)"; mon.querySelector(".sq").style.color=ap?"var(--green)":"var(--red)";
+  mon.querySelector(".lbl").innerHTML=ap?"Apnea device<small>Started · keep it nightly</small>":"Apnea device<small>Not started · gates all</small>";
 }
-$("#revlist").addEventListener("click",e=>{
-  const row=e.target.closest("[data-rev]");if(!row)return;
-  store["rev-"+row.dataset.rev]=!store["rev-"+row.dataset.rev];save();renderReview();
-});
-$("#markall").addEventListener("click",()=>{REVIEW.forEach(r=>store["rev-"+r.id]=true);save();renderReview()});
-renderReview();
-
-/* ═══ dashboard: top supplements ═══ */
-const BARCOLORS=["#E24A3B","#F0A840","#E8763C","#6D87D8","#A98BD8","#E87C93","#5BC77E"];
-(function(){
-  const top=SUPPS.filter(s=>s.s==="Active"||s.s==="Planned").slice(0,7);
-  $("#topsupp").innerHTML=top.map((s,i)=>`
-    <div class="bar-row" data-go="supplements">
-      <span class="rk">${i+1}</span>
-      <span class="nm"><span class="em">${CAT_EMOJI[s.cat[0]]||"💊"}</span><span class="txt">${esc(s.n)}</span></span>
-      <span class="v">${s.r}<span style="color:var(--faint);font-size:11px">/40</span></span>
-      <span class="track"><i data-w="${(s.r/40*100).toFixed(0)}" style="background:${BARCOLORS[i%BARCOLORS.length]}"></i></span>
-    </div>`).join("");
-  requestAnimationFrame(()=>setTimeout(()=>$$("#topsupp .track i").forEach(el=>el.style.width=el.dataset.w+"%"),120));
-})();
-
-/* ═══ dashboard: rings ═══ */
-const RINGS=[
-  {em:"😴",v:0.06,col:"var(--red)",rv:"Not started",rl:"Sleep apnea device"},
-  {em:"🥩",v:0.96,col:"var(--green)",rv:"184 g",rl:"Protein · on plan"},
-  {em:"⚖️",v:0.15,col:"var(--gold)",rv:"3.5 / 24.8 lb",rl:"Phase-2 cut"},
-  {em:"🔬",v:0.0,col:"var(--ember)",rv:"Unbooked",rl:"DEXA ground truth"},
-  {em:"🧠",v:0.62,col:"var(--gold)",rv:"Amber",rl:"Execution > research"}
-];
-(function(){
-  const R=32,C=2*Math.PI*R;
-  $("#rings").innerHTML=RINGS.map((r,i)=>`
-    <div class="ring" data-go="protocols">
-      <div class="ringviz">
-        <svg width="76" height="76" viewBox="0 0 76 76">
-          <circle cx="38" cy="38" r="${R}" fill="none" stroke="#2E181C" stroke-width="6"/>
-          <circle class="arc" cx="38" cy="38" r="${R}" fill="none" stroke="${r.col}" stroke-width="6"
-            stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C}" data-off="${(C*(1-Math.max(r.v,.02))).toFixed(1)}"/>
-        </svg>
-        <span class="em">${r.em}</span>
-      </div>
-      <span class="rv num" style="color:${r.col}">${r.rv}</span>
-      <span class="rl">${r.rl}</span>
-    </div>`).join("");
-  requestAnimationFrame(()=>setTimeout(()=>$$("#rings .arc").forEach(a=>{
-    a.style.transition="stroke-dashoffset 1.2s cubic-bezier(.22,.8,.3,1)";a.style.strokeDashoffset=a.dataset.off;
-  }),150));
-})();
-
-/* ═══ dashboard: upcoming ═══ */
+$("#revlist").addEventListener("click",e=>{const row=e.target.closest("[data-rev]");if(!row)return;reviewDone[row.dataset.rev]=!reviewDone[row.dataset.rev];saveReview()});
+$("#markall").addEventListener("click",()=>{REVIEW.forEach(r=>reviewDone[r.id]=true);saveReview()});
 $("#uplist").innerHTML=[
-  {dt:"Sep 15",em:"🩸",n:"Marek retest — SHBG · insulin · E2 · D · homocysteine",tag:"Labs",amt:"8am draw"},
-  {dt:"Oct 31",em:"⚖️",n:"Phase 2 target — 180 lb",tag:"Physique",amt:"−21 lb"},
-  {dt:"Home",em:"🔬",n:"DEXA scan during next rotation",tag:"Health",amt:"$100–150"},
-  {dt:"Home",em:"🩺",n:"Dermatology — lip macules (safety gate)",tag:"Health",amt:"dermoscopy"},
-  {dt:"2027",em:"🏁",n:"End state — 170-175 lb · sub-10% BF",tag:"Physique",amt:"FFMI ~23"}
-].map(u=>`<div class="uprow"><span class="dt">${u.dt}</span><span class="em">${u.em}</span>
-  <span class="nm">${esc(u.n)}</span><span class="tag">${u.tag}</span><span class="amt">${esc(u.amt)}</span></div>`).join("");
+  {dt:"Sep 15",em:"🩸",n:"Marek retest — SHBG · insulin · E2 · D",amt:"8am draw"},
+  {dt:"Oct 31",em:"⚖️",n:"Phase 2 target — 180 lb",amt:"−21 lb"},
+  {dt:"Home",em:"🔬",n:"DEXA scan during next rotation",amt:"$100–150"},
+  {dt:"Home",em:"🩺",n:"Dermatology — lip macules",amt:"dermoscopy"},
+  {dt:"2027",em:"🏁",n:"End state — 170-175 lb · sub-10%",amt:"FFMI ~23"}
+].map(u=>`<div class="uprow"><span class="dt">${u.dt}</span><span class="em">${u.em}</span><span class="nm">${esc(u.n)}</span><span class="amt">${esc(u.amt)}</span></div>`).join("");
+const BARCOLORS=["#E24A3B","#F0A840","#E8763C","#6D87D8","#A98BD8"];
+$("#topsupp").innerHTML=SUPPS.filter(s=>s.s==="Active"||s.s==="Planned").slice(0,5).map((s,i)=>`
+  <div class="bar-row" data-go="plan:supplements"><span class="rk">${i+1}</span><span class="nm"><span>${CAT_EMOJI[s.cat[0]]||"💊"}</span><span class="txt">${esc(s.n)}</span></span>
+  <span class="v">${s.r}<span style="color:var(--faint);font-size:10px">/40</span></span><span class="track"><i data-w="${(s.r/40*100).toFixed(0)}" style="background:${BARCOLORS[i]}"></i></span></div>`).join("");
+requestAnimationFrame(()=>setTimeout(()=>{$$("#topsupp .track i").forEach(el=>el.style.width=el.dataset.w+"%");$$("#view-home .arc[data-off]").forEach(a=>{a.style.transition="stroke-dashoffset 1.2s cubic-bezier(.22,.8,.3,1)";a.style.strokeDashoffset=a.dataset.off})},120));
 
-/* ═══ list view builder ═══ */
+/* ═══ gauge · donut · radar ═══ */
+(function(){ // FFMI gauge 18→25, needle at 23.8
+  const v=23.8,min=18,max=25,f=(v-min)/(max-min); const cx=100,cy=100,r=80; const ang=a=>Math.PI+a*Math.PI;
+  const arc=(a0,a1,col,w)=>{const x0=cx+r*Math.cos(ang(a0)),y0=cy+r*Math.sin(ang(a0)),x1=cx+r*Math.cos(ang(a1)),y1=cy+r*Math.sin(ang(a1));return `<path d="M${x0} ${y0} A${r} ${r} 0 0 1 ${x1} ${y1}" fill="none" stroke="${col}" stroke-width="${w}" stroke-linecap="round"/>`};
+  const nx=cx+(r-14)*Math.cos(ang(f)),ny=cy+(r-14)*Math.sin(ang(f));
+  $("#gauge").innerHTML=`<svg viewBox="0 0 200 116">${arc(0,1,"#2E181C",12)}${arc(0,.5,"#5BC77E",12)}${arc(.5,.82,"#F0A840",12)}${arc(.82,1,"#E24A3B",12)}
+    <line x1="${cx}" y1="${cy}" x2="${nx}" y2="${ny}" stroke="#F5E9DC" stroke-width="3.5" stroke-linecap="round"/><circle cx="${cx}" cy="${cy}" r="6" fill="#F5E9DC"/>
+    <text x="14" y="112" font-size="10" font-weight="700" fill="#7C5F58" font-family="Outfit">18</text><text x="186" y="112" text-anchor="end" font-size="10" font-weight="700" fill="#7C5F58" font-family="Outfit">25</text></svg>
+    <div class="ctr"><div class="v">23.8</div><div class="u">FFMI · ceiling ≈ 25</div></div>`;
+})();
+(function(){ // donut: 915 / 900 kcal
+  const C=2*Math.PI*54, a=915/1815, seg=(off,len,col)=>`<circle cx="75" cy="75" r="54" fill="none" stroke="${col}" stroke-width="16" stroke-dasharray="${(len*C).toFixed(1)} ${C}" stroke-dashoffset="${(-off*C).toFixed(1)}" stroke-linecap="butt"/>`;
+  $("#donut").innerHTML=`<svg viewBox="0 0 150 150" style="transform:rotate(-90deg)">${seg(0,1,"#2E181C")}${seg(0,a,"#F0A840")}${seg(a,1-a-.005,"#E8763C")}</svg>
+  <div style="position:relative;margin-top:-96px;text-align:center;height:60px"><div class="num" style="font-size:22px">1,815</div><div style="font-size:9.5px;font-weight:800;letter-spacing:.12em;color:var(--faint)">KCAL / DAY</div></div>`;
+})();
+(function(){ // radar: active share per domain
+  const doms=[["Training","🏋️"],["Nutrition","🥩"],["Sleep","😴"],["Skin","🧴"],["Recovery","🔋"],["Mind","🧠"],["Tracking","📊"]];
+  const map={"Training":"Training","Nutrition":"Nutrition","Sleep":"Sleep/Environment","Skin":"Skincare","Recovery":"Recovery","Mind":"Cognition","Tracking":"Tracking"};
+  const val=doms.map(([n])=>{const ps=PROTOCOLS.filter(p=>p.d===map[n]||(n==="Skin"&&p.d==="Lip"));const sc=ps.reduce((a,p)=>a+(p.s==="Active"?1:p.s==="Planned"?.4:0),0)/Math.max(ps.length,1);return {n,v:sc,c:ps.length}});
+  const cx=75,cy=75,R=58,N=doms.length; const pt=(i,f)=>{const a=-Math.PI/2+i*2*Math.PI/N;return [cx+R*f*Math.cos(a),cy+R*f*Math.sin(a)]};
+  const ring=f=>"M"+doms.map((_,i)=>pt(i,f).map(x=>x.toFixed(1)).join(" ")).join(" L")+" Z";
+  const poly="M"+val.map((d,i)=>pt(i,Math.max(d.v,.08)).map(x=>x.toFixed(1)).join(" ")).join(" L")+" Z";
+  $("#radar").innerHTML=`<svg viewBox="0 0 150 150">${[.25,.5,.75,1].map(f=>`<path d="${ring(f)}" fill="none" stroke="#2E181C" stroke-width="1"/>`).join("")}
+    ${doms.map((_,i)=>{const [x,y]=pt(i,1);return `<line x1="${cx}" y1="${cy}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="#2E181C"/>`}).join("")}
+    <path d="${poly}" fill="rgba(226,74,59,.28)" stroke="#E24A3B" stroke-width="2" stroke-linejoin="round"/>
+    ${val.map((d,i)=>{const [x,y]=pt(i,Math.max(d.v,.08));return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3" fill="#F0A840"/>`}).join("")}
+    ${doms.map(([n,e],i)=>{const [x,y]=pt(i,1.18);return `<text x="${x.toFixed(1)}" y="${(y+4).toFixed(1)}" text-anchor="middle" font-size="11">${e}</text>`}).join("")}</svg>`;
+  $("#radarleg").innerHTML=val.map(d=>`<div><i style="background:${d.v>=.8?"var(--green)":d.v>=.5?"var(--gold)":"var(--red)"}"></i>${d.n} <b>${Math.round(d.v*100)}%</b> <span style="font-size:10.5px;color:var(--faint)">· ${d.c}</span></div>`).join("");
+})();
+
+/* ═══ milestone hex badges ═══ */
+function renderHexes(){
+  const minW=Math.min(BASELINE.lb,...series().map(e=>e.lb));
+  const H=[
+    {n:"Debt cleared",s:"Apr 14",ok:true,em:"💰"},
+    {n:"Phase 1",s:"197 lb",ok:true,em:"🏁"},
+    {n:"Under 200",s:"first log <200",ok:minW<200,em:"⚖️"},
+    {n:"190 club",s:"<190 lb",ok:minW<190,em:"🔥"},
+    {n:"Phase 2",s:"180 lb",ok:minW<=180,em:"🎯"},
+    {n:"Apnea on",s:"device started",ok:!!reviewDone.apnea,em:"😴"},
+    {n:"DEXA",s:"ground truth",ok:!!reviewDone.dexa,em:"🔬"},
+    {n:"Derm cleared",s:"lip macules",ok:!!reviewDone.derm,em:"🩺"},
+    {n:"14-day streak",s:"logged daily",ok:(()=>{for(let i=0;i<14;i++){const d=new Date(Date.now()-i*864e5);const iso=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");if(entries[iso]==null)return false}return true})(),em:"📅"}
+  ];
+  const hex="M36 4 L64 20 L64 52 L36 68 L8 52 L8 20 Z";
+  $("#hexes").innerHTML=H.map((h,i)=>`<div class="hex ${h.ok?"":"locked"}"><svg viewBox="0 0 72 72">
+    ${h.ok?`<defs><linearGradient id="hg${i}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${["#E24A3B","#F0A840","#E8763C","#6D87D8","#A98BD8","#5BC77E","#4FC3B8","#E87C93","#F0A840"][i]}"/><stop offset="1" stop-color="#E24A3B"/></linearGradient></defs><path d="${hex}" fill="url(#hg${i})" stroke="rgba(245,233,220,.25)" stroke-width="1.5"/>`
+      :`<path d="${hex}" fill="rgba(23,13,16,.6)" stroke="#5C3034" stroke-width="1.5" stroke-dasharray="4 3"/>`}
+    <text x="36" y="43" text-anchor="middle" font-size="22" opacity="${h.ok?1:.35}">${h.em}</text></svg>
+    <div class="n">${h.n}</div><div class="s">${h.s}</div></div>`).join("");
+  $("#hexcount").textContent=H.filter(h=>h.ok).length+" / "+H.length+" earned";
+}
+
+/* ═══ list view builder (existing boards) ═══ */
 function buildView(id,items,opts){
-  const wrapF=$("#f-"+id), wrapL=$("#l-"+id);
-  let filter="All";
+  const wrapF=$("#f-"+id), wrapL=$("#l-"+id); let filter="All";
   const cats=["All",...new Set(items.map(opts.group))];
   wrapF.innerHTML=cats.map(c=>`<button class="chip ${c==="All"?"on":""}" data-f="${esc(c)}">${c==="All"?"All":(opts.emoji(c)||"")+" "+esc(c)}</button>`).join("");
-  wrapF.addEventListener("click",e=>{
-    const b=e.target.closest(".chip");if(!b)return;filter=b.dataset.f;
-    $$("#f-"+id+" .chip").forEach(x=>x.classList.toggle("on",x===b));render();
-  });
-  wrapL.addEventListener("click",e=>{
-    const row=e.target.closest(".lrow");if(row)row.classList.toggle("open");
-  });
-  function render(q){
-    q=(q||"").toLowerCase();
+  wrapF.addEventListener("click",e=>{const b=e.target.closest(".chip");if(!b)return;filter=b.dataset.f;$$("#f-"+id+" .chip").forEach(x=>x.classList.toggle("on",x===b));render()});
+  wrapL.addEventListener("click",e=>{const row=e.target.closest(".lrow");if(row)row.classList.toggle("open")});
+  function render(q){q=(q||"").toLowerCase();
     let list=items.filter(it=>(filter==="All"||opts.group(it)===filter)&&(!q||opts.hay(it).toLowerCase().includes(q)));
     let html="",lastSec="";
-    list.forEach(it=>{
-      const sec=opts.section?opts.section(it):null;
-      if(sec&&sec!==lastSec){html+=`<div class="sect">${esc(sec)}</div>`;lastSec=sec}
-      html+=opts.row(it);
-    });
+    list.forEach(it=>{const sec=opts.section?opts.section(it):null;if(sec&&sec!==lastSec){html+=`<div class="sect">${esc(sec)}</div>`;lastSec=sec}html+=opts.row(it)});
     wrapL.innerHTML=html||`<div class="empty">Nothing matches.</div>`;
-    $("#c-"+id).textContent=items.length;
   }
-  render(); opts._render=render;
-  return opts;
+  render(); opts._render=render; return opts;
 }
 const ORDER_S={"Active":0,"In Progress":0,"Planned":1,"Queued":1,"Gated":2,"Blocked":2,"Deferred":2,"Reduce/Cut if stacking":3,"Complete":4,"Adopted":0,"Ruled Out":5,"Reversed":4,"Retired":6};
-
-const vProtocols=buildView("protocols",
-  [...PROTOCOLS].sort((a,b)=>(ORDER_S[a.s]??9)-(ORDER_S[b.s]??9)),
-  {group:p=>p.d,emoji:c=>DOMAIN_EMOJI[c],hay:p=>p.n+" "+p.d+" "+p.spec+" "+p.rule,
-   section:p=>({0:"Active",1:"Planned",2:"Gated"}[ORDER_S[p.s]]||"Other"),
-   row:p=>`<div class="lrow"><div class="top">
-      <span class="em">${DOMAIN_EMOJI[p.d]||"📋"}</span><span class="nm">${esc(p.n)}</span>
-      <span class="meta">${pill(p.d,"p-blue")}${pill(p.c,"p-gray")}${sPill(p.s)}</span></div>
-    <div class="sub">${esc(p.f)}</div>
-    <div class="detail"><span class="kv">Key spec</span>${esc(p.spec)}
-      <div class="dl"><span class="kv">Non-negotiable</span><b>${esc(p.rule)}</b></div></div></div>`});
-
+const vProtocols=buildView("protocols",[...PROTOCOLS].sort((a,b)=>(ORDER_S[a.s]??9)-(ORDER_S[b.s]??9)),
+  {group:p=>p.d,emoji:c=>DOMAIN_EMOJI[c],hay:p=>p.n+" "+p.d+" "+p.spec+" "+p.rule,section:p=>({0:"Active",1:"Planned",2:"Gated"}[ORDER_S[p.s]]||"Other"),
+   row:p=>`<div class="lrow"><div class="top"><span class="em">${DOMAIN_EMOJI[p.d]||"📋"}</span><span class="nm">${esc(p.n)}</span><span class="st">${sPill(p.s)}</span></div>
+    <div class="meta">${pill(p.d,"p-blue")}${pill(p.c,"p-gray")}<span style="font-size:11.5px;color:var(--muted);font-weight:700">${esc(p.f)}</span></div>
+    <div class="detail"><span class="kv">Key spec</span>${esc(p.spec)}<div class="dl"><span class="kv">Non-negotiable</span><b>${esc(p.rule)}</b></div></div></div>`});
 const vSupps=buildView("supplements",SUPPS,
   {group:s=>s.cat[0],emoji:c=>CAT_EMOJI[c],hay:s=>s.n+" "+s.cat.join(" ")+" "+s.why+" "+s.cau,
    section:s=>s.s==="Ruled Out"?"Ruled out":(s.s==="Gated"?"Gated":(s.s==="Reduce/Cut if stacking"?"Reduce / cut if stacking":"Stack")),
-   row:s=>`<div class="lrow"><div class="top">
-      <span class="em">${CAT_EMOJI[s.cat[0]]||"💊"}</span><span class="nm">${esc(s.n)}</span>
-      <span class="ratebar"><span class="track"><i style="width:${(s.r/40*100)}%;background:${s.r>=26?"var(--green)":s.r>=18?"var(--gold)":"var(--red)"}"></i></span></span>
-      <span class="num" style="font-size:12.5px;color:var(--muted)">${s.r}/40</span>
-      <span class="meta">${pill("Tier "+s.tier,TIER_PILL[s.tier])}${sPill(s.s)}</span></div>
-    <div class="sub">${esc(s.dose)} · ${esc(s.timing)} · ${s.cat.map(c=>esc(c)).join(", ")}</div>
+   row:s=>`<div class="lrow"><div class="top"><span class="em">${CAT_EMOJI[s.cat[0]]||"💊"}</span><span class="nm">${esc(s.n)}</span><span class="num" style="font-size:12px;color:var(--muted)">${s.r}/40</span><span class="st">${sPill(s.s)}</span></div>
+    <div class="meta"><span class="track" style="width:70px;height:7px"><i style="width:${(s.r/40*100)}%;background:${s.r>=26?"var(--green)":s.r>=18?"var(--gold)":"var(--red)"}"></i></span>${pill("Tier "+s.tier,TIER_PILL[s.tier])}<span style="font-size:11.5px;color:var(--muted);font-weight:700">${esc(s.dose)} · ${esc(s.timing)}</span></div>
     <div class="detail">${esc(s.why)}<div class="dl"><span class="kv">Cautions</span><b>${esc(s.cau)}</b></div></div></div>`});
-
-const vLabs=buildView("labs",
-  [...LABS].sort((a,b)=>({"Critical":0,"High":1,"Standard":2}[a.pr]-{"Critical":0,"High":1,"Standard":2}[b.pr])),
-  {group:l=>l.p,emoji:c=>PANEL_EMOJI[c],hay:l=>l.n+" "+l.p+" "+l.v+" "+l.note,
-   section:l=>l.pr==="Critical"?"Critical":l.pr==="High"?"High priority":"Standard",
-   row:l=>`<div class="lrow"><div class="top">
-      <span class="em">${PANEL_EMOJI[l.p]||"🩸"}</span><span class="nm">${esc(l.n)}</span>
-      <span class="meta">${l.retest?pill("retest "+l.retest,"p-orange","📅"):""}${pill(l.p,"p-purple")}${sPill(l.s)}</span></div>
-    <div class="sub"><b class="num" style="color:var(--text)">${esc(l.v)}</b> · target ${esc(l.t)} · ${esc(l.src)}</div>
-    <div class="detail">${esc(l.note)}</div></div>`});
-
+const vLabs=buildView("labs",[...LABS].sort((a,b)=>({"Critical":0,"High":1,"Standard":2}[a.pr]-{"Critical":0,"High":1,"Standard":2}[b.pr])),
+  {group:l=>l.p,emoji:c=>PANEL_EMOJI[c],hay:l=>l.n+" "+l.p+" "+l.v+" "+l.note,section:l=>l.pr==="Critical"?"Critical":l.pr==="High"?"High priority":"Standard",
+   row:l=>`<div class="lrow"><div class="top"><span class="em">${PANEL_EMOJI[l.p]||"🩸"}</span><span class="nm">${esc(l.n)}</span><span class="st">${sPill(l.s)}</span></div>
+    <div class="meta"><b class="num" style="font-size:12.5px">${esc(l.v)}</b>${l.retest?pill("retest "+l.retest,"p-orange","📅"):""}${pill(l.p,"p-purple")}</div>
+    <div class="sub">Target ${esc(l.t)} · ${esc(l.src)}</div><div class="detail">${esc(l.note)}</div></div>`});
 const vGoals=buildView("goals",GOALS,
-  {group:g=>g.tr,emoji:c=>TRACK_EMOJI[c],hay:g=>g.n+" "+g.tr+" "+(g.det||"")+" "+g.gate,
-   section:g=>g.seq?"The 13-goal financial timeline":(g.tr==="Physique"||g.tr==="Health"?"Body & health":"Life build"),
-   row:g=>`<div class="lrow"><div class="top">
-      ${g.seq?`<span class="seq ${g.s==="Complete"?"done":""}">${g.s==="Complete"?"✓":String(g.seq).padStart(2,"0")}</span>`:`<span class="em">${TRACK_EMOJI[g.tr]||"🎯"}</span>`}
-      <span class="nm">${esc(g.n)}</span>
-      <span class="meta">${g.tgt?pill(g.tgt,"p-gray","📅"):""}${pill(g.tr,"p-teal")}${sPill(g.s)}</span></div>
-    ${g.det?`<div class="sub">${esc(g.det)}</div>`:""}
+  {group:g=>g.tr,emoji:c=>TRACK_EMOJI[c],hay:g=>g.n+" "+g.tr+" "+(g.det||"")+" "+g.gate,section:g=>g.seq?"The 13-goal financial timeline":(g.tr==="Physique"||g.tr==="Health"?"Body & health":"Life build"),
+   row:g=>`<div class="lrow"><div class="top">${g.seq?`<span class="seq ${g.s==="Complete"?"done":""}">${g.s==="Complete"?"✓":String(g.seq).padStart(2,"0")}</span>`:`<span class="em">${TRACK_EMOJI[g.tr]||"🎯"}</span>`}<span class="nm">${esc(g.n)}</span><span class="st">${sPill(g.s)}</span></div>
+    <div class="meta">${g.tgt?pill(g.tgt,"p-gray","📅"):""}${pill(g.tr,"p-teal")}</div>${g.det?`<div class="sub">${esc(g.det)}</div>`:""}
     <div class="detail"><span class="kv">Gate / dependency</span><b>${esc(g.gate)}</b></div></div>`});
-
-const vQuestions=buildView("questions",
-  [...QUESTIONS].sort((a,b)=>({"Critical":0,"High":1,"Medium":2,"Low":3}[a.pr]-{"Critical":0,"High":1,"Medium":2,"Low":3}[b.pr])),
-  {group:q=>q.d,emoji:c=>QDOM_EMOJI[c],hay:q=>q.n+" "+q.d+" "+q.why+" "+q.act,
-   section:q=>q.pr,
-   row:q=>`<div class="lrow"><div class="top">
-      <span class="em">${QDOM_EMOJI[q.d]||"❓"}</span><span class="nm">${esc(q.n)}</span>
-      <span class="meta">${pill(q.d,"p-blue")}${sPill(q.pr)}</span></div>
-    <div class="sub">${esc(q.why)}</div>
-    <div class="detail"><span class="kv">Next action</span><b>${esc(q.act)}</b>
-      <div class="dl"><span class="kv">Blocked by</span>${esc(q.blk)}</div></div></div>`});
-
+const vQuestions=buildView("questions",[...QUESTIONS].sort((a,b)=>({"Critical":0,"High":1,"Medium":2,"Low":3}[a.pr]-{"Critical":0,"High":1,"Medium":2,"Low":3}[b.pr])),
+  {group:q=>q.d,emoji:c=>QDOM_EMOJI[c],hay:q=>q.n+" "+q.d+" "+q.why+" "+q.act,section:q=>q.pr,
+   row:q=>`<div class="lrow"><div class="top"><span class="em">${QDOM_EMOJI[q.d]||"❓"}</span><span class="nm">${esc(q.n)}</span><span class="st">${sPill(q.pr)}</span></div>
+    <div class="meta">${pill(q.d,"p-blue")}</div><div class="sub">${esc(q.why)}</div>
+    <div class="detail"><span class="kv">Next action</span><b>${esc(q.act)}</b><div class="dl"><span class="kv">Blocked by</span>${esc(q.blk)}</div></div></div>`});
 const vDecisions=buildView("decisions",DECISIONS,
-  {group:d=>d.d,emoji:c=>DDOM_EMOJI[c],hay:d=>d.n+" "+d.d+" "+d.rea+" "+d.rev,
-   section:d=>d.v==="Adopted"?"Adopted":d.v==="Deferred"?"Deferred":"Ruled out",
-   row:d=>`<div class="lrow"><div class="top">
-      <span class="em">${DDOM_EMOJI[d.d]||"🗳️"}</span><span class="nm">${esc(d.n)}</span>
-      <span class="meta">${pill(d.when,"p-gray","📅")}${pill(d.d,"p-purple")}${sPill(d.v)}</span></div>
-    <div class="sub">${esc(d.rea)}</div>
+  {group:d=>d.d,emoji:c=>DDOM_EMOJI[c],hay:d=>d.n+" "+d.d+" "+d.rea+" "+d.rev,section:d=>d.v==="Adopted"?"Adopted":d.v==="Deferred"?"Deferred":"Ruled out",
+   row:d=>`<div class="lrow"><div class="top"><span class="em">${DDOM_EMOJI[d.d]||"🗳️"}</span><span class="nm">${esc(d.n)}</span><span class="st">${sPill(d.v)}</span></div>
+    <div class="meta">${pill(d.when,"p-gray","📅")}${pill(d.d,"p-purple")}</div><div class="sub">${esc(d.rea)}</div>
     <div class="detail"><span class="kv">What would reverse it</span><b>${esc(d.rev)}</b></div></div>`});
+$("#q").addEventListener("input",e=>{const q=e.target.value.trim();[vProtocols,vSupps,vLabs,vGoals,vQuestions,vDecisions].forEach(v=>v._render(q))});
 
-/* ═══ global search ═══ */
-$("#q").addEventListener("input",e=>{
-  const q=e.target.value.trim();
-  [["protocols",vProtocols],["supplements",vSupps],["labs",vLabs],["goals",vGoals],["questions",vQuestions],["decisions",vDecisions]]
-    .forEach(([id,v])=>v._render(q));
-  if(q && $("#view-dashboard").classList.contains("on")) go("protocols");
-});
+/* ═══ boot ═══ */
+renderReview(); renderWeight();
 </script>
